@@ -1,4 +1,4 @@
-# Hackaton template
+# HackQC 2024
 
 ## Dev dependencies
 
