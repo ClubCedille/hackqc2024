@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Montreal Map View - Événements publics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #map-container {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            width: 80vw;
+            height: 60vh;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        .popup-content {
+            font-family: Arial, sans-serif;
+            line-height: 1.4;
+            margin: 10px;
+        }
+        .popup-content h3 {
+            margin: 0 0 5px 0;
+            color: #007BFF;
+        }
+        .popup-content p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .popup-content a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #FFFFFF;
+            background-color: #007BFF;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .popup-content a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map-container">
+    <h3 style="text-align:center;">Événements publics à Montréal</h3>
+    <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const map = L.map('map').setView([45.5017, -73.5673], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        fetch('/events-geojson')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties) {
+                            const popupContent = `
+                                <div class="popup-content">
+                                    <h3>${feature.properties.titre}</h3>
+                                    <p>${feature.properties.description}</p>
+                                    <p>Date: ${feature.properties.date_debut} to ${feature.properties.date_fin}</p>
+                                    <a href="${feature.properties.url_fiche}" target="_blank">More info</a>
+                                </div>
+                            `;
+                            layer.bindPopup(popupContent);
+                        }
+                    }
+                }).addTo(map);
+            })
+            .catch(error => console.error('Error loading the GeoJSON data:', error));
+    });
+</script>
+
+</body>
+</html>

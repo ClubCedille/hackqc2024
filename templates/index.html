@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    </head>
+    <body>
+        <p>
+            Date/Time is: {{.Time}}
+        </p>
+
+        <p>
+            <div hx-post="/test" hx-target="#past-requests" 
+            class="w3-btn w3-indigo w3-round-xlarge">
+                Click here to retrieve past requests
+            </div>
+        </p>
+        <div x-data="{ open: true }">
+        <p>
+            <div class="w3-btn w3-round-xlarge" :class="open ? 'w3-purple' : 'w3-green'" @click="open = !open" x-text="open ? 'Hide Requests' : 'Show Requests'"></div>
+            <div id="past-requests" x-show="open" x-transition></div>
+        </p>
+        </div>
+
+        <p>
+            <a href="/map" class="w3-btn w3-teal w3-round-xlarge">View Montreal Map</a>
+        </p>
+    </body>
+</html>
