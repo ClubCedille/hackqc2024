@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/ostafen/clover"
+	"github.com/ClubCedille/hackqc2024/pkg/account"
+	"github.com/ClubCedille/hackqc2024/pkg/database"
+	"github.com/ClubCedille/hackqc2024/pkg/event"
+	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ostafen/clover/v2/query"
 )
 
 type Request struct {
@@ -16,89 +16,99 @@ type Request struct {
 	DateTime string
 }
 
-const _requestCollections = "RequestCollections"
-
 func main() {
-
-	db, err := clover.Open("clover-db")
+	// Init database
+	db, err := database.InitDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB failed")
+		log.Fatalf(err.Error())
 	}
+
+	// Create an account
+	err = account.CreateAccount(db, account.Account{
+		UserName:  "sonoflope",
+		FirstName: "son",
+		LastName:  "oflope",
+		Email:     "sonoflope@allo.com",
+	})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	// Fetch the new account id
+	docs, err := db.FindAll(query.NewQuery(database.HackQcCollection).Where(query.Field("user_name").Eq("sonoflope")))
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	var accountId string
+	for _, d := range docs {
+		accountId = d.ObjectId()
+		break
+	}
+
+	// Create map object
+	err = mapobject.CreateMapObject(db, mapobject.MapObject{
+		Coordinates: "test",
+		Polygon:     "test",
+		Name:        "this is a test",
+		Description: "this is a test",
+		Category:    "this is a test",
+		Tags:        []string{"test1", "test2"},
+		Date:        time.Now(),
+		AccountId:   accountId,
+	})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	docs, err = db.FindAll(query.NewQuery(database.HackQcCollection).Where(query.Field("name").Eq("this is a test")))
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	var mapOjbectId string
+	for _, d := range docs {
+		mapOjbectId = d.ObjectId()
+		break
+	}
+
+	// Create an event
+	err = event.CreateEvent(db, event.Event{
+		DangerLevel: event.DangerLevel(1),
+		UrgencyType: event.UrgencyType(1),
+		MapObjectId: mapOjbectId,
+	})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	db.ExportCollection(database.HackQcCollection, "test.json")
+
+	// r := gin.Default()
+	// r.LoadHTMLGlob("templates/*")
+
+	// r.Run()
+
 	defer db.Close()
-
-	hasCollection, err := db.HasCollection(_requestCollections)
-	if err != nil {
-		log.Fatal("DB Query error")
-	}
-
-	if !hasCollection {
-		db.CreateCollection(_requestCollections)
-	}
-
-	r := gin.Default()
-	r.LoadHTMLGlob("templates/*")
-
-	r.GET("/", func(c *gin.Context) {
-		dt := time.Now()
-		request := Request{
-			IP:       c.ClientIP(),
-			DateTime: dt.Format(time.RFC3339),
-		}
-		document := clover.NewDocumentOf(request)
-		db.Insert(_requestCollections, document)
-
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"Time": dt.Format("2006-01-02 15:04"),
-		})
-
-	})
-
-	r.POST("/test", func(c *gin.Context) {
-		strResult := "<ul>"
-		docs, _ := db.Query(_requestCollections).FindAll()
-		var request Request
-		for _, doc := range docs {
-			doc.Unmarshal(&request)
-			timeGo, _ := time.Parse(time.RFC3339, request.DateTime)
-			timeStr := timeGo.Format("2006-01-02 15:04")
-			strResult += fmt.Sprintf("<li>%s: %s</li>", timeStr, request.IP)
-		}
-		strResult += "</ul>"
-		c.String(http.StatusOK, strResult)
-	})
-
-	r.GET("/events-geojson", func(c *gin.Context) {
-		if cachedGeoJSON == nil {
-			fetchGeoJSON()
-		}
-		c.Data(http.StatusOK, "application/json", cachedGeoJSON)
-	})
-
-	r.GET("/map", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "map.html", nil)
-	})
-
-	r.Run()
 }
 
 // Temp example of fetching from données Québec
-var cachedGeoJSON []byte
+// var cachedGeoJSON []byte
 
-func fetchGeoJSON() {
+// func fetchGeoJSON() {
+// 	if cachedGeoJSON == nil {
+// 		resp, err := http.Get("https://donnees.montreal.ca/dataset/6a4cbf2c-c9b7-413a-86b1-e8f7081e2578/resource/35307457-a00f-4912-9941-8095ead51f6e/download/evenements.geojson")
+// 		if err != nil {
+// 			log.Println("Error fetching GeoJSON:", err)
+// 			return
+// 		}
+// 		defer resp.Body.Close()
 
-    if cachedGeoJSON == nil {
-        resp, err := http.Get("https://donnees.montreal.ca/dataset/6a4cbf2c-c9b7-413a-86b1-e8f7081e2578/resource/35307457-a00f-4912-9941-8095ead51f6e/download/evenements.geojson")
-        if err != nil {
-            log.Println("Error fetching GeoJSON:", err)
-            return
-        }
-        defer resp.Body.Close()
-
-        data, err := io.ReadAll(resp.Body)
-        if err != nil {
-            log.Println("Error reading GeoJSON:", err)
-            return
-        }
-        cachedGeoJSON = data
-    }
-}
+// 		data, err := io.ReadAll(resp.Body)
+// 		if err != nil {
+// 			log.Println("Error reading GeoJSON:", err)
+// 			return
+// 		}
+// 		cachedGeoJSON = data
+// 	}
+// }
