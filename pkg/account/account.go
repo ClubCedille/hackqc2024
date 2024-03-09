@@ -4,6 +4,7 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/document"
+	"github.com/ostafen/clover/v2/query"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -13,6 +14,10 @@ type Account struct {
 	FirstName string `json:"first_name" clover:"first_name"`
 	LastName  string `json:"last_name" clover:"last_name"`
 	Email     string `json:"email" clover:"email"`
+}
+
+func AccountExistsById(conn *clover.DB, id string) (bool, error) {
+	return conn.Exists(query.NewQuery(database.AccountCollection).Where(query.Field("_id").Eq(id)))
 }
 
 func CreateAccount(conn *clover.DB, account Account) error {

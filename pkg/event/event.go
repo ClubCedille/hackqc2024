@@ -26,6 +26,7 @@ const (
 
 type Event struct {
 	Id          string              `json:"_id" clover:"_id"`
+	ExternalId  string              `json:"danger_level" clover:"external_id"`
 	DangerLevel DangerLevel         `json:"danger_level" clover:"danger_level"`
 	UrgencyType UrgencyType         `json:"urgency_type" clover:"urgency_type"`
 	MapObject   mapobject.MapObject `json:"map_object" clover:"map_object"`
@@ -59,6 +60,22 @@ func (event *Event) GetDangerLevelString() string {
 
 func GetEventById(conn *clover.DB, eventId string) (Event, error) {
 	docs, err := conn.FindFirst(query.NewQuery(database.EventCollection).Where(query.Field("_id").Eq(eventId)))
+	if err != nil {
+		return Event{}, err
+	}
+
+	event := Event{}
+	docs.Unmarshal(&event)
+
+	return event, nil
+}
+
+func EventExistsByExternalId(conn *clover.DB, externalId string) (bool, error) {
+	return conn.Exists(query.NewQuery(database.EventCollection).Where(query.Field("external_id").Eq(externalId)))
+}
+
+func GetEventByExternalId(conn *clover.DB, externalId string) (Event, error) {
+	docs, err := conn.FindFirst(query.NewQuery(database.EventCollection).Where(query.Field("external_id").Eq(externalId)))
 	if err != nil {
 		return Event{}, err
 	}

@@ -3,18 +3,16 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
+	"github.com/ostafen/clover/v2/query"
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
-	external_data "github.com/ClubCedille/hackqc2024/pkg/data_importer"
+	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
-	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
-	"github.com/ostafen/clover/v2/query"
 )
 
 type Request struct {
@@ -35,63 +33,13 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	// Create an account
-	err = account.CreateAccount(db, account.Account{
-		Id:        uuid.NewV4().String(),
-		UserName:  "sonoflope",
-		FirstName: "son",
-		LastName:  "oflope",
-		Email:     "sonoflope@allo.com",
-	})
-	if err != nil {
-		log.Fatalf(err.Error())
+	//TODO: DON'T PUSH
+	events, _ := event.GetAllEvents(db)
+	for _, e := range events {
+		fmt.Println(e.MapObject.Name)
 	}
 
-	err = account.CreateAccount(db, account.Account{
-		Id:        external_data.SYSTEM_USER_GUID,
-		UserName:  "system",
-		FirstName: "system",
-		LastName:  "system",
-		Email:     "system@allo.com",
-	})
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	// Fetch the new account id
-	docs, err := db.FindFirst(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq("sonoflope")))
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	acc := account.Account{}
-	docs.Unmarshal(&acc)
-
-	// Create map object
-	mapOjb := mapobject.MapObject{
-		Coordinates: "test",
-		Polygon:     "test",
-		Name:        "this is a test",
-		Description: "this is a test",
-		Category:    "this is a test",
-		Tags:        []string{"test1", "test2"},
-		Date:        time.Now(),
-		AccountId:   acc.Id,
-	}
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	// Create an event
-	err = event.CreateEvent(db, event.Event{
-		Id:          uuid.NewV4().String(),
-		DangerLevel: event.DangerLevel(1),
-		UrgencyType: event.UrgencyType(1),
-		MapObject:   mapOjb,
-	})
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	generateSeedData(db)
 
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/**/*.html")
@@ -114,19 +62,82 @@ func main() {
 }
 
 func initialLoadEvents(db *clover.DB) error {
-	events, err := external_data.InitialLoad()
+	events, err := data_import.InitialLoad()
 	if err != nil {
 		return err
 	}
 
 	for _, e := range events {
-		err = event.CreateEvent(db, e)
+		err = createOrUpdateExternalEvent(db, e)
 		if err != nil {
 			return err
 		}
 	}
 
 	return nil
+}
+
+func createOrUpdateExternalEvent(db *clover.DB, updatedEvent event.Event) error {
+	eventExists, err := event.EventExistsByExternalId(db, updatedEvent.ExternalId)
+
+	if err != nil {
+		return err
+	}
+
+	//Not sure if legit, but err means that the event doesn't exist (I think)
+	if eventExists {
+		existingEvent, err := event.GetEventByExternalId(db, updatedEvent.ExternalId)
+
+		if err != nil {
+			return err
+		}
+
+		updatedEvent.Id = existingEvent.Id
+		return event.UpdateEvent(db, updatedEvent)
+	} else {
+		return event.CreateEvent(db, updatedEvent)
+	}
+}
+
+func generateSeedData(db *clover.DB) {
+	// Create an account
+	err := account.CreateAccount(db, account.Account{
+		Id:        uuid.NewV4().String(),
+		UserName:  "sonoflope",
+		FirstName: "son",
+		LastName:  "oflope",
+		Email:     "sonoflope@allo.com",
+	})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	accountExists, err := account.AccountExistsById(db, data_import.SYSTEM_USER_GUID)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	if !accountExists {
+		err = account.CreateAccount(db, account.Account{
+			Id:        data_import.SYSTEM_USER_GUID,
+			UserName:  "system",
+			FirstName: "system",
+			LastName:  "system",
+			Email:     "system@allo.com",
+		})
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+	}
+
+	// Fetch the new account id
+	docs, err := db.FindFirst(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq("sonoflope")))
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	acc := account.Account{}
+	docs.Unmarshal(&acc)
 }
 
 // Temp example of fetching from données Québec
