@@ -6,8 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
     <style>
-        body {
+        /* body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -50,18 +51,19 @@
         }
         .popup-content a:hover {
             background-color: #0056b3;
-        }
+        } */
     </style>
 </head>
 <body>
 
-<div id="map-container">
+<div id="map-container" class="w3-container">
     <h3 style="text-align:center;">Événements d'urgence</h3>
-    <div id="map"></div>
+    <div id="map" class="w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const map = L.map('map').setView([45.5017, -73.5673], 8);
@@ -72,20 +74,30 @@
         })
         layer.addTo(map)
         let data = JSON.parse("{{ .MapItemsJson }}")
-        L.geoJSON(data, {
+        data.forEach(geoJsonPair => {
+            let myIcon = L.divIcon({
+                className: `w3-text-${geoJsonPair.style.color} w3-${geoJsonPair.style.iconSize} material-icons`,
+                html: geoJsonPair.style.icon,
+                popupAnchor: [12, 6]
+            });
+            L.geoJSON(geoJsonPair.geoJson, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, {icon: myIcon});
+                    },
                     onEachFeature: function (feature, layer) {
                             const popupContent = `
                                 <div class="popup-content">
                                     <h3>${feature.properties.name}</h3>
-                                    <h4>${feature.properties.category}</h4>
+                                    <h5>${feature.properties.category}</h5>
                                     <p>${feature.properties.description.substring(0, 100)}...</p>
                                     <p>Date: ${feature.properties.date}</p>
-                                    <a href="/event/${feature.url_fiche}" target="_blank">More info</a>
+                                    <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
                                 </div>
                             `;
                             layer.bindPopup(popupContent);
                     }
                 }).addTo(map);
+        });
 
         // fetch('/events-geojson')
         //     .then(response => response.json())

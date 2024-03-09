@@ -11,6 +11,17 @@ import (
 	"github.com/ostafen/clover/v2"
 )
 
+type GeoJSONPair struct {
+	GeoJson GeoJSON `json:"geoJson"`
+	Style   Style   `json:"style"`
+}
+
+type Style struct {
+	Color    string `json:"color"`
+	Icon     string `json:"icon"`
+	IconSize string `json:"iconSize"`
+}
+
 type GeoJSON struct {
 	Type       string              `json:"type"`
 	Geometry   mapobject.Geometry  `json:"geometry"`
@@ -42,20 +53,32 @@ func retrieveMapItemsJson(db *clover.DB) (string, error) {
 
 	evSize := len(events)
 	helpSize := len(helps)
-	mapItems := make([]GeoJSON, evSize+helpSize)
+	mapItems := make([]GeoJSONPair, evSize+helpSize)
 
 	for i, v := range events {
-		mapItems[i] = GeoJSON{
-			Type:       "Feature",
-			Geometry:   v.MapObject.Geometry,
-			Properties: v.MapObject,
+		mapItems[i] = GeoJSONPair{
+			GeoJson: GeoJSON{
+				Type:       "Feature",
+				Geometry:   v.MapObject.Geometry,
+				Properties: v.MapObject,
+			},
+			Style: Style{
+				Color:    "red",
+				Icon:     "location_on",
+				IconSize: "xxlarge",
+			},
 		}
-	}
-	for i, v := range helps {
-		mapItems[i+evSize] = GeoJSON{
-			Type:       "Feature",
-			Geometry:   v.MapObject.Geometry,
-			Properties: v.MapObject,
+		for i, v := range helps {
+			mapItems[i+evSize] = GeoJSONPair{
+				GeoJson: GeoJSON{
+					Type:       "Feature",
+					Geometry:   v.MapObject.Geometry,
+					Properties: v.MapObject,
+				},
+				Style: Style{
+					Color: "green",
+				},
+			}
 		}
 	}
 
