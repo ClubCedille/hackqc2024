@@ -1,4 +1,4 @@
-package external_data
+package data_import
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package external_data
+package data_import
 
 import (
 	"github.com/ClubCedille/hackqc2024/pkg/event"

@@ -1,4 +1,4 @@
-package external_data
+package data_import
 
 import (
 	"encoding/json"
@@ -82,6 +82,7 @@ func (feature *WeatherFeature) ToEvent() (event.Event, error) {
 	return event.Event{
 		DangerLevel: ParseSeverity(feature.Properties.Severite),
 		UrgencyType: ParseUrgency(feature.Properties.Urgence),
+		ExternalId:  feature.Properties.Id_alerte,
 		MapObject: mapobject.MapObject{
 			Coordinates: FormatCoordinates(feature.Geometry.Coordinates),
 			Polygon:     "",
