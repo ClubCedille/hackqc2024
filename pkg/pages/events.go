@@ -5,20 +5,21 @@ import (
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
+	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/query"
 )
 
 func EventsPage(c *gin.Context, db *clover.DB) {
-	docs, err := db.FindAll(query.NewQuery(database.HackQcCollection).Where(query.Field("urgency_type").Eq(1)))
+	events, err := event.GetAllEvents(db)
 	if err != nil {
 		log.Println("Error fetching event cards:", err)
 		return
 	}
 
 	c.HTML(http.StatusOK, "cards/eventCard.html", gin.H{
-		"EventCards": docs,
+		"EventCards": events,
 	})
 }
 

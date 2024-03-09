@@ -2,10 +2,6 @@ package mapobject
 
 import (
 	"time"
-
-	"github.com/ClubCedille/hackqc2024/pkg/database"
-	"github.com/ostafen/clover/v2"
-	"github.com/ostafen/clover/v2/document"
 )
 
 type MapObject struct {
@@ -17,14 +13,4 @@ type MapObject struct {
 	Tags        []string  `clover:"tags"`
 	Date        time.Time `clover:"date"`
 	AccountId   string    `clover:"account_id"`
-}
-
-func CreateMapObject(conn *clover.DB, mapObject MapObject) error {
-	mapObjectDoc := document.NewDocumentOf(mapObject)
-	err := conn.Insert(database.MapObjectCollection, mapObjectDoc)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

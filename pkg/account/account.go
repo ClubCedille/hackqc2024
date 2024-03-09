@@ -7,6 +7,7 @@ import (
 )
 
 type Account struct {
+	Id        string `clover:"_id"`
 	UserName  string `clover:"user_name"`
 	FirstName string `clover:"first_name"`
 	LastName  string `clover:"last_name"`
