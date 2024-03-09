@@ -73,10 +73,10 @@ func UpdateHelp(db *clover.DB, help Help) error {
 	return nil
 }
 
-func DeleteHelpById(db *clover.DB, helpId string) (bool, error) {
-	err := db.DeleteById(database.HelpCollection, helpId)
+func DeleteHelp(db *clover.DB, help Help) error {
+	err := db.DeleteById(database.HelpCollection, help.Id)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
