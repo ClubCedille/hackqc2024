@@ -66,11 +66,6 @@ func MakeWFSRequest(request string, params map[string]string) ([]byte, error) {
 	return body, err
 }
 
-type Geometry struct {
-	GeomType    string    `json:"type"`
-	Coordinates []float64 `json:"coordinates"`
-}
-
 func FormatCoordinates(coordinates []float64) string {
 	return fmt.Sprintf("%f,%f", coordinates[0], coordinates[1])
 }
