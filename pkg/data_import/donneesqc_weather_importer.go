@@ -21,7 +21,7 @@ func (source DonneesQcWeatherEventSource) GetName() string {
 func (source DonneesQcWeatherEventSource) GetAllEvents() ([]event.Event, error) {
 	events := []event.Event{}
 
-	weather, err := getWeatherData()
+	weather, err := getWeatherData(map[string]string{})
 
 	if err != nil {
 		return nil, err
@@ -41,13 +41,55 @@ func (source DonneesQcWeatherEventSource) GetAllEvents() ([]event.Event, error) 
 	return events, nil
 }
 
-func getWeatherData() (*WeatherFeatureCollection, error) {
-	params := map[string]string{
-		"typeNames":    "msp_vigilance_crue_publique_v_type",
-		"outputFormat": "geojson",
+func (source DonneesQcWeatherEventSource) GetNewEventsFromDate(date time.Time) ([]event.Event, error) {
+	body := createDateFilterXml(date)
+	weather, err := searchWeatherData(body)
+	events := parseWeather(weather)
+
+	if err != nil {
+		return nil, err
 	}
 
-	result, err := MakeWFSRequest("GetFeature", params)
+	return events, nil
+}
+
+func parseWeather(weather *WeatherFeatureCollection) []event.Event {
+	events := []event.Event{}
+
+	for _, feature := range weather.Features {
+		event, err := feature.ToEvent()
+		if err != nil {
+			msg := fmt.Sprintf("Error converting feature to event: %s", err.Error())
+			fmt.Fprintln(os.Stderr, msg)
+			continue
+		}
+
+		events = append(events, event)
+	}
+
+	return events
+}
+
+func searchWeatherData(body string) (*WeatherFeatureCollection, error) {
+	result, err := MakeWFSPostRequest("GetFeature", body, map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+
+	var weatherFeatures WeatherFeatureCollection
+	err = json.Unmarshal(result, &weatherFeatures)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weatherFeatures, err
+}
+
+func getWeatherData(params map[string]string) (*WeatherFeatureCollection, error) {
+	params["typeNames"] = "msp_vigilance_crue_publique_v_type"
+	params["outputFormat"] = "geojson"
+
+	result, err := MakeWFSGetRequest("GetFeature", params)
 	if err != nil {
 		return nil, err
 	}
@@ -107,4 +149,13 @@ type WeatherProperties struct {
 	Urgence          string `json:"urgence"`
 	Description      string `json:"description"`
 	Type             string `json:"type"`
+}
+
+// Sue me
+func createDateFilterXml(date time.Time) string {
+	formattedDate := date.Format(DQC_TIME_FMT)
+	return fmt.Sprintf("<?xml version=\"1.0\"?><wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:sf=\"http://www.openplans.org/spearfish\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd         http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd\" service=\"WFS\" version=\"2.0.0\" outputFormat=\"geojson\"><wfs:Query typeNames=\"msp_vigilance_crue_publique_v_type\"><fes:Filter><PropertyIsGreaterThan><ValueReference>%s</ValueReference><Literal>%s</Literal></PropertyIsGreaterThan></fes:Filter></wfs:Query></wfs:GetFeature>",
+		"date_mise_a_jour",
+		formattedDate,
+	)
 }

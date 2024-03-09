@@ -12,7 +12,6 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/account"
 	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
-	"github.com/ClubCedille/hackqc2024/pkg/event"
 )
 
 type Request struct {
@@ -28,7 +27,7 @@ func main() {
 	}
 
 	// Initial load
-	err = initialLoadEvents(db)
+	err = data_import.UpdateAll(db)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -53,44 +52,6 @@ func main() {
 			return
 		}
 	}(db)
-}
-
-func initialLoadEvents(db *clover.DB) error {
-	events, err := data_import.InitialLoad()
-	if err != nil {
-		return err
-	}
-
-	for _, e := range events {
-		err = createOrUpdateExternalEvent(db, e)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func createOrUpdateExternalEvent(db *clover.DB, updatedEvent event.Event) error {
-	eventExists, err := event.EventExistsByExternalId(db, updatedEvent.ExternalId)
-
-	if err != nil {
-		return err
-	}
-
-	//Not sure if legit, but err means that the event doesn't exist (I think)
-	if eventExists {
-		existingEvent, err := event.GetEventByExternalId(db, updatedEvent.ExternalId)
-
-		if err != nil {
-			return err
-		}
-
-		updatedEvent.Id = existingEvent.Id
-		return event.UpdateEvent(db, updatedEvent)
-	} else {
-		return event.CreateEvent(db, updatedEvent)
-	}
 }
 
 func generateSeedData(db *clover.DB) {

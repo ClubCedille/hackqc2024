@@ -1,6 +1,7 @@
 package data_import
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -45,7 +46,7 @@ func ParseSeverity(severity string) event.DangerLevel {
 	return event.Low
 }
 
-func MakeWFSRequest(request string, params map[string]string) ([]byte, error) {
+func MakeWFSGetRequest(request string, params map[string]string) ([]byte, error) {
 	params["version"] = DQC_VERSION
 	params["service"] = "wfs"
 	params["request"] = request
@@ -64,6 +65,27 @@ func MakeWFSRequest(request string, params map[string]string) ([]byte, error) {
 	}
 
 	return body, err
+}
+
+func MakeWFSPostRequest(request string, body string, params map[string]string) ([]byte, error) {
+	params["version"] = DQC_VERSION
+	params["service"] = "wfs"
+	params["request"] = request
+
+	queryString := ToGetParams(params)
+	request = DQC_BASE_URL + queryString
+	resp, err := http.Post(request, "application/xml", bytes.NewBuffer([]byte(body)))
+
+	if err != nil || resp.StatusCode != 200 {
+		return nil, err
+	}
+
+	resBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return resBody, err
 }
 
 type Geometry struct {
