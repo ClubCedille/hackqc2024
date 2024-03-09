@@ -1,0 +1,65 @@
+{{ define "grid/index.html" }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Card List</h1>
+    
+    {{ template "components/toolbar" . }}
+
+    <div class="wrapper">
+        <div class="col-1" id="foo-1">One</div>
+        <div id="foo-2">Two</div>
+        <div class="col-1" id="foo-3">Three</div>
+        <div class="big" id="foo-4">Four</div>
+        <div class="col-1" id="foo-5">Five</div>
+    </div>
+</body>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .wrapper {
+        border: 2px solid #f76707;
+        border-radius: 5px;
+        background-color: #fff4e6;
+    }
+
+    .wrapper > div {
+        border: 2px solid #ffa94d;
+        border-radius: 5px;
+        background-color: #ffd8a8;
+        padding: 1em;
+        color: #d9480f;
+
+    }
+
+    .wrapper {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+        grid-auto-rows: 50px;
+        grid-gap: 10px;
+    }
+
+    .col-1 {
+        grid-column-start: 1;   
+    }
+
+    .big {
+        grid-row: span 2;
+    }
+</style>
+
+{{ end }}
