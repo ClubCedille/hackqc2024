@@ -12,7 +12,6 @@ import (
 )
 
 func registerRoutes(r *gin.Engine, db *clover.DB) {
-
 	r.GET("/", func(c *gin.Context) {
 		dt := time.Now()
 
@@ -37,10 +36,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.EventHelpPage(c, db)
 	})
 
-	r.GET("/helps", func(c *gin.Context) {
-		pages.HelpPage(c, db)
-	})
-
+	// Events
 	r.GET("/events", func(c *gin.Context) {
 		pages.EventHelpPage(c, db)
 	})
@@ -57,6 +53,11 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.DeleteEvent(c, db)
 	})
 
+	// Help
+	r.GET("/helps", func(c *gin.Context) {
+		pages.HelpPage(c, db)
+	})
+
 	r.POST("/create-help", func(c *gin.Context) {
 		pages.CreateHelp(c, db)
 	})
@@ -67,6 +68,15 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.DELETE("/delete-help", func(c *gin.Context) {
 		pages.DeleteHelp(c, db)
+	})
+
+	// Account
+	r.POST("/create-account", func(c *gin.Context) {
+		pages.CreateAccount(c, db)
+	})
+
+	r.POST("/update-account", func(c *gin.Context) {
+		pages.UpdateAccount(c, db)
 	})
 }
 

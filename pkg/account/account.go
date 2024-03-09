@@ -25,3 +25,18 @@ func CreateAccount(conn *clover.DB, account Account) error {
 
 	return nil
 }
+
+func UpdateAccount(conn *clover.DB, account Account) error {
+	err := conn.UpdateById(database.EventCollection, account.Id, func(doc *document.Document) *document.Document {
+		doc.Set("user_name", account.UserName)
+		doc.Set("first_name", account.FirstName)
+		doc.Set("last_name", account.LastName)
+		doc.Set("email", account.Email)
+		return doc
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
