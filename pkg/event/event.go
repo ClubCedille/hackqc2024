@@ -37,9 +37,9 @@ func (event *Event) GetUrgencyTypeString() string {
 	case Futur:
 		return "Futur"
 	case Present:
-		return "Present"
+		return "Présent"
 	case Past:
-		return "Past"
+		return "Passé"
 	default:
 		return ""
 	}
@@ -48,11 +48,11 @@ func (event *Event) GetUrgencyTypeString() string {
 func (event *Event) GetDangerLevelString() string {
 	switch event.DangerLevel {
 	case High:
-		return "High"
+		return "Élevé"
 	case Medium:
-		return "Medium"
+		return "Modéré"
 	case Low:
-		return "Low"
+		return "Faible"
 	default:
 		return ""
 	}
