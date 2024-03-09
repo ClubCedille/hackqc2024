@@ -87,10 +87,10 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.LoadHTMLGlob("templates/*.html")
 	r.LoadHTMLGlob("templates/**/*.html")
 
 	registerRoutes(r, db)
+
 	err = r.Run()
 	if err != nil {
 		fmt.Print("Failed to run")

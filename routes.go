@@ -6,24 +6,17 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ClubCedille/hackqc2024/pkg/database"
+	"github.com/ClubCedille/hackqc2024/pkg/pages"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
-	"github.com/ostafen/clover/v2/query"
 )
 
 func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/", func(c *gin.Context) {
 		dt := time.Now()
-		// request := Request{
-		// 	IP:       c.ClientIP(),
-		// 	DateTime: dt.Format(time.RFC3339),
-		// }
-		// document := document.NewDocumentOf(request)
-		// db.Insert(database.HackQcCollection, document)
 
-		c.HTML(http.StatusOK, "index.html", gin.H{
+		c.HTML(http.StatusOK, "home/index.html", gin.H{
 			"Time": dt.Format("2006-01-02 15:04"),
 		})
 
@@ -37,35 +30,19 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	r.GET("/map", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "map.html", nil)
+		pages.MapPage(c, db)
 	})
 
 	r.GET("/events-help", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "event_help_list.html", nil)
+		pages.EventHelpPage(c, db)
 	})
 
 	r.GET("/helps", func(c *gin.Context) {
-		docs, err := db.FindAll(query.NewQuery(database.HackQcCollection))
-		if err != nil {
-			log.Println("Error fetching help cards:", err)
-			return
-		}
-
-		c.HTML(http.StatusOK, "cards/helpCard.html", gin.H{
-			"HelpCards": docs,
-		})
+		pages.HelpPage(c, db)
 	})
 
 	r.GET("/events", func(c *gin.Context) {
-		docs, err := db.FindAll(query.NewQuery(database.HackQcCollection).Where(query.Field("urgency_type").Eq(1)))
-		if err != nil {
-			log.Println("Error fetching event cards:", err)
-			return
-		}
-
-		c.HTML(http.StatusOK, "cards/eventCard.html", gin.H{
-			"EventCards": docs,
-		})
+		pages.EventHelpPage(c, db)
 	})
 }
 
