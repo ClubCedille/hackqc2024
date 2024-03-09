@@ -58,18 +58,19 @@ func CreateHelp(db *clover.DB, help Help) error {
 }
 
 func UpdateHelp(db *clover.DB, help Help) error {
-	existingHelp, err := GetHelpById(db, help.Id)
+	err := db.UpdateById(database.HelpCollection, help.Id, func(doc *document.Document) *document.Document {
+		doc.Set("map_object", help.MapObject)
+		doc.Set("contact_infos", help.ContactInfos)
+		doc.Set("need_help", help.NeedHelp)
+		doc.Set("how_to_help", help.HowToHelp)
+		doc.Set("how_to_use_help", help.HowToUseHelp)
+		return doc
+	})
+
 	if err != nil {
 		return err
 	}
-
-	existingHelp.MapObject = help.MapObject
-	existingHelp.ContactInfos = help.ContactInfos
-	existingHelp.NeedHelp = help.NeedHelp
-	existingHelp.HowToHelp = help.HowToHelp
-	existingHelp.HowToUseHelp = help.HowToUseHelp
-
-	return UpdateHelp(db, existingHelp)
+	return nil
 }
 
 func DeleteHelpById(db *clover.DB, helpId string) (bool, error) {
