@@ -24,18 +24,6 @@ func EventsPage(c *gin.Context, db *clover.DB) {
 	})
 }
 
-func HelpPage(c *gin.Context, db *clover.DB) {
-	docs, err := db.FindAll(query.NewQuery(database.HackQcCollection))
-	if err != nil {
-		log.Println("Error fetching help cards:", err)
-		return
-	}
-
-	c.HTML(http.StatusOK, "cards/helpCard.html", gin.H{
-		"HelpCards": docs,
-	})
-}
-
 func EventHelpPage(c *gin.Context, db *clover.DB) {
 	events, err := event.GetAllEvents(db)
 
@@ -57,4 +45,84 @@ func EventHelpPage(c *gin.Context, db *clover.DB) {
 		"Events": events,
 		"Helps":  helps,
 	})
+}
+
+func SearchEventHelpPage(c *gin.Context, db *clover.DB) {
+	searchTerm := c.Query("search")
+
+	if searchTerm == "" {
+		c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
+			"Events": []*event.Event{},
+			"Helps":  []*help.Help{},
+		})
+		return
+	}
+
+	docs, err := db.FindAll(query.NewQuery(database.EventCollection).Where(query.Field("map_object.name").Like(searchTerm).Or(query.Field("map_object.description").Like(searchTerm).Or(query.Field("map_object.category").Like(searchTerm)).Or(query.Field("map_object.tags").Contains(searchTerm)))))
+	if err != nil {
+		log.Println("Error fetching events:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	events, err := event.GetEventFromDocuments(docs)
+
+	c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
+		"Events": events,
+		"Helps":  []*help.Help{},
+	})
+}
+
+func CreateEvent(c *gin.Context, db *clover.DB) {
+	var data event.Event
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := event.CreateEvent(db, data)
+	if err != nil {
+		log.Println("Error creating event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Event created successfully")
+	c.Redirect(http.StatusSeeOther, "/events")
+}
+
+func UpdateEvent(c *gin.Context, db *clover.DB) {
+	var data event.Event
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := event.UpdateEvent(db, data)
+	if err != nil {
+		log.Println("Error updating event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Event updated successfully")
+	c.Redirect(http.StatusSeeOther, "/events")
+}
+
+func DeleteEvent(c *gin.Context, db *clover.DB) {
+	var data event.Event
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := event.DeleteEvent(db, data)
+	if err != nil {
+		log.Println("Error deleting event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Event deleted successfully")
+	c.Redirect(http.StatusSeeOther, "/events")
 }

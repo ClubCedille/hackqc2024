@@ -25,11 +25,11 @@ const (
 )
 
 type Event struct {
-	Id          string              `clover:"_id"`
-	ExternalId  string              `clover:"external_id"`
-	DangerLevel DangerLevel         `clover:"danger_level"`
-	UrgencyType UrgencyType         `clover:"urgency_type"`
-	MapObject   mapobject.MapObject `clover:"map_object"`
+	Id          string              `json:"_id" clover:"_id"`
+	ExternalId  string              `json:"danger_level" clover:"external_id"`
+	DangerLevel DangerLevel         `json:"danger_level" clover:"danger_level"`
+	UrgencyType UrgencyType         `json:"urgency_type" clover:"urgency_type"`
+	MapObject   mapobject.MapObject `json:"map_object" clover:"map_object"`
 }
 
 func (event *Event) GetUrgencyTypeString() string {
@@ -92,12 +92,7 @@ func GetAllEvents(conn *clover.DB) ([]*Event, error) {
 		return nil, err
 	}
 
-	var events []*Event
-	for _, d := range docs {
-		var event Event
-		d.Unmarshal(&event)
-		events = append(events, &event)
-	}
+	events, _ := GetEventFromDocuments(docs)
 
 	return events, nil
 }
@@ -133,4 +128,15 @@ func DeleteEvent(conn *clover.DB, event Event) error {
 		return err
 	}
 	return nil
+}
+
+func GetEventFromDocuments(docs []*document.Document) ([]*Event, error) {
+	var events []*Event
+	for _, d := range docs {
+		var event Event
+		d.Unmarshal(&event)
+		events = append(events, &event)
+	}
+
+	return events, nil
 }

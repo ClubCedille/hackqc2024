@@ -7,11 +7,54 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Event Help List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Event Help List</h1>
-    <!---->
+
+    <div id="tool-bar" class="w3-bar w3-light-grey">
+        <!-- search box-->
+        <div class="w3-bar-item w3-right">
+            <!-- search with HTMX, will return event_list_table.html -->
+            <input class="w3-input w3-border" name="search" type="search" placeholder="Search..." id="search-box" hx-trigger="input changed delay:500ms, search" hx-indicator=".htmx-indicator" hx-get="/events/search" hx-target="#event-list" hx-swap="outerHTML" >
+        </div>
+    </div>
+
+    <table class="w3-table w3-striped w3-border" id="event-list">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Coordinates</th>
+            <th>Urgency</th>
+            <th>Danger Level</th>
+        </tr>
+    {{ range .Events }}
+        <tr>
+            <td>{{ .MapObject.Name }}</td>
+            <td>{{ .MapObject.Description }}</td>
+            <td>{{ .MapObject.Date }}</td>
+            <td>{{ .MapObject.Category }}</td>
+            <td>{{ .MapObject.Coordinates }}</td>
+            <td>{{ .GetUrgencyTypeString }}</td>
+            <td>{{ .GetDangerLevelString }}</td>
+        </tr>
+    {{ end }}
+    </table>
+    <table>
 </body>
 
 </html>
