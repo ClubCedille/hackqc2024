@@ -97,13 +97,23 @@ func CreateEvent(conn *clover.DB, event Event) error {
 }
 
 func UpdateEvent(conn *clover.DB, event Event) error {
+	err := conn.UpdateById(database.EventCollection, event.Id, func(doc *document.Document) *document.Document {
+		doc.Set("danger_level", event.DangerLevel)
+		doc.Set("urgency_type", event.UrgencyType)
+		doc.Set("map_object", event.MapObject)
+		return doc
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func DeleteEventById(conn *clover.DB, eventId string) (bool, error) {
-	err := conn.DeleteById(database.EventCollection, eventId)
+func DeleteEvent(conn *clover.DB, event Event) error {
+	err := conn.DeleteById(database.EventCollection, event.Id)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
