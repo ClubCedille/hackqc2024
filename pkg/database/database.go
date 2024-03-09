@@ -9,7 +9,6 @@ import (
 const HackQcCollection = "HackQcCollection"
 
 const AccountCollection = "AccountCollection"
-const MapObjectCollection = "MapObjectCollection"
 const EventCollection = "EventCollection"
 const HelpCollection = "HelpCollection"
 
@@ -37,7 +36,6 @@ func InitDatabase() (*clover.DB, error) {
 	}
 
 	createCollectionIfNotExists(AccountCollection, db)
-	createCollectionIfNotExists(MapObjectCollection, db)
 	createCollectionIfNotExists(EventCollection, db)
 	createCollectionIfNotExists(HelpCollection, db)
 

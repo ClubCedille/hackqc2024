@@ -5,13 +5,14 @@ import (
 	"log"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
-	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2/query"
 )
 
@@ -29,6 +30,7 @@ func main() {
 
 	// Create an account
 	err = account.CreateAccount(db, account.Account{
+		Id:        uuid.NewV4().String(),
 		UserName:  "sonoflope",
 		FirstName: "son",
 		LastName:  "oflope",
@@ -39,19 +41,16 @@ func main() {
 	}
 
 	// Fetch the new account id
-	docs, err := db.FindAll(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq("sonoflope")))
+	docs, err := db.FindFirst(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq("sonoflope")))
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	var accountId string
-	for _, d := range docs {
-		accountId = d.ObjectId()
-		break
-	}
+	acc := account.Account{}
+	docs.Unmarshal(&acc)
 
 	// Create map object
-	err = mapobject.CreateMapObject(db, mapobject.MapObject{
+	mapOjb := mapobject.MapObject{
 		Coordinates: "test",
 		Polygon:     "test",
 		Name:        "this is a test",
@@ -59,28 +58,18 @@ func main() {
 		Category:    "this is a test",
 		Tags:        []string{"test1", "test2"},
 		Date:        time.Now(),
-		AccountId:   accountId,
-	})
+		AccountId:   acc.Id,
+	}
 	if err != nil {
 		log.Fatalf(err.Error())
-	}
-
-	docs, err = db.FindAll(query.NewQuery(database.MapObjectCollection).Where(query.Field("name").Eq("this is a test")))
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	var mapOjbectId string
-	for _, d := range docs {
-		mapOjbectId = d.ObjectId()
-		break
 	}
 
 	// Create an event
 	err = event.CreateEvent(db, event.Event{
+		Id:          uuid.NewV4().String(),
 		DangerLevel: event.DangerLevel(1),
 		UrgencyType: event.UrgencyType(1),
-		MapObjectId: mapOjbectId,
+		MapObject:   mapOjb,
 	})
 	if err != nil {
 		log.Fatalf(err.Error())
