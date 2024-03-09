@@ -44,6 +44,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.GET("/events", func(c *gin.Context) {
 		pages.EventHelpPage(c, db)
 	})
+
+	r.GET("/events/search", func(c *gin.Context) {
+		pages.SearchEventHelpPage(c, db)
+	})
 }
 
 // Temp example of fetching from données Québec

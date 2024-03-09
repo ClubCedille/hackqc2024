@@ -75,12 +75,7 @@ func GetAllEvents(conn *clover.DB) ([]*Event, error) {
 		return nil, err
 	}
 
-	var events []*Event
-	for _, d := range docs {
-		var event Event
-		d.Unmarshal(&event)
-		events = append(events, &event)
-	}
+	events, _ := GetEventFromDocuments(docs)
 
 	return events, nil
 }
@@ -116,4 +111,15 @@ func DeleteEvent(conn *clover.DB, event Event) error {
 		return err
 	}
 	return nil
+}
+
+func GetEventFromDocuments(docs []*document.Document) ([]*Event, error) {
+	var events []*Event
+	for _, d := range docs {
+		var event Event
+		d.Unmarshal(&event)
+		events = append(events, &event)
+	}
+
+	return events, nil
 }

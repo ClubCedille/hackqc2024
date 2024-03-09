@@ -21,32 +21,18 @@
     </style>
 </head>
 
-<!--
-    type Event struct {
-	Id          string              `clover:"_id"`
-	DangerLevel DangerLevel         `clover:"danger_level"`
-	UrgencyType UrgencyType         `clover:"urgency_type"`
-	MapObject   mapobject.MapObject `clover:"map_object"`
-}
--->
-
-<!--
-    type MapObject struct {
-	Coordinates string    `clover:"coordinates"` //GeoJSON: Point
-	Polygon     string    `clover:"polygon"`     //GeoJSON: Polygon
-	Name        string    `clover:"name"`
-	Description string    `clover:"description"`
-	Category    string    `clover:"category"`
-	Tags        []string  `clover:"tags"`
-	Date        time.Time `clover:"date"`
-	AccountId   string    `clover:"account_id"`
-}
--->
-
 <body>
     <h1>Event Help List</h1>
-    <!-- Table, rows are Event from database -->
-    <table>
+
+    <div id="tool-bar" class="w3-bar w3-light-grey">
+        <!-- search box-->
+        <div class="w3-bar-item w3-right">
+            <!-- search with HTMX, will return event_list_table.html -->
+            <input class="w3-input w3-border" name="search" type="search" placeholder="Search..." id="search-box" hx-trigger="input changed delay:500ms, search" hx-indicator=".htmx-indicator" hx-get="/events/search" hx-target="#event-list" hx-swap="outerHTML" >
+        </div>
+    </div>
+
+    <table class="w3-table w3-striped w3-border" id="event-list">
         <tr>
             <th>Name</th>
             <th>Description</th>

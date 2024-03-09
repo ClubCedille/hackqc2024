@@ -58,3 +58,29 @@ func EventHelpPage(c *gin.Context, db *clover.DB) {
 		"Helps":  helps,
 	})
 }
+
+func SearchEventHelpPage(c *gin.Context, db *clover.DB) {
+	searchTerm := c.Query("search")
+
+	if searchTerm == "" {
+		c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
+			"Events": []*event.Event{},
+			"Helps":  []*help.Help{},
+		})
+		return
+	}
+
+	docs, err := db.FindAll(query.NewQuery(database.EventCollection).Where(query.Field("map_object.name").Like(searchTerm).Or(query.Field("map_object.description").Like(searchTerm).Or(query.Field("map_object.category").Like(searchTerm)).Or(query.Field("map_object.tags").Contains(searchTerm)))))
+	if err != nil {
+		log.Println("Error fetching events:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	events, err := event.GetEventFromDocuments(docs)
+
+	c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
+		"Events": events,
+		"Helps":  []*help.Help{},
+	})
+}
