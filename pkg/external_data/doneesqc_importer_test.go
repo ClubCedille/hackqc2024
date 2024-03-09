@@ -10,7 +10,7 @@ func TestToGetParams(t *testing.T) {
 		"test1": "val1",
 		"test2": "val2",
 	}
-	result := toGetParams(params)
+	result := ToGetParams(params)
 
 	if result != "?test1=val1&test2=val2" {
 		t.Fatalf("Expected ?test1=val1&test2=val2 but got %s", result)
@@ -27,7 +27,7 @@ func TestGetWeatherdata(t *testing.T) {
 }
 
 func TestGetAllEvents(t *testing.T) {
-	result, err := getAllEvents()
+	result, err := GetAllExternalEvents()
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
