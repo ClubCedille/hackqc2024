@@ -7,11 +7,68 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Event Help List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
 </head>
+
+<!--
+    type Event struct {
+	Id          string              `clover:"_id"`
+	DangerLevel DangerLevel         `clover:"danger_level"`
+	UrgencyType UrgencyType         `clover:"urgency_type"`
+	MapObject   mapobject.MapObject `clover:"map_object"`
+}
+-->
+
+<!--
+    type MapObject struct {
+	Coordinates string    `clover:"coordinates"` //GeoJSON: Point
+	Polygon     string    `clover:"polygon"`     //GeoJSON: Polygon
+	Name        string    `clover:"name"`
+	Description string    `clover:"description"`
+	Category    string    `clover:"category"`
+	Tags        []string  `clover:"tags"`
+	Date        time.Time `clover:"date"`
+	AccountId   string    `clover:"account_id"`
+}
+-->
 
 <body>
     <h1>Event Help List</h1>
-    <!---->
+    <!-- Table, rows are Event from database -->
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Coordinates</th>
+            <th>Urgency</th>
+            <th>Danger Level</th>
+        </tr>
+    {{ range .Events }}
+        <tr>
+            <td>{{ .MapObject.Name }}</td>
+            <td>{{ .MapObject.Description }}</td>
+            <td>{{ .MapObject.Date }}</td>
+            <td>{{ .MapObject.Category }}</td>
+            <td>{{ .MapObject.Coordinates }}</td>
+            <td>{{ .GetUrgencyTypeString }}</td>
+            <td>{{ .GetDangerLevelString }}</td>
+        </tr>
+    {{ end }}
+    </table>
+    <table>
 </body>
 
 </html>
