@@ -41,3 +41,30 @@ func InitDatabase() (*clover.DB, error) {
 
 	return db, nil
 }
+
+func ExportDatabase(db *clover.DB) error {
+	db.ExportCollection(AccountCollection, "account.json")
+	db.ExportCollection(EventCollection, "event.json")
+	db.ExportCollection(HelpCollection, "help.json")
+
+	return nil
+}
+
+func ImportDatabase(db *clover.DB) error {
+	err := db.ImportCollection("account.json", AccountCollection)
+	if err != nil {
+		return err
+	}
+
+	err = db.ImportCollection("event.json", EventCollection)
+	if err != nil {
+		return err
+	}
+
+	err = db.ImportCollection("help.json", HelpCollection)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
