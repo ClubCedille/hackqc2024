@@ -41,6 +41,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.EventHelpPage(c, db)
 	})
 
+	r.GET("/eventCards", func(c *gin.Context) {
+		pages.EventsPage(c, db)
+	})
+
 	r.POST("/create-event", func(c *gin.Context) {
 		pages.CreateEvent(c, db)
 	})

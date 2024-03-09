@@ -37,9 +37,22 @@ func (event *Event) GetUrgencyTypeString() string {
 	case Futur:
 		return "Futur"
 	case Present:
-		return "Present"
+		return "Présent"
 	case Past:
-		return "Past"
+		return "Passé"
+	default:
+		return ""
+	}
+}
+
+func (event *Event) GetUrgencyColor() string {
+	switch event.UrgencyType {
+	case Futur:
+		return "orange"
+	case Present:
+		return "red"
+	case Past:
+		return "green"
 	default:
 		return ""
 	}
@@ -48,11 +61,54 @@ func (event *Event) GetUrgencyTypeString() string {
 func (event *Event) GetDangerLevelString() string {
 	switch event.DangerLevel {
 	case High:
-		return "High"
+		return "Élevé"
 	case Medium:
-		return "Medium"
+		return "Modéré"
 	case Low:
-		return "Low"
+		return "Faible"
+	default:
+		return ""
+	}
+}
+
+func (event *Event) GetDangerColor() string {
+	switch event.DangerLevel {
+	case High:
+		return "red"
+	case Medium:
+		return "orange"
+	case Low:
+		return "green"
+	default:
+		return ""
+	}
+}
+
+func (event *Event) GetCategoryColor() string {
+	switch event.MapObject.Category {
+	case "Pluie":
+		return "blue"
+	case "Neige":
+		return "light-gray"
+	case "Vent":
+		return "gray"
+	case "Onde de tempête":
+		return "purple"
+	default:
+		return "light-gray"
+	}
+}
+
+func (event *Event) GetCategoryEmoji() string {
+	switch event.MapObject.Category {
+	case "Pluie":
+		return "🌧️"
+	case "Neige":
+		return "❄️"
+	case "Vent":
+		return "💨"
+	case "Onde de tempête":
+		return "🌊"
 	default:
 		return ""
 	}

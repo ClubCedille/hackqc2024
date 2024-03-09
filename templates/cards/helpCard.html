@@ -1,7 +1,40 @@
-{{ define "event/helpCard.html" }}
-<html lang="en">
-    <div>
-        {{.MapOpbject.Name}}
+{{ define "cards/helpCard.html" }}
+
+<head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+</head>
+{{range .HelpCards}}
+<div class="w3-card-4 w3-light-gray w3-container w3-margin" style="max-width: 500px">
+    <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
+        <span class="category w3-round-large w3-red w3-padding-small">
+            {{.MapObject.Category}}
+        </span>
+        <h2 class="name" style="margin-top: 0;">{{.MapObject.Name}}</h2>
     </div>
+    <div class="w3-container w3-margin-bottom">
+        <span class="date">Ajouté le: {{.MapObject.Date}}</span>
+    </div>
+    <div class="w3-container w3-margin-bottom">
+        <b class="status">Status: </b><span class="w3-round-large w3-green w3-padding-small">{{.NeedHelp}}</span>
+    </div>
+    <div class="description w3-container">
+        <b>Description:</b>
+        <p class="w3-container">
+            {{.MapObject.Description}}
+        </p>
+    </div>
+    <div class="howToHelp w3-container">
+        <b>Comment contribuer: </b>
+        <p class="w3-container">{{.HowToHelp}}</p>
+    </div>
+    <div class="HowToUseHelp w3-container">
+        <b>Obtenir de l'aide: </b>
+        <p class="w3-container">{{.HowToUseHelp}}</p>
+    </div>
+</div>
+
+</html>
+{{ end }}
+
 </html>
 {{ end }}

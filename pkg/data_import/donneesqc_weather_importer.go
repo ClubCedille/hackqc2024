@@ -110,9 +110,9 @@ type WeatherFeatureCollection struct {
 }
 
 type WeatherFeature struct {
-	FeatureType string            `json:"type"`
-	Properties  WeatherProperties `json:"properties"`
-	Geometry    Geometry          `json:"geometry"`
+	FeatureType string             `json:"type"`
+	Properties  WeatherProperties  `json:"properties"`
+	Geometry    mapobject.Geometry `json:"geometry"`
 }
 
 func (feature *WeatherFeature) ToEvent() (event.Event, error) {
@@ -126,8 +126,7 @@ func (feature *WeatherFeature) ToEvent() (event.Event, error) {
 		UrgencyType: ParseUrgency(feature.Properties.Urgence),
 		ExternalId:  feature.Properties.Id_alerte,
 		MapObject: mapobject.MapObject{
-			Coordinates: FormatCoordinates(feature.Geometry.Coordinates),
-			Polygon:     "",
+			Geometry:    feature.Geometry,
 			Name:        feature.Properties.Nom,
 			Description: feature.Properties.Description,
 			Category:    feature.Properties.Type,
