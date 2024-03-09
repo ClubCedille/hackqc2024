@@ -10,7 +10,9 @@
         buildInputs = [
           pkgs.go_1_22
           pkgs.air
+          pkgs.delve
         ];
+        hardeningDisable = [ "fortify" ];
       };
     };
 }

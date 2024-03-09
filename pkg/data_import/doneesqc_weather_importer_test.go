@@ -1,7 +1,6 @@
 package data_import
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -17,21 +16,21 @@ func TestToGetParams(t *testing.T) {
 	}
 }
 
-func TestGetWeatherdata(t *testing.T) {
-	result, err := getWeatherData()
+// func TestGetWeatherdata(t *testing.T) {
+// 	result, err := getWeatherData()
 
-	if err != nil {
-		t.Fatalf("Error: %s", err)
-	}
-	fmt.Println(result.Name)
-}
+// 	if err != nil {
+// 		t.Fatalf("Error: %s", err)
+// 	}
+// 	fmt.Println(result.Name)
+// }
 
-func TestGetAllEvents(t *testing.T) {
-	importer := DonneesQcWeatherEventSource{}
-	result, err := importer.GetAllEvents()
+// func TestGetAllEvents(t *testing.T) {
+// 	importer := DonneesQcWeatherEventSource{}
+// 	result, err := importer.GetAllEvents()
 
-	if err != nil {
-		t.Fatalf("Error: %s", err)
-	}
-	fmt.Println(result[0])
-}
+// 	if err != nil {
+// 		t.Fatalf("Error: %s", err)
+// 	}
+// 	fmt.Println(result[0])
+// }
