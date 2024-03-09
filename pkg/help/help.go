@@ -10,12 +10,12 @@ import (
 )
 
 type Help struct {
-	Id           string              `clover:"_id"`
-	MapObject    mapobject.MapObject `clover:"map_object"`
-	ContactInfos string              `clover:"contact_infos"`
-	NeedHelp     bool                `clover:"need_help"`
-	HowToHelp    string              `clover:"how_to_help"`
-	HowToUseHelp string              `clover:"how_to_use_help"`
+	Id           string              `json:"_id" clover:"_id"`
+	MapObject    mapobject.MapObject `json:"map_object" clover:"map_object"`
+	ContactInfos string              `json:"contact_infos" clover:"contact_infos"`
+	NeedHelp     bool                `json:"need_help" clover:"need_help"`
+	HowToHelp    string              `json:"how_to_help" clover:"how_to_help"`
+	HowToUseHelp string              `json:"how_to_use_help" clover:"how_to_use_help"`
 }
 
 func GetHelpById(db *clover.DB, helpId string) (Help, error) {

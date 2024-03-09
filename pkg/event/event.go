@@ -25,7 +25,7 @@ const (
 )
 
 type Event struct {
-	Id          string              `json:"id" clover:"_id"`
+	Id          string              `json:"_id" clover:"_id"`
 	DangerLevel DangerLevel         `json:"danger_level" clover:"danger_level"`
 	UrgencyType UrgencyType         `json:"urgency_type" clover:"urgency_type"`
 	MapObject   mapobject.MapObject `json:"map_object" clover:"map_object"`
