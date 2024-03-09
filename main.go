@@ -33,12 +33,6 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	//TODO: DON'T PUSH
-	events, _ := event.GetAllEvents(db)
-	for _, e := range events {
-		fmt.Println(e.MapObject.Name)
-	}
-
 	generateSeedData(db)
 
 	r := gin.Default()
