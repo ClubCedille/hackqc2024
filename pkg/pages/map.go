@@ -76,7 +76,9 @@ func retrieveMapItemsJson(db *clover.DB) (string, error) {
 					Properties: v.MapObject,
 				},
 				Style: Style{
-					Color: "green",
+					Color:    "green",
+					Icon:     "location_on",
+					IconSize: "xxlarge",
 				},
 			}
 		}
