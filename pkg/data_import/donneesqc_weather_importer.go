@@ -71,7 +71,7 @@ func parseWeather(weather *WeatherFeatureCollection) []event.Event {
 }
 
 func searchWeatherData(body string) (*WeatherFeatureCollection, error) {
-	result, err := MakeWFSPostRequest("GetFeature", body, map[string]string{})
+	result, err := MakeWFSPostRequest(body, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -88,6 +88,7 @@ func searchWeatherData(body string) (*WeatherFeatureCollection, error) {
 func getWeatherData(params map[string]string) (*WeatherFeatureCollection, error) {
 	params["typeNames"] = "msp_vigilance_crue_publique_v_type"
 	params["outputFormat"] = "geojson"
+	params["srsName"] = "EPSG:4326"
 
 	result, err := MakeWFSGetRequest("GetFeature", params)
 	if err != nil {
@@ -153,7 +154,7 @@ type WeatherProperties struct {
 // Sue me
 func createDateFilterXml(date time.Time) string {
 	formattedDate := date.Format(DQC_TIME_FMT)
-	return fmt.Sprintf("<?xml version=\"1.0\"?><wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:sf=\"http://www.openplans.org/spearfish\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd         http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd\" service=\"WFS\" version=\"2.0.0\" outputFormat=\"geojson\"><wfs:Query typeNames=\"msp_vigilance_crue_publique_v_type\"><fes:Filter><PropertyIsGreaterThan><ValueReference>%s</ValueReference><Literal>%s</Literal></PropertyIsGreaterThan></fes:Filter></wfs:Query></wfs:GetFeature>",
+	return fmt.Sprintf("<?xml version=\"1.0\"?><wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:sf=\"http://www.openplans.org/spearfish\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd         http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd\" service=\"WFS\" version=\"2.0.0\" outputFormat=\"geojson\"><wfs:Query typeNames=\"msp_vigilance_crue_publique_v_type\" srsName=\"EPSG:4326\"><fes:Filter><PropertyIsGreaterThan><ValueReference>%s</ValueReference><Literal>%s</Literal></PropertyIsGreaterThan></fes:Filter></wfs:Query></wfs:GetFeature>",
 		"date_mise_a_jour",
 		formattedDate,
 	)

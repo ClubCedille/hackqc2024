@@ -9,7 +9,7 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 )
 
-const DQC_VERSION = "1.1.0"
+const DQC_VERSION = "2.0.0"
 const DQC_BASE_URL = "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi"
 const DQC_TIME_FMT = "2006/01/02 15:04"
 
@@ -67,20 +67,20 @@ func MakeWFSGetRequest(request string, params map[string]string) ([]byte, error)
 	return body, err
 }
 
-func MakeWFSPostRequest(request string, body string, params map[string]string) ([]byte, error) {
+func MakeWFSPostRequest(body string, params map[string]string) ([]byte, error) {
 	params["version"] = DQC_VERSION
-	params["service"] = "wfs"
-	params["request"] = request
 
 	queryString := ToGetParams(params)
-	request = DQC_BASE_URL + queryString
+	request := DQC_BASE_URL + queryString
 	resp, err := http.Post(request, "application/xml", bytes.NewBuffer([]byte(body)))
 
 	if err != nil || resp.StatusCode != 200 {
 		return nil, err
 	}
 
+	fmt.Println(string(body))
 	resBody, err := io.ReadAll(resp.Body)
+	fmt.Println(string(resBody))
 	if err != nil {
 		return nil, err
 	}
