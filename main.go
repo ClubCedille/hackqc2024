@@ -10,7 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
-	external_data "github.com/ClubCedille/hackqc2024/pkg/data_importer"
+	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 )
@@ -62,7 +62,7 @@ func main() {
 }
 
 func initialLoadEvents(db *clover.DB) error {
-	events, err := external_data.InitialLoad()
+	events, err := data_import.InitialLoad()
 	if err != nil {
 		return err
 	}
@@ -112,14 +112,14 @@ func generateSeedData(db *clover.DB) {
 		log.Fatalf(err.Error())
 	}
 
-	accountExists, err := account.AccountExistsById(db, external_data.SYSTEM_USER_GUID)
+	accountExists, err := account.AccountExistsById(db, data_import.SYSTEM_USER_GUID)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
 	if !accountExists {
 		err = account.CreateAccount(db, account.Account{
-			Id:        external_data.SYSTEM_USER_GUID,
+			Id:        data_import.SYSTEM_USER_GUID,
 			UserName:  "system",
 			FirstName: "system",
 			LastName:  "system",
