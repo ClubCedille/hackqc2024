@@ -67,13 +67,20 @@ func GetEventById(conn *clover.DB, eventId string) (Event, error) {
 	}, nil
 }
 
-func GetAllEvents(conn *clover.DB) ([]*document.Document, error) {
+func GetAllEvents(conn *clover.DB) ([]*Event, error) {
 	docs, err := conn.FindAll(query.NewQuery(database.EventCollection))
 	if err != nil {
-		return []*document.Document{}, err
+		return nil, err
 	}
 
-	return docs, nil
+	var events []*Event
+	for _, d := range docs {
+		var event Event
+		d.Unmarshal(&event)
+		events = append(events, &event)
+	}
+
+	return events, nil
 }
 
 func CreateEvent(conn *clover.DB, event Event) error {
