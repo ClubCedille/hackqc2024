@@ -89,13 +89,28 @@ func (event *Event) GetCategoryColor() string {
 	case "Pluie":
 		return "blue"
 	case "Neige":
-		return "light-blue"
+		return "light-gray"
 	case "Vent":
 		return "gray"
 	case "Onde de tempête":
 		return "purple"
 	default:
-		return "white"
+		return "light-gray"
+	}
+}
+
+func (event *Event) GetCategoryEmoji() string {
+	switch event.MapObject.Category {
+	case "Pluie":
+		return "🌧️"
+	case "Neige":
+		return "❄️"
+	case "Vent":
+		return "💨"
+	case "Onde de tempête":
+		return "🌊"
+	default:
+		return ""
 	}
 }
 

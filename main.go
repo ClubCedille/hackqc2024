@@ -140,8 +140,7 @@ func generateSeedData(db *clover.DB) {
 		Id: uuid.NewV4().String(),
 		MapObject: mapobject.MapObject{
 			AccountId:   acc.Id,
-			Coordinates: "test coordinates",
-			Polygon:     "test polygon",
+			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{45.5017, -73.5673}},
 			Name:        "Test help",
 			Description: "This is a test help object",
 			Category:    "Test",
