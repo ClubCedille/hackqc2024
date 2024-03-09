@@ -13,6 +13,8 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
+	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 )
 
 type Request struct {
@@ -132,6 +134,28 @@ func generateSeedData(db *clover.DB) {
 
 	acc := account.Account{}
 	docs.Unmarshal(&acc)
+
+	// Create test help object
+	err = help.CreateHelp(db, help.Help{
+		Id: uuid.NewV4().String(),
+		MapObject: mapobject.MapObject{
+			AccountId:   acc.Id,
+			Coordinates: "test coordinates",
+			Polygon:     "test polygon",
+			Name:        "Test help",
+			Description: "This is a test help object",
+			Category:    "Test",
+			Tags:        []string{"test", "help"},
+		},
+		ContactInfos: "test contact infos",
+		NeedHelp:     true,
+		HowToHelp:    "test how to help",
+		HowToUseHelp: "test how to use help",
+	})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 }
 
 // Temp example of fetching from données Québec
