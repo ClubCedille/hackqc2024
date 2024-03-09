@@ -2,9 +2,11 @@ package event
 
 import (
 	"github.com/ClubCedille/hackqc2024/pkg/database"
+	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/document"
 	"github.com/ostafen/clover/v2/query"
+	uuid "github.com/satori/go.uuid"
 )
 
 type UrgencyType int
@@ -23,9 +25,10 @@ const (
 )
 
 type Event struct {
-	DangerLevel DangerLevel `clover:"danger_level"`
-	UrgencyType UrgencyType `clover:"urgency_type"`
-	MapObjectId string      `clover:"map_object_id"`
+	Id          string              `clover:"_id"`
+	DangerLevel DangerLevel         `clover:"danger_level"`
+	UrgencyType UrgencyType         `clover:"urgency_type"`
+	MapObject   mapobject.MapObject `clover:"map_object"`
 }
 
 func (event *Event) GetUrgencyTypeString() string {
@@ -55,28 +58,35 @@ func (event *Event) GetDangerLevelString() string {
 }
 
 func GetEventById(conn *clover.DB, eventId string) (Event, error) {
-	docs, err := conn.FindAll(query.NewQuery(database.EventCollection).Where(query.Field("_id").Eq(eventId)))
+	docs, err := conn.FindFirst(query.NewQuery(database.EventCollection).Where(query.Field("_id").Eq(eventId)))
 	if err != nil {
 		return Event{}, err
 	}
 
-	return Event{
-		DangerLevel: DangerLevel(docs[0].Get("danger_level").(int)),
-		UrgencyType: UrgencyType(docs[0].Get("urgency_type").(int)),
-		MapObjectId: docs[0].Get("map_object_id").(string),
-	}, nil
+	event := Event{}
+	docs.Unmarshal(&event)
+
+	return event, nil
 }
 
-func GetAllEvents(conn *clover.DB) ([]*document.Document, error) {
+func GetAllEvents(conn *clover.DB) ([]*Event, error) {
 	docs, err := conn.FindAll(query.NewQuery(database.EventCollection))
 	if err != nil {
-		return []*document.Document{}, err
+		return nil, err
 	}
 
-	return docs, nil
+	var events []*Event
+	for _, d := range docs {
+		var event Event
+		d.Unmarshal(&event)
+		events = append(events, &event)
+	}
+
+	return events, nil
 }
 
 func CreateEvent(conn *clover.DB, event Event) error {
+	event.Id = uuid.NewV4().String()
 	eventDoc := document.NewDocumentOf(event)
 	err := conn.Insert(database.EventCollection, eventDoc)
 	if err != nil {
@@ -90,6 +100,10 @@ func UpdateEvent(conn *clover.DB, event Event) error {
 	return nil
 }
 
-func DeleteEvent(conn *clover.DB, event Event) error {
-	return nil
+func DeleteEventById(conn *clover.DB, eventId string) (bool, error) {
+	err := conn.DeleteById(database.EventCollection, eventId)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
