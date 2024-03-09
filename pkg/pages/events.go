@@ -6,6 +6,7 @@ import (
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/query"
@@ -36,5 +37,24 @@ func HelpPage(c *gin.Context, db *clover.DB) {
 }
 
 func EventHelpPage(c *gin.Context, db *clover.DB) {
-	c.HTML(http.StatusOK, "list/index.html", nil)
+	events, err := event.GetAllEvents(db)
+
+	if err != nil {
+		log.Println("Error fetching events:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	helps, err := help.GetAllHelps(db)
+
+	if err != nil {
+		log.Println("Error fetching helps:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "list/index.html", gin.H{
+		"Events": events,
+		"Helps":  helps,
+	})
 }
