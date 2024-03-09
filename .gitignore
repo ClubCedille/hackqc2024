@@ -27,3 +27,4 @@ tmp/
 #project-specific
 hackqc-preproject
 *-db/
+test.json
