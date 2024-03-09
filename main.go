@@ -10,6 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
+	external_data "github.com/ClubCedille/hackqc2024/pkg/data_importer"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -28,6 +29,12 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
+	// Initial load
+	err = initialLoadEvents(db)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	// Create an account
 	err = account.CreateAccount(db, account.Account{
 		Id:        uuid.NewV4().String(),
@@ -35,6 +42,17 @@ func main() {
 		FirstName: "son",
 		LastName:  "oflope",
 		Email:     "sonoflope@allo.com",
+	})
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	err = account.CreateAccount(db, account.Account{
+		Id:        external_data.SYSTEM_USER_GUID,
+		UserName:  "system",
+		FirstName: "system",
+		LastName:  "system",
+		Email:     "system@allo.com",
 	})
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -93,6 +111,22 @@ func main() {
 			return
 		}
 	}(db)
+}
+
+func initialLoadEvents(db *clover.DB) error {
+	events, err := external_data.InitialLoad()
+	if err != nil {
+		return err
+	}
+
+	for _, e := range events {
+		err = event.CreateEvent(db, e)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Temp example of fetching from données Québec

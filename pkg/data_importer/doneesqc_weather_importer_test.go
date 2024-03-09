@@ -27,7 +27,8 @@ func TestGetWeatherdata(t *testing.T) {
 }
 
 func TestGetAllEvents(t *testing.T) {
-	result, err := GetAllExternalEvents()
+	importer := DonneesQcWeatherEventSource{}
+	result, err := importer.GetAllEvents()
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)

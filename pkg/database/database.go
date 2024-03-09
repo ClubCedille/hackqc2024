@@ -36,7 +36,9 @@ func InitDatabase() (*clover.DB, error) {
 	}
 
 	createCollectionIfNotExists(AccountCollection, db)
-	createCollectionIfNotExists(EventCollection, db)
+	//We reload the events at startup for now
+	db.DropCollection(EventCollection)
+	db.CreateCollection(EventCollection)
 	createCollectionIfNotExists(HelpCollection, db)
 
 	return db, nil
