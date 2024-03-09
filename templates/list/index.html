@@ -11,16 +11,7 @@
 
 <body>
     <h1>Event Help List</h1>
-    <!-- HTMX flexbox, request return HTML helpCard or eventCard -->
-    <div style="display: flex; flex-wrap: wrap;" hx-get="/events-help" hx-target="#help-list" hx-swap="outerHTML">
-
-        <div id="help-list">
-            <!-- Event Cards -->
-            <div hx-get="/events-help" hx-target="#help-list" hx-swap="outerHTML"></div>
-            <!-- Help Cards -->
-            <div hx-get="/events-help" hx-target="#help-list" hx-swap="outerHTML"></div>
-        </div>
-    </div>
+    <!---->
 </body>
 
 </html>
