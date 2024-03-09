@@ -96,13 +96,12 @@ func main() {
 	r.LoadHTMLGlob("templates/*.html")
 	r.LoadHTMLGlob("templates/**/*.html")
 
+	registerRoutes(r, db)
 	err = r.Run()
 	if err != nil {
 		fmt.Print("Failed to run")
 		return
 	}
-
-	registerRoutes(r, db)
 
 	defer func(db *clover.DB) {
 		err := db.Close()
