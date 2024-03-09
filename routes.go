@@ -12,7 +12,6 @@ import (
 )
 
 func registerRoutes(r *gin.Engine, db *clover.DB) {
-
 	r.GET("/", func(c *gin.Context) {
 		dt := time.Now()
 
@@ -37,12 +36,47 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.EventHelpPage(c, db)
 	})
 
+	// Events
+	r.GET("/events", func(c *gin.Context) {
+		pages.EventHelpPage(c, db)
+	})
+
+	r.POST("/create-event", func(c *gin.Context) {
+		pages.CreateEvent(c, db)
+	})
+
+	r.POST("/update-event", func(c *gin.Context) {
+		pages.UpdateEvent(c, db)
+	})
+
+	r.DELETE("/delete-event", func(c *gin.Context) {
+		pages.DeleteEvent(c, db)
+	})
+
+	// Help
 	r.GET("/helps", func(c *gin.Context) {
 		pages.HelpPage(c, db)
 	})
 
-	r.GET("/events", func(c *gin.Context) {
-		pages.EventHelpPage(c, db)
+	r.POST("/create-help", func(c *gin.Context) {
+		pages.CreateHelp(c, db)
+	})
+
+	r.POST("/update-help", func(c *gin.Context) {
+		pages.UpdateHelp(c, db)
+	})
+
+	r.DELETE("/delete-help", func(c *gin.Context) {
+		pages.DeleteHelp(c, db)
+	})
+
+	// Account
+	r.POST("/create-account", func(c *gin.Context) {
+		pages.CreateAccount(c, db)
+	})
+
+	r.POST("/update-account", func(c *gin.Context) {
+		pages.UpdateAccount(c, db)
 	})
 
 	r.GET("/events/search", func(c *gin.Context) {

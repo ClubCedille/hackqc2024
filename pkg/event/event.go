@@ -25,10 +25,10 @@ const (
 )
 
 type Event struct {
-	Id          string              `clover:"_id"`
-	DangerLevel DangerLevel         `clover:"danger_level"`
-	UrgencyType UrgencyType         `clover:"urgency_type"`
-	MapObject   mapobject.MapObject `clover:"map_object"`
+	Id          string              `json:"_id" clover:"_id"`
+	DangerLevel DangerLevel         `json:"danger_level" clover:"danger_level"`
+	UrgencyType UrgencyType         `json:"urgency_type" clover:"urgency_type"`
+	MapObject   mapobject.MapObject `json:"map_object" clover:"map_object"`
 }
 
 func (event *Event) GetUrgencyTypeString() string {
