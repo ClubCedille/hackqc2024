@@ -65,7 +65,7 @@ func SearchEventHelpPage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	events, err := event.GetEventFromDocuments(docs)
+	events, _ := event.GetEventFromDocuments(docs)
 
 	c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
 		"Events": events,
