@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
+
+	"github.com/ostafen/clover/v2"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2/query"
 )
 
@@ -82,14 +86,31 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	db.ExportCollection(database.HackQcCollection, "test.json")
+	err = db.ExportCollection(database.HackQcCollection, "test.json")
+	if err != nil {
+		fmt.Print("Failed to export database to JSON")
+		return
+	}
 
-	// r := gin.Default()
-	// r.LoadHTMLGlob("templates/*")
+	r := gin.Default()
+	r.LoadHTMLGlob("templates/*.html")
+	r.LoadHTMLGlob("templates/**/*.html")
 
-	// r.Run()
+	err = r.Run()
+	if err != nil {
+		fmt.Print("Failed to run")
+		return
+	}
 
-	defer db.Close()
+	registerRoutes(r, db)
+
+	defer func(db *clover.DB) {
+		err := db.Close()
+		if err != nil {
+			fmt.Print("Failed to close CloverDB during program exit!")
+			return
+		}
+	}(db)
 }
 
 // Temp example of fetching from données Québec
