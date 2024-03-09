@@ -32,13 +32,23 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.MapPage(c, db)
 	})
 
-	r.GET("/events-help", func(c *gin.Context) {
-		pages.EventHelpPage(c, db)
+	// Event-Help Grid
+	r.GET("/grid", func(c *gin.Context) {
+		pages.GridPage(c, db)
+	})
+
+	r.GET("/grid/search", func(c *gin.Context) {
+		pages.GridSearch(c, db)
 	})
 
 	// Events
-	r.GET("/events", func(c *gin.Context) {
-		pages.EventHelpPage(c, db)
+
+	r.GET("/events/table", func(c *gin.Context) {
+		pages.EventTablePage(c, db)
+	})
+
+	r.GET("/events/table/search", func(c *gin.Context) {
+		pages.SearchEventTable(c, db)
 	})
 
 	r.GET("/eventCards", func(c *gin.Context) {
@@ -83,9 +93,6 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.UpdateAccount(c, db)
 	})
 
-	r.GET("/events/search", func(c *gin.Context) {
-		pages.SearchEventHelpPage(c, db)
-	})
 }
 
 // Temp example of fetching from données Québec
