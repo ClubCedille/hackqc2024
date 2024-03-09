@@ -48,7 +48,7 @@ func EventHelpPage(c *gin.Context, db *clover.DB) {
 func CreateEvent(c *gin.Context, db *clover.DB) {
 	var data event.Event
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -66,7 +66,7 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 func UpdateEvent(c *gin.Context, db *clover.DB) {
 	var data event.Event
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -84,7 +84,7 @@ func UpdateEvent(c *gin.Context, db *clover.DB) {
 func DeleteEvent(c *gin.Context, db *clover.DB) {
 	var data event.Event
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

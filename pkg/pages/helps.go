@@ -26,7 +26,7 @@ func HelpPage(c *gin.Context, db *clover.DB) {
 func CreateHelp(c *gin.Context, db *clover.DB) {
 	var data help.Help
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -44,7 +44,7 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 func UpdateHelp(c *gin.Context, db *clover.DB) {
 	var data help.Help
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -62,7 +62,7 @@ func UpdateHelp(c *gin.Context, db *clover.DB) {
 func DeleteHelp(c *gin.Context, db *clover.DB) {
 	var data help.Help
 	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON data"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
