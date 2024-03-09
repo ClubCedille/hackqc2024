@@ -13,7 +13,7 @@ const MapObjectCollection = "MapObjectCollection"
 const EventCollection = "EventCollection"
 const HelpCollection = "HelpCollection"
 
-func CreateCollectionIfNotExists(collectionName string, db *clover.DB) error {
+func createCollectionIfNotExists(collectionName string, db *clover.DB) error {
 	exists, err := db.HasCollection(collectionName)
 	if err != nil {
 		return err
@@ -36,10 +36,10 @@ func InitDatabase() (*clover.DB, error) {
 		return nil, err
 	}
 
-	CreateCollectionIfNotExists(AccountCollection, db)
-	CreateCollectionIfNotExists(MapObjectCollection, db)
-	CreateCollectionIfNotExists(EventCollection, db)
-	CreateCollectionIfNotExists(HelpCollection, db)
+	createCollectionIfNotExists(AccountCollection, db)
+	createCollectionIfNotExists(MapObjectCollection, db)
+	createCollectionIfNotExists(EventCollection, db)
+	createCollectionIfNotExists(HelpCollection, db)
 
 	return db, nil
 }
