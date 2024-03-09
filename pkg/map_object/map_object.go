@@ -21,7 +21,7 @@ type MapObject struct {
 
 func CreateMapObject(conn *clover.DB, mapObject MapObject) error {
 	mapObjectDoc := document.NewDocumentOf(mapObject)
-	err := conn.Insert(database.HackQcCollection, mapObjectDoc)
+	err := conn.Insert(database.MapObjectCollection, mapObjectDoc)
 	if err != nil {
 		return err
 	}

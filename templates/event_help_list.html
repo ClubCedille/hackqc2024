@@ -1,11 +1,24 @@
 <html lang="en">
-    <head>
-        <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <title>Event Help</title>
-        </head>
-    <body>
-        
-    </body>
+
+<head>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Event Help List</title>
+</head>
+
+<body>
+    <h1>Event Help List</h1>
+    <!-- HTMX flexbox, request return HTML helpCard or eventCard -->
+    <div style="display: flex; flex-wrap: wrap;" hx-get="/events-help" hx-target="#help-list" hx-swap="outerHTML">
+
+        <div id="help-list">
+            <!-- Event Cards -->
+            <div hx-get="/events-help" hx-target="#help-list" hx-swap="outerHTML"></div>
+            <!-- Help Cards -->
+            <div hx-get="/events-help" hx-target="#help-list" hx-swap="outerHTML"></div>
+        </div>
+    </div>
+</body>
+
 </html>

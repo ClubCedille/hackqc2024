@@ -15,7 +15,7 @@ type Account struct {
 
 func CreateAccount(conn *clover.DB, account Account) error {
 	accountDoc := document.NewDocumentOf(account)
-	err := conn.Insert(database.HackQcCollection, accountDoc)
+	err := conn.Insert(database.AccountCollection, accountDoc)
 	if err != nil {
 		return err
 	}

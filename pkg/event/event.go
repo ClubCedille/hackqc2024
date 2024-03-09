@@ -29,7 +29,7 @@ type Event struct {
 
 func CreateEvent(conn *clover.DB, event Event) error {
 	eventDoc := document.NewDocumentOf(event)
-	err := conn.Insert(database.HackQcCollection, eventDoc)
+	err := conn.Insert(database.EventCollection, eventDoc)
 	if err != nil {
 		return err
 	}

@@ -39,7 +39,7 @@ func main() {
 	}
 
 	// Fetch the new account id
-	docs, err := db.FindAll(query.NewQuery(database.HackQcCollection).Where(query.Field("user_name").Eq("sonoflope")))
+	docs, err := db.FindAll(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq("sonoflope")))
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -65,7 +65,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	docs, err = db.FindAll(query.NewQuery(database.HackQcCollection).Where(query.Field("name").Eq("this is a test")))
+	docs, err = db.FindAll(query.NewQuery(database.MapObjectCollection).Where(query.Field("name").Eq("this is a test")))
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -84,12 +84,6 @@ func main() {
 	})
 	if err != nil {
 		log.Fatalf(err.Error())
-	}
-
-	err = db.ExportCollection(database.HackQcCollection, "test.json")
-	if err != nil {
-		fmt.Print("Failed to export database to JSON")
-		return
 	}
 
 	r := gin.Default()
