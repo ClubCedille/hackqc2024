@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -69,7 +69,7 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
         HowToUseHelp: howToUseHelp,
         EventId:      eventId,
         MapObject: mapobject.MapObject{
-            AccountId:   data_import.SYSTEM_USER_GUID,
+            AccountId:   session.ActiveSession.AccountId,
             Name:        eventName,
             Description: eventDescription,
             Category:    eventCategory,
