@@ -71,5 +71,4 @@ func GridSearch(c *gin.Context, db *clover.DB) {
 		"Events": events,
 		"Helps":  helps,
 	})
-	return
 }
