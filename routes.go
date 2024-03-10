@@ -97,6 +97,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.Login(c, db)
 	})
 
+	r.POST("/logout", func(c *gin.Context) {
+		pages.Logout(c)
+	})
+
 	r.GET("/submit-events", func(c *gin.Context) {
 		pages.SubmitEvents(c, db)
 	})

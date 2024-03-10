@@ -2,7 +2,6 @@ package pages
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
@@ -238,7 +237,7 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"ActiveSession": fmt.Sprintf("Bonjour %s !", session.ActiveSession.UserName),
+		"ActiveSession": session.ActiveSession.UserName,
 		"MapItemsJson":  string(jsonValue),
 	})
 }

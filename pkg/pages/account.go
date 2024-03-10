@@ -73,6 +73,11 @@ func Login(c *gin.Context, db *clover.DB) {
 	}
 }
 
+func Logout(c *gin.Context) {
+	session.ClearActiveSession(c)
+	c.Redirect(http.StatusSeeOther, "/map")
+}
+
 func UpdateAccount(c *gin.Context, db *clover.DB) {
 	var data account.Account
 	if err := c.ShouldBindJSON(&data); err != nil {
