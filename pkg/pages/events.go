@@ -44,8 +44,9 @@ func SearchEventTable(c *gin.Context, db *clover.DB) {
 	searchTerm := c.Query("search")
 
 	if searchTerm == "" {
-		c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
-			"Events": []*event.Event{},
+		allEvents, _ := event.GetAllEvents(db)
+		c.HTML(http.StatusOK, "components/event-table", gin.H{
+			"Events": allEvents,
 		})
 		return
 	}

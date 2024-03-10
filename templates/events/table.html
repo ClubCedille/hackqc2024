@@ -6,7 +6,7 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <title>Event Help List</title>
+    <title>Liste des événements d'urgence</title>
     <style>
         table {
             border-collapse: collapse;
@@ -23,9 +23,9 @@
 </head>
 
 <body>
-    <h1>Event Help List</h1>
+    <h1>Liste des événements d'urgence</h1>
 
-    {{ template "components/toolbar" . }}
+    {{ template "components/event-toolbar" . }}
 
     {{ template "components/event-table" . }}
 </body>
@@ -33,12 +33,12 @@
 </html>
 {{ end }}
 
-{{ define "components/toolbar" }}
+{{ define "components/event-toolbar" }}
 <div id="tool-bar" class="w3-bar w3-light-grey">
     <!-- search box-->
     <div class="w3-bar-item w3-left">
         <!-- search with HTMX, will return event_list_table.html -->
-        <input class="w3-input w3-border" name="search" type="search" placeholder="Search..." id="search-box"
+        <input class="w3-input w3-border" name="search" type="search" placeholder="Recherche..." id="search-box"
             hx-trigger="input changed delay:500ms, search" hx-indicator=".htmx-indicator" hx-get="/events/table/search"
             hx-target="#event-list" hx-swap="outerHTML">
     </div>
