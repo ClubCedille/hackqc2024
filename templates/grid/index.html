@@ -52,6 +52,9 @@
     {{ range .Events }}
         {{ template "cards/singleEventCard" . }}
     {{ end }}
+    {{ range .Helps }}
+        {{ template "cards/singleHelpCard" . }}
+    {{ end }}
 </div>
 {{ end}}
 
