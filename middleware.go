@@ -12,6 +12,7 @@ func AuthRequiredMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if session.ActiveSession.AccountId == "" {
 			c.Redirect(http.StatusSeeOther, "/login")
+			c.Abort()
 			return
 		}
 	}
