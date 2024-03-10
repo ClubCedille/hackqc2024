@@ -1,0 +1,15 @@
+{{ define "components/navbar" }}
+
+<div class="w3-bar w3-dark-grey">
+    <a href="/map" class="w3-bar-item w3-button w3-mobile">Carte</a>
+    <a href="/grid" class="w3-bar-item w3-button w3-mobile">Grille Evenement/Aide</a>
+    <div class="w3-dropdown-hover w3-mobile">
+        <button class="w3-button">Tableaux des données<i class="fa fa-caret-down"></i></button>
+        <div class="w3-dropdown-content w3-bar-block w3-dark-grey">
+            <a href="/events/table" class="w3-bar-item w3-button w3-mobile">Tableau d'evenements</a>
+            <a href="/helps/table" class="w3-bar-item w3-button w3-mobile">Tableau d'aide</a>
+        </div>
+    </div>
+</div>
+
+{{ end }}

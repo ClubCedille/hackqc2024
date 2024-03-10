@@ -4,7 +4,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
 	"github.com/gin-gonic/gin"
@@ -15,12 +14,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.Static("/static", "./templates/static")
 
 	r.GET("/", func(c *gin.Context) {
-		dt := time.Now()
-
-		c.HTML(http.StatusOK, "home/index.html", gin.H{
-			"Time": dt.Format("2006-01-02 15:04"),
-		})
-
+		c.Redirect(http.StatusSeeOther, "/map")
 	})
 
 	r.GET("/events-geojson", func(c *gin.Context) {
