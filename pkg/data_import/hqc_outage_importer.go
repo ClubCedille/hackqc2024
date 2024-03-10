@@ -2,6 +2,7 @@ package data_import
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,8 +32,45 @@ func (source HQCOutageEventSource) GetAllEvents() ([]event.Event, error) {
 
 // https://www.hydroquebec.com/documents-donnees/donnees-ouvertes/pannes-interruptions.html
 func (source HQCOutageEventSource) GetNewEventsFromDate(date time.Time) ([]event.Event, error) {
+	bisVersion, err := source.GetLatestBis()
+	if err != nil {
+		return nil, err
+	}
+
+	events, err := source.GetOutageEvents(bisVersion)
+	if err != nil {
+		return nil, err
+	}
+
+	err = source.GetOutageAreas(bisVersion)
+	if err != nil {
+		return nil, err
+	}
+
+	return events, nil
+}
+
+func (source HQCOutageEventSource) GetLatestBis() (string, error) {
 	//Première requête : obtenir la version à jour du fichier BIS (« time stamp »)
 	request := fmt.Sprintf("%s/bisversion.json", HQC_URL)
+	resp, err := http.Get(request)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	bisVersion := strings.Trim(string(body), "\"")
+
+	return bisVersion, nil
+}
+
+func (source HQCOutageEventSource) GetOutageEvents(bisVersion string) ([]event.Event, error) {
+	//Deuxième requête : obtenir un fichier JSON contenant la liste des pannes.
+	request := fmt.Sprintf("%s/bismarkers%s.json", HQC_URL, bisVersion)
 	resp, err := http.Get(request)
 	if err != nil {
 		return nil, err
@@ -40,20 +78,6 @@ func (source HQCOutageEventSource) GetNewEventsFromDate(date time.Time) ([]event
 
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	bisVersion := strings.Trim(string(body), "\"")
-
-	//Deuxième requête : obtenir un fichier JSON contenant la liste des pannes.
-	request = fmt.Sprintf("%s/bismarkers%s.json", HQC_URL, bisVersion)
-	resp, err = http.Get(request)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-	body, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +101,48 @@ func (source HQCOutageEventSource) GetNewEventsFromDate(date time.Time) ([]event
 	}
 
 	return events, nil
+}
+
+func kmlFileNameFromBis(bisVersion string) string {
+	return fmt.Sprintf("tmp/outageAreas%s.kml", bisVersion)
+}
+
+func (source HQCOutageEventSource) GetOutageAreas(bisVersion string) error {
+	fileName := kmlFileNameFromBis(bisVersion)
+	_, err := os.Stat(fileName)
+
+	if errors.Is(err, os.ErrNotExist) {
+		source.DownloadKmlFile(bisVersion)
+	} else {
+		return err
+	}
+
+	return nil
+}
+
+// TODO: Need to cleanup old KML files
+func (source HQCOutageEventSource) DownloadKmlFile(bisVersion string) error {
+	fileName := kmlFileNameFromBis(bisVersion)
+
+	request := fmt.Sprintf("%s/bispoly%s.kmz", HQC_URL, bisVersion)
+	zipDst := fileName + ".kmz"
+	err := DownloadFile(request, zipDst)
+	if err != nil {
+		return err
+	}
+
+	err = ExtractKMLFile(fileName+".kmz", fileName)
+	if err != nil {
+		return err
+	}
+
+	// TODO: Fix because This errors out
+	// err = os.Remove(fileName + ".kmz")
+	// if err != nil {
+	// 	return err
+	// }
+
+	return nil
 }
 
 type ListePannes struct {

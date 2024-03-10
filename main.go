@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -28,6 +29,8 @@ type Request struct {
 	DateTime string
 }
 
+const TMP_DIR = "tmp"
+
 func main() {
 	// Init database
 	db, err := database.InitDatabase()
@@ -35,6 +38,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
+	os.Mkdir("tmp", 0755)
 	// Initial load
 	err = data_import.UpdateAll(db)
 	if err != nil {

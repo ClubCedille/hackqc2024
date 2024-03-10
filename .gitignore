@@ -28,3 +28,4 @@ tmp/
 hackqc-preproject
 *-db/
 test.json
+tmp

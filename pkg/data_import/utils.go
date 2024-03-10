@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
@@ -119,4 +120,21 @@ type WFSSearch struct {
 	PropertyName    string
 	PropertyValue   string
 	TypeName        string
+}
+
+func DownloadFile(url string, filepath string) error {
+	zip_out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer zip_out.Close()
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	_, err = io.Copy(zip_out, resp.Body)
+	return err
 }
