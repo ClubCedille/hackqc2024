@@ -24,7 +24,10 @@ func EventsPage(c *gin.Context, db *clover.DB) {
 }
 
 func EventTablePage(c *gin.Context, db *clover.DB) {
-	events, err := event.GetAllEvents(db)
+	docs, err := db.FindAll(query.NewQuery(database.EventCollection).Sort(query.SortOption{Field: "map_object.date"}))
+
+	var events []*event.Event
+	events, _ = event.GetEventFromDocuments(docs)
 
 	if err != nil {
 		log.Println("Error fetching events:", err)
@@ -41,8 +44,9 @@ func SearchEventTable(c *gin.Context, db *clover.DB) {
 	searchTerm := c.Query("search")
 
 	if searchTerm == "" {
-		c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
-			"Events": []*event.Event{},
+		allEvents, _ := event.GetAllEvents(db)
+		c.HTML(http.StatusOK, "components/event-table", gin.H{
+			"Events": allEvents,
 		})
 		return
 	}
