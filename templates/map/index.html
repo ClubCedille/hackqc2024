@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <script src="https://unpkg.com/alpinejs" defer></script>
 
     <script>
         function addPopupContent(feature, layer) {
@@ -27,7 +28,7 @@
         function addDataPoints(dataPairs, map) {
             dataPairs.forEach(geoJsonPair => {
                 let myIcon = L.divIcon({
-                    className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-icons`,
+                    className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-symbols-rounded`,
                     html: geoJsonPair.style.icon,
                     popupAnchor: [geoJsonPair.style.iconSize*4+4, -6]
                 });
@@ -54,15 +55,26 @@
     </script>
 </head>
 <body>
+    <h2 class="w3-center">Événements d'urgence</h2>
 
-<div id="map-container" class="w3-container">
-    <h3 style="text-align:center;">Événements d'urgence</h3>
-    <div id="map" class="w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
-</div>
+    <div class="w3-container">
+        <div class="w3-card w3-auto w3-round-large" style="width: 90vw;max-width: none;">
+            <h4 class="w3-center">Filtres</h4>
+            <div x-data="{ categoriesDiv: false }">
+                <button @click="categoriesDiv = !categoriesDiv" class="w3-btn w3-white w3-border w3-border-green w3-round-xlarge">Expand</button>
+             
+                <div x-show="categoriesDiv" class="w3-panel w3-pale-green w3-padding-32">
+                    {{ .Categories }}
+                </div>
+            </div>
+        </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 
 </body>

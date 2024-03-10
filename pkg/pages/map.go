@@ -58,12 +58,12 @@ var CategoryStyles = map[string]Style{
 	"Inondation": {
 		Color:    "red",
 		IconSize: 2,
-		Icon:     "severe_rain",
+		Icon:     "flood",
 	},
 	"Panne d'électricité": {
 		Color:    "yellow",
 		IconSize: 1,
-		Icon:     "water",
+		Icon:     "electric_bolt",
 	},
 	"Mouvement de terrain": {
 		Color:    "red",
@@ -98,7 +98,7 @@ var CategoryStyles = map[string]Style{
 	"Feu de forêt": {
 		Color:    "red",
 		IconSize: 2,
-		Icon:     "fire",
+		Icon:     "local_fire_department",
 	},
 	"Érosion": {
 		Color:    "yellow",
@@ -118,7 +118,7 @@ var CategoryStyles = map[string]Style{
 	"Incendie industriel": {
 		Color:    "yellow",
 		IconSize: 1,
-		Icon:     "fire",
+		Icon:     "local_fire_department",
 	},
 	"Pluie verglaçante": {
 		Color:    "blue",
@@ -143,7 +143,7 @@ var CategoryStyles = map[string]Style{
 	"Risque d'explosion": {
 		Color:    "red",
 		IconSize: 2,
-		Icon:     "explosion",
+		Icon:     "destruction",
 	},
 	"Débordement de barrage": {
 		Color:    "red",
@@ -153,7 +153,7 @@ var CategoryStyles = map[string]Style{
 	"Feu urbain": {
 		Color:    "yellow",
 		IconSize: 1,
-		Icon:     "fire",
+		Icon:     "local_fire_department",
 	},
 	"Accident maritime": {
 		Color:    "yellow",
