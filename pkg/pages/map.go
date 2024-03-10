@@ -257,11 +257,6 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 		return nil, err
 	}
 
-	// helps, err := help.GetAllHelps(db)
-	if err != nil {
-		return nil, err
-	}
-
 	evSize := len(events)
 	helpSize := 0 //len(helps)
 	mapItems := make([]GeoJSONPair, evSize+helpSize)
