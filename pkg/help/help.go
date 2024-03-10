@@ -80,3 +80,14 @@ func DeleteHelp(db *clover.DB, help Help) error {
 	}
 	return nil
 }
+
+func GetHelpFromDocuments(docs []*document.Document) ([]*Help, error) {
+	var helps []*Help
+	for _, d := range docs {
+		var help Help
+		d.Unmarshal(&help)
+		helps = append(helps, &help)
+	}
+
+	return helps, nil
+}
