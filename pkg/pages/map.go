@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
-	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -30,7 +29,7 @@ type GeoJSON struct {
 
 // Styling with google material icons
 // using list at all_material_icons.txt
-var _categoryStyles = map[string]Style{
+var CategoryStyles = map[string]Style{
 	"Vent": {
 		Color:    "blue",
 		IconSize: 0,
@@ -224,34 +223,46 @@ var _categoryStyles = map[string]Style{
 }
 
 func MapPage(c *gin.Context, db *clover.DB) {
-	mapItemsJson, err := retrieveMapItemsJson(db)
+	filters := c.Request.URL.Query()
+	mapItems, err := retrieveMapItems(db, filters)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	jsonValue, err := json.Marshal(mapItems)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"MapItemsJson": mapItemsJson,
+		"MapItemsJson": string(jsonValue),
 	})
 }
 
-func retrieveMapItemsJson(db *clover.DB) (string, error) {
-	events, err := event.GetAllEvents(db)
+func MapJson(c *gin.Context, db *clover.DB) {
+	filters := c.Request.URL.Query()
+	mapItems, err := retrieveMapItems(db, filters)
 	if err != nil {
-		return "", err
+		c.Status(http.StatusInternalServerError)
+		return
 	}
 
-	helps, err := help.GetAllHelps(db)
+	c.JSON(http.StatusOK, mapItems)
+}
+
+func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair, error) {
+	events, err := event.GetEventWithFilters(db, filters, true)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	evSize := len(events)
-	helpSize := len(helps)
+	helpSize := 0 //len(helps)
 	mapItems := make([]GeoJSONPair, evSize+helpSize)
 
 	for i, v := range events {
-		styleEvent, exists := _categoryStyles[v.MapObject.Category]
+		styleEvent, exists := CategoryStyles[v.MapObject.Category]
 		if !exists {
 			styleEvent = Style{
 				Color:    "red",
@@ -267,30 +278,25 @@ func retrieveMapItemsJson(db *clover.DB) (string, error) {
 			},
 			Style: styleEvent,
 		}
-		for i, v := range helps {
-			styleHelp, exists := _categoryStyles[v.MapObject.Category]
-			if !exists {
-				styleHelp = Style{
-					Color:    "green",
-					Icon:     "location_on",
-					IconSize: 1,
-				}
-			}
-			mapItems[i+evSize] = GeoJSONPair{
-				GeoJson: GeoJSON{
-					Type:       "Feature",
-					Geometry:   v.MapObject.Geometry,
-					Properties: v.MapObject,
-				},
-				Style: styleHelp,
-			}
-		}
+		// for i, v := range helps {
+		// 	styleHelp, exists := _categoryStyles[v.MapObject.Category]
+		// 	if !exists {
+		// 		styleHelp = Style{
+		// 			Color:    "green",
+		// 			Icon:     "location_on",
+		// 			IconSize: 1,
+		// 		}
+		// 	}
+		// 	mapItems[i+evSize] = GeoJSONPair{
+		// 		GeoJson: GeoJSON{
+		// 			Type:       "Feature",
+		// 			Geometry:   v.MapObject.Geometry,
+		// 			Properties: v.MapObject,
+		// 		},
+		// 		Style: styleHelp,
+		// 	}
+		// }
 	}
 
-	jsonValue, err := json.Marshal(mapItems)
-	if err != nil {
-		return "", err
-	}
-
-	return string(jsonValue), nil
+	return mapItems, nil
 }
