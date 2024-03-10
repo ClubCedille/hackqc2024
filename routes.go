@@ -1,10 +1,6 @@
 package main
 
 import (
-	"io"
-	"log"
-	"net/http"
-
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
@@ -17,13 +13,6 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.GET("/", func(c *gin.Context) {
 		session.GetActiveSession(c)
 		pages.RedirectToHome(c)
-	})
-
-	r.GET("/events-geojson", func(c *gin.Context) {
-		if cachedGeoJSON == nil {
-			fetchGeoJSON()
-		}
-		c.Data(http.StatusOK, "application/json", cachedGeoJSON)
 	})
 
 	r.GET("/map", func(c *gin.Context) {
@@ -106,27 +95,8 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.POST("/login", func(c *gin.Context) {
 		pages.Login(c, db)
 	})
-
-}
-
-// Temp example of fetching from données Québec
-var cachedGeoJSON []byte
-
-func fetchGeoJSON() {
-
-	if cachedGeoJSON == nil {
-		resp, err := http.Get("https://donnees.montreal.ca/dataset/6a4cbf2c-c9b7-413a-86b1-e8f7081e2578/resource/35307457-a00f-4912-9941-8095ead51f6e/download/evenements.geojson")
-		if err != nil {
-			log.Println("Error fetching GeoJSON:", err)
-			return
-		}
-		defer resp.Body.Close()
-
-		data, err := io.ReadAll(resp.Body)
-		if err != nil {
-			log.Println("Error reading GeoJSON:", err)
-			return
-		}
-		cachedGeoJSON = data
-	}
+	
+	r.GET("/submit-events", func(c *gin.Context) {
+		pages.SubmitEvents(c, db)
+	})
 }
