@@ -113,19 +113,14 @@
     <h2 class="w3-center">Événements d'urgence</h2>
     <div class="w3-container">
         <div class="w3-card w3-auto w3-round-large" style="width: 90vw;max-width: none;">
-            <h4 class="w3-center">Filtres</h4>
-            <div x-data="{ categoriesDiv: false }">
+            <div x-data="{ categoriesDiv: false }" >
                 <button @click="categoriesDiv = !categoriesDiv" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" x-bind:class="categoriesDiv ? 'w3-blue' : 'w3-white'">
                     Catégories
                 </button>
              
-                <div x-show="categoriesDiv" class="w3-panel w3-padding-32" x-transition style="display: none;">
+                <div x-show="categoriesDiv" class="w3-panel w3-padding-32 w3-topbar	 w3-border-blue" x-transition style="display: none;">
                     {{ template "map/filter.html" .Categories }}
                 </div>
-
-                <!-- <div>
-                    <button @click="updateDataPointsWithFiler" class="w3-btn w3-border w3-border-blue w3-round-xlarge w3-margin">Actualiser</button>
-                </div> -->
             </div>
         </div>
 
@@ -140,7 +135,7 @@
                     <h2>Soumettre une demande d'aide</h2>
                 </header>
                 
-    {{ template "forms/helpForm.html" . }}
+            {{ template "forms/helpForm.html" . }}
 
 
                 <footer class="w3-container w3-teal">
