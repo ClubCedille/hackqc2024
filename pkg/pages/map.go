@@ -2,6 +2,7 @@ package pages
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sort"
 
@@ -243,10 +244,24 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	}
 	sort.Strings(categoryKeys)
 
+	// For create event form
+	mapCategories := make([]interface{}, 0, len(CategoryStyles))
+	for key := range CategoryStyles {
+		category := struct {
+			Name string
+		}{
+			Name: key,
+		}
+		mapCategories = append(mapCategories, category)
+	}
+
+	fmt.Println("mapCategories", mapCategories)
+	
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
 		"MapItemsJson":  string(jsonValue),
 		"Categories":    categoryKeys,
 		"ActiveSession": session.ActiveSession.UserName,
+		"MapCategory": mapCategories,
 	})
 }
 
