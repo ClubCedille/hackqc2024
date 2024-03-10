@@ -5,19 +5,23 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 )
 
 const DQC_VERSION = "2.0.0"
-const DQC_BASE_URL = "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi"
 const DQC_TIME_FMT = "2006/01/02 15:04"
+const DQC_DATE_FMT = "2006-01-02"
 
 func ToGetParams(params map[string]string) string {
 	queryString := ""
 	separator := "?"
 
 	for key, value := range params {
+		value = url.QueryEscape(value)
+		value = strings.ReplaceAll(value, "+", "%20")
 		queryString += fmt.Sprintf("%s%s=%s", separator, key, value)
 		separator = "&"
 	}
@@ -46,17 +50,35 @@ func ParseSeverity(severity string) event.DangerLevel {
 	return event.Low
 }
 
-func MakeWFSGetRequest(request string, params map[string]string) ([]byte, error) {
+func MakeWFSGetRequest(baseUrl string, request string, params map[string]string) ([]byte, error) {
 	params["version"] = DQC_VERSION
 	params["service"] = "wfs"
 	params["request"] = request
 
 	queryString := ToGetParams(params)
-	request = DQC_BASE_URL + queryString
-	resp, err := http.Get(request)
-
-	if err != nil || resp.StatusCode != 200 {
+	request = baseUrl + queryString
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", request, nil)
+	if err != nil {
 		return nil, err
+	}
+
+	req.Header.Set("User-Agent", "definitely-not-Go-htt-p-client/1.1")
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		body, err := io.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -67,18 +89,17 @@ func MakeWFSGetRequest(request string, params map[string]string) ([]byte, error)
 	return body, err
 }
 
-func MakeWFSPostRequest(body string, params map[string]string) ([]byte, error) {
+func MakeWFSPostRequest(baseUrl string, body string, params map[string]string) ([]byte, error) {
 	params["version"] = DQC_VERSION
 
 	queryString := ToGetParams(params)
-	request := DQC_BASE_URL + queryString
+	request := baseUrl + queryString
 	resp, err := http.Post(request, "application/xml", bytes.NewBuffer([]byte(body)))
 
 	if err != nil || resp.StatusCode != 200 {
 		return nil, err
 	}
 
-	fmt.Println(string(body))
 	resBody, err := io.ReadAll(resp.Body)
 	fmt.Println(string(resBody))
 	if err != nil {
@@ -93,6 +114,9 @@ type Geometry struct {
 	Coordinates []float64 `json:"coordinates"`
 }
 
-func FormatCoordinates(coordinates []float64) string {
-	return fmt.Sprintf("%f,%f", coordinates[0], coordinates[1])
+type WFSSearch struct {
+	LogicalOperator string
+	PropertyName    string
+	PropertyValue   string
+	TypeName        string
 }

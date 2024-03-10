@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
@@ -11,14 +12,15 @@ import (
 )
 
 const DQC_WEATHER_NAME = "DonnéesQC Weather"
+const DQC_WEATHER_URL = "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi"
 
-type DonneesQcWeatherEventSource struct{}
+type DQCWeatherEventSource struct{}
 
-func (source DonneesQcWeatherEventSource) GetName() string {
+func (source DQCWeatherEventSource) GetName() string {
 	return DQC_WEATHER_NAME
 }
 
-func (source DonneesQcWeatherEventSource) GetAllEvents() ([]event.Event, error) {
+func (source DQCWeatherEventSource) GetAllEvents() ([]event.Event, error) {
 	events := []event.Event{}
 
 	weather, err := getWeatherData(map[string]string{})
@@ -41,14 +43,14 @@ func (source DonneesQcWeatherEventSource) GetAllEvents() ([]event.Event, error) 
 	return events, nil
 }
 
-func (source DonneesQcWeatherEventSource) GetNewEventsFromDate(date time.Time) ([]event.Event, error) {
-	body := createDateFilterXml(date)
+func (source DQCWeatherEventSource) GetNewEventsFromDate(date time.Time) ([]event.Event, error) {
+	body := source.createDateFilterXml(date)
 	weather, err := searchWeatherData(body)
-	events := parseWeather(weather)
-
 	if err != nil {
 		return nil, err
 	}
+
+	events := parseWeather(weather)
 
 	return events, nil
 }
@@ -71,7 +73,7 @@ func parseWeather(weather *WeatherFeatureCollection) []event.Event {
 }
 
 func searchWeatherData(body string) (*WeatherFeatureCollection, error) {
-	result, err := MakeWFSPostRequest(body, map[string]string{})
+	result, err := MakeWFSPostRequest(DQC_WEATHER_URL, body, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +92,7 @@ func getWeatherData(params map[string]string) (*WeatherFeatureCollection, error)
 	params["outputFormat"] = "geojson"
 	params["srsName"] = "EPSG:4326"
 
-	result, err := MakeWFSGetRequest("GetFeature", params)
+	result, err := MakeWFSGetRequest(DQC_WEATHER_URL, "GetFeature", params)
 	if err != nil {
 		return nil, err
 	}
@@ -151,11 +153,36 @@ type WeatherProperties struct {
 	Type             string `json:"type"`
 }
 
-// Sue me
-func createDateFilterXml(date time.Time) string {
-	formattedDate := date.Format(DQC_TIME_FMT)
-	return fmt.Sprintf("<?xml version=\"1.0\"?><wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:sf=\"http://www.openplans.org/spearfish\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd         http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd\" service=\"WFS\" version=\"2.0.0\" outputFormat=\"geojson\"><wfs:Query typeNames=\"msp_vigilance_crue_publique_v_type\" srsName=\"EPSG:4326\"><fes:Filter><PropertyIsGreaterThan><ValueReference>%s</ValueReference><Literal>%s</Literal></PropertyIsGreaterThan></fes:Filter></wfs:Query></wfs:GetFeature>",
-		"date_mise_a_jour",
-		formattedDate,
+func (DQCWeatherEventSource) createDateFilterXml(date time.Time) string {
+	searchParams := WFSSearch{
+		LogicalOperator: "PropertyIsGreaterThan",
+		PropertyName:    "date_mise_a_jour",
+		PropertyValue:   date.Format(DQC_TIME_FMT),
+		TypeName:        "msp_vigilance_crue_publique_v_type",
+	}
+	return strings.Trim(searchParams.ToWeatherSearchPayload("EPSG:4326", "geojson"), "\n ")
+}
+
+func (params WFSSearch) ToWeatherSearchPayload(srsName string, outputFormat string) string {
+	return fmt.Sprintf(
+		`<?xml version="1.0"?>
+	<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:sf="http://www.openplans.org/spearfish" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd         http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd" service="WFS" version="%s" outputFormat="%s">
+	  <wfs:Query typeNames="%s" srsName="%s">
+		<fes:Filter>
+		  <%s>
+			<ValueReference>%s</ValueReference>
+			<Literal>%s</Literal>
+		  </%s>
+		</fes:Filter>
+	  </wfs:Query>
+	</wfs:GetFeature>`,
+		DQC_VERSION,
+		outputFormat,
+		params.TypeName,
+		srsName,
+		params.LogicalOperator,
+		params.PropertyName,
+		params.PropertyValue,
+		params.LogicalOperator,
 	)
 }
