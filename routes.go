@@ -9,6 +9,41 @@ import (
 	"github.com/ostafen/clover/v2"
 )
 
+func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
+	group.Use(AuthRequiredMiddleware)
+	{
+		// Help
+		r.POST("/create-help", func(c *gin.Context) {
+			pages.CreateHelp(c, db)
+		})
+
+		r.POST("/update-help", func(c *gin.Context) {
+			pages.UpdateHelp(c, db)
+		})
+
+		r.DELETE("/delete-help", func(c *gin.Context) {
+			pages.DeleteHelp(c, db)
+		})
+
+		// Event
+		r.GET("/create-event", func(c *gin.Context) {
+			pages.GetCreateEvent(c, db)
+		})
+
+		r.POST("/create-event", func(c *gin.Context) {
+			pages.CreateEvent(c, db)
+		})
+
+		r.POST("/update-event", func(c *gin.Context) {
+			pages.UpdateEvent(c, db)
+		})
+
+		r.DELETE("/delete-event", func(c *gin.Context) {
+			pages.DeleteEvent(c, db)
+		})
+	}
+}
+
 func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.Static("/static", "./templates/static")
 
@@ -43,39 +78,6 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.EventsPage(c, db)
 	})
 
-	r.GET("/create-event", func(c *gin.Context) {
-		pages.GetCreateEvent(c, db)
-	})
-
-	r.POST("/create-event", func(c *gin.Context) {
-		pages.CreateEvent(c, db)
-	})
-
-	r.POST("/update-event", func(c *gin.Context) {
-		pages.UpdateEvent(c, db)
-	})
-
-	r.DELETE("/delete-event", func(c *gin.Context) {
-		pages.DeleteEvent(c, db)
-	})
-
-	// Help
-	r.GET("/helps", func(c *gin.Context) {
-		pages.HelpPage(c, db)
-	})
-
-	r.POST("/create-help", func(c *gin.Context) {
-		pages.CreateHelp(c, db)
-	})
-
-	r.POST("/update-help", func(c *gin.Context) {
-		pages.UpdateHelp(c, db)
-	})
-
-	r.DELETE("/delete-help", func(c *gin.Context) {
-		pages.DeleteHelp(c, db)
-	})
-
 	// Account
 	r.GET("/create-account", func(c *gin.Context) {
 		pages.GetCreateAccount(c)
@@ -99,6 +101,11 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.POST("/logout", func(c *gin.Context) {
 		pages.Logout(c)
+	})
+
+	// Help
+	r.GET("/helps", func(c *gin.Context) {
+		pages.HelpPage(c, db)
 	})
 
 	r.GET("/submit-events", func(c *gin.Context) {
