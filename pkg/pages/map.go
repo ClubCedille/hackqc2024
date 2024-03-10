@@ -29,7 +29,7 @@ type GeoJSON struct {
 
 // Styling with google material icons
 // using list at all_material_icons.txt
-var _categoryStyles = map[string]Style{
+var CategoryStyles = map[string]Style{
 	"Vent": {
 		Color:    "blue",
 		IconSize: 0,
@@ -262,7 +262,7 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 	mapItems := make([]GeoJSONPair, evSize+helpSize)
 
 	for i, v := range events {
-		styleEvent, exists := _categoryStyles[v.MapObject.Category]
+		styleEvent, exists := CategoryStyles[v.MapObject.Category]
 		if !exists {
 			styleEvent = Style{
 				Color:    "red",

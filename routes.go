@@ -12,6 +12,8 @@ import (
 )
 
 func registerRoutes(r *gin.Engine, db *clover.DB) {
+	r.Static("/static", "./templates/static")
+
 	r.GET("/", func(c *gin.Context) {
 		dt := time.Now()
 
@@ -53,6 +55,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/eventCards", func(c *gin.Context) {
 		pages.EventsPage(c, db)
+	})
+
+	r.GET("/create-event", func(c *gin.Context) {
+		pages.GetCreateEvent(c, db)
 	})
 
 	r.POST("/create-event", func(c *gin.Context) {
