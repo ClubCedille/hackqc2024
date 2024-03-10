@@ -22,8 +22,9 @@ type EventSource interface {
 
 func GetEventSources() []EventSource {
 	return []EventSource{
-		DQCWeatherEventSource{},
-		DQCSecurityEventSource{},
+		// DQCWeatherEventSource{},
+		// DQCSecurityEventSource{},
+		HQCOutageEventSource{},
 	}
 }
 
