@@ -45,8 +45,10 @@
           </select>
 
           <label for="map_object_geometry">Coordonnées:</label>
-          <input type="text" placeholder="Type (Point)" id="map_object_geometry_type" name="map_object_geometry_type">
-          <input type="text" placeholder="Coordonnées (format: 1.0, 2.0, ...)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
+          <select id="map_object_geometry_type" name="map_object_geometry_type">
+            <option value="Point">Point</option>
+          </select>
+          <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
 
           <label for="map_object_description">Description:</label>
           <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required></textarea>
