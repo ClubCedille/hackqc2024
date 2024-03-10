@@ -6,11 +6,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
+	"github.com/ostafen/clover/v2/query"
 )
 
 func HelpPage(c *gin.Context, db *clover.DB) {
@@ -26,7 +28,6 @@ func HelpPage(c *gin.Context, db *clover.DB) {
 }
 
 func CreateHelp(c *gin.Context, db *clover.DB) {
-	log.Println("Submitting help request")
 	eventName := c.PostForm("map_object_name")
 	eventDescription := c.PostForm("map_object_description")
 	eventCategory := c.PostForm("map_object_category")
@@ -123,4 +124,21 @@ func DeleteHelp(c *gin.Context, db *clover.DB) {
 
 	log.Println("Help deleted successfully")
 	c.Redirect(http.StatusSeeOther, "/helps")
+}
+
+func HelpTablePage(c *gin.Context, db *clover.DB) {
+	docs, err := db.FindAll(query.NewQuery(database.HelpCollection).Sort(query.SortOption{Field: "map_object.date"}))
+
+	var helps []*help.Help
+	helps, _ = help.GetHelpFromDocuments(docs)
+
+	if err != nil {
+		log.Println("Error fetching helps:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "list/index.html", gin.H{
+		"Helps": helps,
+	})
 }

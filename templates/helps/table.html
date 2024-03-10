@@ -1,0 +1,73 @@
+{{ define "list/index.html" }}
+
+<html lang="en">
+
+<head>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Liste des aides</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    {{ template "components/navbar" . }}
+
+    <h1>Liste des aides</h1>
+
+    {{ template "components/help-toolbar" . }}
+
+    {{ template "components/help-table" . }}
+</body>
+
+</html>
+{{ end }}
+
+{{ define "components/help-toolbar" }}
+<!-- Similar toolbar as event-toolbar can be defined here if needed -->
+{{ end }}
+
+{{ define "components/help-table"}}
+<table class="w3-table w3-striped w3-border" id="help-list">
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Categorie</th>
+        <th>Coordonnées</th>
+        <th>Contact Infos</th>
+        <th>Besoin d'aide</th>
+        <th>Comment aider</th>
+        <th>Utilisation de l'aide</th>
+        <th>ID Événement</th>
+    </tr>
+
+    {{ range .Helps }}
+    <tr>
+        <td>{{ .Id }}</td>
+        <td>{{ .MapObject.Name }}</td>
+        <td>{{ .MapObject.Description }}</td>
+        <td>{{ .MapObject.Category }}</td>
+        <td>{{ .MapObject.Geometry.Coordinates }}</td>
+        <td>{{ .ContactInfos }}</td>
+        <td>{{ if .NeedHelp }}Oui{{ else }}Non{{ end }}</td>
+        <td>{{ .HowToHelp }}</td>
+        <td>{{ .HowToUseHelp }}</td>
+        <td>{{ .EventId }}</td>
+    </tr>
+    {{ end }}
+</table>
+
+{{ end }}

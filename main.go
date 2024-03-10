@@ -59,6 +59,7 @@ func main() {
 
 	r.Use(sessions.Sessions(GIN_SESSION_NAME, store))
 	r.LoadHTMLGlob("templates/**/*.html")
+
 	registerRoutes(r, db)
 	authRegisterRoutes(r, authorized, db)
 
