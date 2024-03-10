@@ -103,8 +103,8 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 	coordinatesArray := strings.Split(coordinates, ",")
 
 	var coordinatesArrayFloat []float64
-	for _, v := range coordinatesArray {
-		coords, err := strconv.ParseFloat(strings.TrimSpace(v), 64)
+	for i := len(coordinatesArray) - 1; i >= 0; i-- {
+		coords, err := strconv.ParseFloat(strings.TrimSpace(coordinatesArray[i]), 64)
 		if err != nil {
 			log.Println("Error parsing coordinates:", err)
 			c.Status(http.StatusInternalServerError)
