@@ -1,6 +1,8 @@
 package event
 
 import (
+	"slices"
+
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ostafen/clover/v2"
@@ -124,6 +126,25 @@ func GetEventById(conn *clover.DB, eventId string) (Event, error) {
 	docs.Unmarshal(&event)
 
 	return event, nil
+}
+
+func GetEventWithFilters(conn *clover.DB, filters map[string][]string, requireGeoJson bool) ([]*Event, error) {
+	filterQuery := query.NewQuery(database.EventCollection)
+
+	for k, v := range filters {
+		filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
+			return slices.Contains(v, doc.Get(k).(string)) && (!requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil)
+		})
+	}
+
+	docs, err := conn.FindAll(filterQuery)
+	if err != nil {
+		return nil, err
+	}
+
+	events, _ := GetEventFromDocuments(docs)
+
+	return events, nil
 }
 
 func EventExistsByExternalId(conn *clover.DB, externalId string) (bool, error) {

@@ -3,9 +3,14 @@ package pages
 import (
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
+	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/query"
@@ -24,7 +29,10 @@ func EventsPage(c *gin.Context, db *clover.DB) {
 }
 
 func EventTablePage(c *gin.Context, db *clover.DB) {
-	events, err := event.GetAllEvents(db)
+	docs, err := db.FindAll(query.NewQuery(database.EventCollection).Sort(query.SortOption{Field: "map_object.date"}))
+
+	var events []*event.Event
+	events, _ = event.GetEventFromDocuments(docs)
 
 	if err != nil {
 		log.Println("Error fetching events:", err)
@@ -41,8 +49,9 @@ func SearchEventTable(c *gin.Context, db *clover.DB) {
 	searchTerm := c.Query("search")
 
 	if searchTerm == "" {
-		c.HTML(http.StatusOK, "list/event_list_table.html", gin.H{
-			"Events": []*event.Event{},
+		allEvents, _ := event.GetAllEvents(db)
+		c.HTML(http.StatusOK, "components/event-table", gin.H{
+			"Events": allEvents,
 		})
 		return
 	}
@@ -61,11 +70,64 @@ func SearchEventTable(c *gin.Context, db *clover.DB) {
 	})
 }
 
+func GetCreateEvent(c *gin.Context, db *clover.DB) {
+	mapCategories := make([]interface{}, 0, len(CategoryStyles))
+	for key := range CategoryStyles {
+		category := struct {
+			Name string
+		}{
+			Name: key,
+		}
+		mapCategories = append(mapCategories, category)
+	}
+
+	c.HTML(http.StatusOK, "forms/eventForm.html", gin.H{
+		"MapCategory": mapCategories,
+	})
+}
+
 func CreateEvent(c *gin.Context, db *clover.DB) {
-	var data event.Event
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	dangerLvl, _ := strconv.Atoi(c.PostForm("danger_level"))
+	urgencyType, _ := strconv.Atoi(c.PostForm("urgency_type"))
+
+	tags := c.PostForm("map_object_tags")
+	tagsArray := strings.Split(tags, ",")
+
+	var tagsArrayString []string
+	for _, v := range tagsArray {
+		tag := strings.TrimSpace(v)
+		tagsArrayString = append(tagsArrayString, tag)
+	}
+
+	coordinates := c.PostForm("map_object_geometry_coordinates")
+	coordinatesArray := strings.Split(coordinates, ",")
+
+	var coordinatesArrayFloat []float64
+	for _, v := range coordinatesArray {
+		coords, err := strconv.ParseFloat(strings.TrimSpace(v), 64)
+		if err != nil {
+			log.Println("Error parsing coordinates:", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		coordinatesArrayFloat = append(coordinatesArrayFloat, coords)
+	}
+
+	data := event.Event{
+		DangerLevel: event.DangerLevel(dangerLvl),
+		UrgencyType: event.UrgencyType(urgencyType),
+		MapObject: mapobject.MapObject{
+			Name:        c.PostForm("map_object_name"),
+			Description: c.PostForm("map_object_description"),
+			Category:    c.PostForm("map_object_category"),
+			Tags:        tagsArrayString,
+			AccountId:   data_import.SYSTEM_USER_GUID,
+			Date:        time.Now(),
+			Geometry: mapobject.Geometry{
+				GeomType:    c.PostForm("map_object_geometry_type"),
+				Coordinates: coordinatesArrayFloat,
+			},
+		},
 	}
 
 	err := event.CreateEvent(db, data)
@@ -76,7 +138,7 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Event created successfully")
-	c.Redirect(http.StatusSeeOther, "/events")
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func UpdateEvent(c *gin.Context, db *clover.DB) {

@@ -6,109 +6,64 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <script>
+        function addPopupContent(feature, layer) {
+            const popupContent = `
+                <div class="popup-content">
+                    <h3>${feature.properties.name}</h3>
+                    <h5>${feature.properties.category}</h5>
+                    <p>${feature.properties.description.substring(0, 100)}...</p>
+                    <p>Date: ${feature.properties.date}</p>
+                    <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
+                </div>
+            `;
+            layer.bindPopup(popupContent);
         }
-        #map-container {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            width: 80vw;
-            height: 60vh;
+        function addDataPoints(dataPairs, map) {
+            dataPairs.forEach(geoJsonPair => {
+                let myIcon = L.divIcon({
+                    className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-icons`,
+                    html: geoJsonPair.style.icon,
+                    popupAnchor: [geoJsonPair.style.iconSize*4+4, -6]
+                });
+                L.geoJSON(geoJsonPair.geoJson, {
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: myIcon});
+                        },
+                        onEachFeature: addPopupContent
+                    }).addTo(map);
+            });
         }
-        #map {
-            width: 100%;
-            height: 100%;
-        }
-        .popup-content {
-            font-family: Arial, sans-serif;
-            line-height: 1.4;
-            margin: 10px;
-        }
-        .popup-content h3 {
-            margin: 0 0 5px 0;
-            color: #007BFF;
-        }
-        .popup-content p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        .popup-content a {
-            display: inline-block;
-            margin-top: 10px;
-            color: #FFFFFF;
-            background-color: #007BFF;
-            padding: 5px 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .popup-content a:hover {
-            background-color: #0056b3;
-        }
-    </style>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const map = L.map('map').setView([45.5017, -73.5673], 8);
+            var layer = protomapsL.leafletLayer({
+                url:'http://34.49.192.250/my_area.pmtiles', 
+                theme: 'light',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            })  
+            layer.addTo(map)
+            let data = JSON.parse("{{ .MapItemsJson }}")
+            addDataPoints(data, map)
+        });
+    </script>
 </head>
 <body>
 
-<div id="map-container">
+<div id="map-container" class="w3-container">
     <h3 style="text-align:center;">Événements d'urgence</h3>
-    <div id="map"></div>
+    <div id="map" class="w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const map = L.map('map').setView([45.5017, -73.5673], 8);
-        var layer = protomapsL.leafletLayer({
-            url:'http://34.49.192.250/my_area.pmtiles', 
-            theme: 'light',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        })
-        layer.addTo(map)
-        let data = JSON.parse("{{ .MapItemsJson }}")
-        L.geoJSON(data, {
-                    onEachFeature: function (feature, layer) {
-                            const popupContent = `
-                                <div class="popup-content">
-                                    <h3>${feature.properties.name}</h3>
-                                    <h4>${feature.properties.category}</h4>
-                                    <p>${feature.properties.description.substring(0, 100)}...</p>
-                                    <p>Date: ${feature.properties.date}</p>
-                                    <a href="/event/${feature.url_fiche}" target="_blank">More info</a>
-                                </div>
-                            `;
-                            layer.bindPopup(popupContent);
-                    }
-                }).addTo(map);
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-        // fetch('/events-geojson')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         L.geoJSON(data, {
-        //             onEachFeature: function (feature, layer) {
-        //                 if (feature.properties) {
-        //                     const popupContent = `
-        //                         <div class="popup-content">
-        //                             <h3>${feature.properties.titre}</h3>
-        //                             <p>${feature.properties.description}</p>
-        //                             <p>Date: ${feature.properties.date_debut} to ${feature.properties.date_fin}</p>
-        //                             <a href="${feature.properties.url_fiche}" target="_blank">More info</a>
-        //                         </div>
-        //                     `;
-        //                     layer.bindPopup(popupContent);
-        //                 }
-        //             }
-        //         }).addTo(map);
-        //     })
-        //     .catch(error => console.error('Error loading the GeoJSON data:', error));
-    });
-</script>
 
 </body>
 </html>

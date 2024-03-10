@@ -6,7 +6,7 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <title>Event Help List</title>
+    <title>Liste des événements d'urgence</title>
     <style>
         table {
             border-collapse: collapse;
@@ -23,9 +23,9 @@
 </head>
 
 <body>
-    <h1>Event Help List</h1>
+    <h1>Liste des événements d'urgence</h1>
 
-    {{ template "components/toolbar" . }}
+    {{ template "components/event-toolbar" . }}
 
     {{ template "components/event-table" . }}
 </body>
@@ -33,19 +33,23 @@
 </html>
 {{ end }}
 
-{{ define "components/toolbar"}}
+{{ define "components/event-toolbar" }}
 <div id="tool-bar" class="w3-bar w3-light-grey">
     <!-- search box-->
     <div class="w3-bar-item w3-left">
         <!-- search with HTMX, will return event_list_table.html -->
-        <input class="w3-input w3-border" name="search" type="search" placeholder="Search..." id="search-box"
-            hx-trigger="input changed delay:500ms, search" hx-indicator=".htmx-indicator" hx-get="/events/table/search"
+        <input class="w3-input w3-border" name="search" type="search" placeholder="Recherche..." id="search-box"
+            hx-trigger="input changed delay:300ms, search" hx-indicator=".htmx-indicator" hx-get="/events/table/search"
             hx-target="#event-list" hx-swap="outerHTML">
     </div>
 
+    <div class="w3-bar-item w3-left">Afficher seuelement:</div>
+
     <!-- drop down: Urgency -->
+    <div class="w3-bar-item w3-left"><label for="urgency-dropdown">Urgence:</label></div>
     <div class="w3-bar-item w3-left">
-        <select class="w3-select w3-border" id="urgency-dropdown">
+        <select class="w3-select w3-border" id="urgency-dropdown" name="filter-urgency">
+            <option value="all">Tous</option>
             <option value="futur">Futur</option>
             <option value="present">Présent</option>
             <option value="past">Passé</option>
@@ -53,21 +57,25 @@
     </div>
 
     <!-- drop down: Danger -->
-    <div class="w3-bar-item w3-left">
-        <select class="w3-select w3-border" id="danger-dropdown">
+    <div class="w3-bar-item w3-left"><label for="danger-dropdown">Danger:</label></div>
+    <div class="w3-bar-item w3-left" >
+        <select class="w3-select w3-border" id="danger-dropdown" name="filter-danger">
+            <option value="all">Tous</option>
             <option value="high">Élevé</option>
             <option value="medium">Modéré</option>
             <option value="low">Faible</option>
         </select>
     </div>
-
+    
+    <div class="w3-bar-item w3-left">Trier par:</div>
+    
     <!-- Sorting -->
     <div class="w3-bar-item w3-left">
-        <select class="w3-select w3-border" id="sort-dropdown">
+        <select class="w3-select w3-border" id="sort-dropdown" name="sort">
+            <option value="date">Date</option>
             <option value="name">Nom</option>
             <option value="urgency">Urgence</option>
             <option value="danger">Danger</option>
-            <option value="date">Date</option>
             <option value="category">Catégorie</option>
         </select>
     </div>
@@ -92,7 +100,7 @@
         <td>{{ .MapObject.Description }}</td>
         <td>{{ .MapObject.Date }}</td>
         <td>{{ .MapObject.Category }}</td>
-        <td>{{ .MapObject.Coordinates }}</td>
+        <td>{{ .MapObject.Geometry.Coordinates }}</td>
         <td>{{ .GetUrgencyTypeString }}</td>
         <td>{{ .GetDangerLevelString }}</td>
     </tr>
