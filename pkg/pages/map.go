@@ -2,10 +2,12 @@ package pages
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -237,6 +239,12 @@ func MapPage(c *gin.Context, db *clover.DB) {
 
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
 		"MapItemsJson": string(jsonValue),
+	})
+}
+
+func RedirectToHome(c *gin.Context) {
+	c.HTML(http.StatusOK, "map/index.html", gin.H{
+		"ActiveSession": fmt.Sprintf("Bonjour %s !", session.ActiveSession.UserName),
 	})
 }
 

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -14,7 +15,8 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.Static("/static", "./templates/static")
 
 	r.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusSeeOther, "/map")
+		session.GetActiveSession(c)
+		pages.RedirectToHome(c)
 	})
 
 	r.GET("/events-geojson", func(c *gin.Context) {
@@ -85,12 +87,24 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	// Account
+	r.GET("/create-account", func(c *gin.Context) {
+		pages.GetCreateAccount(c)
+	})
+
 	r.POST("/create-account", func(c *gin.Context) {
 		pages.CreateAccount(c, db)
 	})
 
 	r.POST("/update-account", func(c *gin.Context) {
 		pages.UpdateAccount(c, db)
+	})
+
+	r.GET("/login", func(c *gin.Context) {
+		pages.GetLogin(c)
+	})
+
+	r.POST("/login", func(c *gin.Context) {
+		pages.Login(c, db)
 	})
 
 }
