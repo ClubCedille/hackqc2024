@@ -76,9 +76,9 @@
         let data = JSON.parse("{{ .MapItemsJson }}")
         data.forEach(geoJsonPair => {
             let myIcon = L.divIcon({
-                className: `w3-text-${geoJsonPair.style.color} w3-${geoJsonPair.style.iconSize} material-icons`,
+                className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-icons`,
                 html: geoJsonPair.style.icon,
-                popupAnchor: [12, 6]
+                popupAnchor: [geoJsonPair.style.iconSize*4+4, -6]
             });
             L.geoJSON(geoJsonPair.geoJson, {
                     pointToLayer: function (feature, latlng) {
