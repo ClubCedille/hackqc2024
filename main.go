@@ -16,6 +16,13 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+)
+
+const (
+	GIN_SESSION_NAME   = "gin-session"
+	GIN_SESSION_SECRET = "gin-session-secret"
 )
 
 type Request struct {
@@ -44,8 +51,16 @@ func main() {
 			return strings.ReplaceAll(s, "'", "\\'")
 		},
 	})
+
+	authorized := r.Group("/")
+
+	store := cookie.NewStore([]byte(GIN_SESSION_SECRET))
+	store.Options(sessions.Options{MaxAge: 60 * 60 * 24}) // expire in a day
+
+	r.Use(sessions.Sessions(GIN_SESSION_NAME, store))
 	r.LoadHTMLGlob("templates/**/*.html")
 	registerRoutes(r, db)
+	authRegisterRoutes(r, authorized, db)
 
 	err = r.Run()
 	if err != nil {

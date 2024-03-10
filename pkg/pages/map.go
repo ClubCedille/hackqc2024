@@ -7,6 +7,7 @@ import (
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -243,8 +244,9 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	sort.Strings(categoryKeys)
 
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"MapItemsJson": string(jsonValue),
-		"Categories":   categoryKeys,
+		"MapItemsJson":  string(jsonValue),
+		"Categories":    categoryKeys,
+		"ActiveSession": session.ActiveSession.UserName,
 	})
 }
 

@@ -24,6 +24,7 @@ func GetEventSources() []EventSource {
 	return []EventSource{
 		DQCWeatherEventSource{},
 		DQCSecurityEventSource{},
+		HQCOutageEventSource{},
 	}
 }
 

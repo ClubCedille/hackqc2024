@@ -12,24 +12,7 @@
         </p>
 
         <p>
-            <div hx-post="/test" hx-target="#past-requests" 
-            class="w3-btn w3-indigo w3-round-xlarge">
-                Click here to retrieve past requests
-            </div>
-        </p>
-        <div x-data="{ open: true }">
-        <p>
-            <div class="w3-btn w3-round-xlarge" :class="open ? 'w3-purple' : 'w3-green'" @click="open = !open" x-text="open ? 'Hide Requests' : 'Show Requests'"></div>
-            <div id="past-requests" x-show="open" x-transition></div>
-        </p>
-        </div>
-
-        <p>
             <a href="/map" class="w3-btn w3-teal w3-round-xlarge">View Montreal Map</a>
-        </p>
-
-        <p>
-            <a href="/create-event" class="w3-btn w3-teal w3-round-xlarge">Créer un évènement</a>
         </p>
     </body>
 </html>

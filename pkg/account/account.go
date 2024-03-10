@@ -20,6 +20,10 @@ func AccountExistsById(conn *clover.DB, id string) (bool, error) {
 	return conn.Exists(query.NewQuery(database.AccountCollection).Where(query.Field("_id").Eq(id)))
 }
 
+func AccountExistByEmailAndUsername(conn *clover.DB, email string, userName string) (bool, error) {
+	return conn.Exists(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq(userName).And(query.Field("email").Eq(email))))
+}
+
 func CreateAccount(conn *clover.DB, account Account) error {
 	account.Id = uuid.NewV4().String()
 	accountDoc := document.NewDocumentOf(account)
@@ -29,6 +33,18 @@ func CreateAccount(conn *clover.DB, account Account) error {
 	}
 
 	return nil
+}
+
+func GetAccountByUsername(conn *clover.DB, username string) (Account, error) {
+	docs, err := conn.FindFirst(query.NewQuery(database.AccountCollection).Where(query.Field("user_name").Eq(username)))
+	if err != nil {
+		return Account{}, err
+	}
+
+	account := Account{}
+	docs.Unmarshal(&account)
+
+	return account, nil
 }
 
 func UpdateAccount(conn *clover.DB, account Account) error {

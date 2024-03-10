@@ -100,8 +100,8 @@ func MakeWFSPostRequest(baseUrl string, body string, params map[string]string) (
 		return nil, err
 	}
 
+	defer resp.Body.Close()
 	resBody, err := io.ReadAll(resp.Body)
-	fmt.Println(string(resBody))
 	if err != nil {
 		return nil, err
 	}
