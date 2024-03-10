@@ -138,7 +138,7 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Event created successfully")
-	c.Redirect(http.StatusSeeOther, "/events")
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func UpdateEvent(c *gin.Context, db *clover.DB) {
