@@ -1,40 +1,35 @@
 {{ define "forms/accountForm.html" }}
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Créer un compte</title>
-        <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
-        <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="/static/formStyle.css">
-    </head>
-    <body>
-      <div class="row">
-    <div class="col-md-12">
-      <form action="/create-account" method="post">
-        <h1>Créer un compte</h1>
-        <h5 style="color: red;">{{ .Error }}</h5>
-        <fieldset>
-          <label for="user_name">Nom d'utilisateur:</label>
-          <input type="text" placeholder="Nom d'utilisateur" id="user_name" name="user_name">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte</title>
+    <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+    <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/static/formStyle.css">
+</head>
+  <div class="row" id="form-container">
+<div class="col-md-12">
+  <form action="/create-account" method="post">
+    <h1>Créer un compte</h1>
+    <h5 style="color: red;">{{ .Error }}</h5>
+    <fieldset>
+      <label for="user_name">Nom d'utilisateur:</label>
+      <input type="text" placeholder="Nom d'utilisateur" id="user_name" name="user_name">
 
-          <label for="first_name">Prénom:</label>
-          <input type="text" placeholder="Prénom" id="first_name" name="first_name">
+      <label for="first_name">Prénom:</label>
+      <input type="text" placeholder="Prénom" id="first_name" name="first_name">
 
-          <label for="last_name">Nom:</label>
-          <input type="text" placeholder="Nom" id="last_name" name="last_name">
+      <label for="last_name">Nom:</label>
+      <input type="text" placeholder="Nom" id="last_name" name="last_name">
 
-          <label for="email">Courriel:</label>
-          <input type="text" placeholder="Courriel" id="email" name="email">
+      <label for="email">Courriel:</label>
+      <input type="text" placeholder="Courriel" id="email" name="email">
 
-        </fieldset>
-       
-        <button type="submit">Créer</button>
-        
-       </form>
-        </div>
-      </div>
-      
-    </body>
-</html>
+    </fieldset>
+    
+    <button type="submit">Créer</button>
+    
+    </form>
+    </div>
+  </div>
 {{ end }}

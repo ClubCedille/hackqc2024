@@ -51,7 +51,7 @@ func CreateAccount(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Account created successfully")
-	RedirectToHome(c)
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func Login(c *gin.Context, db *clover.DB) {
@@ -69,8 +69,13 @@ func Login(c *gin.Context, db *clover.DB) {
 		return
 	} else {
 		setActiveSession(c, db, c.PostForm("user_name"))
-		RedirectToHome(c)
+		c.Redirect(http.StatusSeeOther, "/map")
 	}
+}
+
+func Logout(c *gin.Context) {
+	session.ClearActiveSession(c)
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func UpdateAccount(c *gin.Context, db *clover.DB) {
@@ -88,7 +93,7 @@ func UpdateAccount(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Account updated successfully")
-	RedirectToHome(c)
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func setActiveSession(c *gin.Context, db *clover.DB, userName string) {

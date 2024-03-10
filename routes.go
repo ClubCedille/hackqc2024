@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
@@ -12,7 +14,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/", func(c *gin.Context) {
 		session.GetActiveSession(c)
-		pages.RedirectToHome(c)
+		c.Redirect(http.StatusSeeOther, "/map")
 	})
 
 	r.GET("/map", func(c *gin.Context) {
@@ -29,7 +31,6 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	// Events
-
 	r.GET("/events/table", func(c *gin.Context) {
 		pages.EventTablePage(c, db)
 	})
@@ -95,7 +96,11 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.POST("/login", func(c *gin.Context) {
 		pages.Login(c, db)
 	})
-	
+
+	r.POST("/logout", func(c *gin.Context) {
+		pages.Logout(c)
+	})
+
 	r.GET("/submit-events", func(c *gin.Context) {
 		pages.SubmitEvents(c, db)
 	})
