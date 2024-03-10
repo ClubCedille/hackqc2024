@@ -34,6 +34,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.MapPage(c, db)
 	})
 
+	r.GET("/map-json", func(c *gin.Context) {
+		pages.MapJson(c, db)
+	})
+
 	// Event-Help Grid
 	r.GET("/grid", func(c *gin.Context) {
 		pages.GridPage(c, db)

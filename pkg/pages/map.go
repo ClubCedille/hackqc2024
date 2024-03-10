@@ -3,6 +3,7 @@ package pages
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -235,8 +236,15 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	categoryKeys := make([]string, 0, len(CategoryStyles))
+	for k := range CategoryStyles {
+		categoryKeys = append(categoryKeys, k)
+	}
+	sort.Strings(categoryKeys)
+
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
 		"MapItemsJson": string(jsonValue),
+		"Categories":   categoryKeys,
 	})
 }
 

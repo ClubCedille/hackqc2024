@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -37,8 +39,12 @@ func main() {
 	generateSeedData(db)
 
 	r := gin.Default()
+	r.SetFuncMap(template.FuncMap{
+		"escapeSingleQuotes": func(s string) string {
+			return strings.ReplaceAll(s, "'", "\\'")
+		},
+	})
 	r.LoadHTMLGlob("templates/**/*.html")
-
 	registerRoutes(r, db)
 
 	err = r.Run()
