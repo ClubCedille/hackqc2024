@@ -9,58 +9,58 @@
     <link rel="stylesheet" href="/static/formStyle.css">
 </head>
   <div class="row">
-<div class="col-md-12" id="form-container">
-  <form action="/create-event" method="post">
-    <h1>Créer un évènement</h1>
-    <fieldset>
-      <legend><span class="number">1</span>Évènement</legend>
-    
-      <label for="danger_level">Niveau de danger:</label>
-      <select id="danger_level" name="danger_level">
-        <option value="0">Élevé</option>
-        <option value="1">Modéré</option>
-        <option value="2">Faible</option>
-      </select>
+  <div class="col-md-12">
+    <form action="/create-event" method="post" id="form-container">
+      <h1>Créer un évènement</h1>
+      <fieldset>
+        <legend><span class="number">1</span>Évènement</legend>
+      
+        <label for="danger_level">Niveau de danger:</label>
+        <select id="danger_level" name="danger_level">
+          <option value="0">Élevé</option>
+          <option value="1">Modéré</option>
+          <option value="2">Faible</option>
+        </select>
 
-      <label for="urgency_type">Niveau d'urgence:</label>
-      <select id="urgency_type" name="urgency_type">
-        <option value="0">Futur</option>
-        <option value="1">Présent</option>
-        <option value="2">Passé</option>
-      </select>
-    </fieldset>
+        <label for="urgency_type">Niveau d'urgence:</label>
+        <select id="urgency_type" name="urgency_type">
+          <option value="0">Futur</option>
+          <option value="1">Présent</option>
+          <option value="2">Passé</option>
+        </select>
+      </fieldset>
 
-    <fieldset> 
-      <legend><span class="number">2</span>Coordonnées sur la carte</legend>
+      <fieldset> 
+        <legend><span class="number">2</span>Coordonnées sur la carte</legend>
 
-      <label for="map_object_name">Nom:</label>
-      <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name">
+        <label for="map_object_name">Nom:</label>
+        <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name">
 
-      <label for="map_object_category">Catégories:</label>
-      <select id="map_object_category" name="map_object_category">
-        {{ range .MapCategory }}
-            <option value="{{ .Name }}">{{ .Name }}</option>
-        {{ end }}
-      </select>
+        <label for="map_object_category">Catégories:</label>
+        <select id="map_object_category" name="map_object_category">
+          {{ range .MapCategory }}
+              <option value="{{ .Name }}">{{ .Name }}</option>
+          {{ end }}
+        </select>
 
-      <label for="map_object_geometry">Coordonnées:</label>
-      <select id="map_object_geometry_type" name="map_object_geometry_type">
-        <option value="Point">Point</option>
-      </select>
-      <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
+        <label for="map_object_geometry">Coordonnées:</label>
+        <select id="map_object_geometry_type" name="map_object_geometry_type">
+          <option value="Point">Point</option>
+        </select>
+        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
 
-      <label for="map_object_description">Description:</label>
-      <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required></textarea>
+        <label for="map_object_description">Description:</label>
+        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required></textarea>
 
-      <label for="map_object_tags">Tags:</label>
-      <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..."  name="map_object_tags" required>
+        <label for="map_object_tags">Tags:</label>
+        <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..."  name="map_object_tags" required>
 
-    </fieldset>
-    
-    <button type="submit">Créer</button>
-    
-    </form>
-    </div>
+      </fieldset>
+      
+      <button type="submit">Créer</button>
+      
+      </form>
+      </div>
   </div>
       
 {{ end }}

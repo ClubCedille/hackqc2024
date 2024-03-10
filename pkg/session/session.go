@@ -33,7 +33,17 @@ func GetActiveSession(c *gin.Context) {
 	userName := session.Get("user_name")
 	email := session.Get("email")
 
-	ActiveSession.AccountId = accountId.(string)
-	ActiveSession.UserName = userName.(string)
-	ActiveSession.Email = email.(string)
+	if accountId != nil && userName != nil && email != nil {
+		ActiveSession.AccountId = accountId.(string)
+		ActiveSession.UserName = userName.(string)
+		ActiveSession.Email = email.(string)
+	}
+}
+
+func ClearActiveSession(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+
+	ActiveSession = SessionInformation{}
 }

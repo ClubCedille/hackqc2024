@@ -14,6 +14,8 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
 
     <script>
+        var markupLayer
+
         function addPopupContent(feature, layer) {
             const popupContent = `
                 <div class="popup-content">
@@ -22,13 +24,14 @@
                     <p>${feature.properties.description.substring(0, 100)}...</p>
                     <p>Date: ${feature.properties.date}</p>
                     <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
-                    <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin"> <!-- change value to ${feature.properties.id}-->
+                    <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> <!-- change value to ${feature.properties.id}-->
                         Aider
                     </button>
                 </div>
             `;
             layer.bindPopup(popupContent);
         }
+
         function addDataPoints(dataPairs, map) {
             dataPairs.forEach(geoJsonPair => {
                 let myIcon = L.divIcon({
@@ -44,6 +47,30 @@
                     }).addTo(map);
             });
         }
+
+        function updateDataPointsWithFilter() {
+            let data = Alpine.store('filters');
+            let params = new URLSearchParams();
+            Object.keys(data.categories).forEach(key => {
+                if (data.categories[key]) {
+                    params.append('map_object.category', key);
+                }
+            });
+            if(history.pushState) {
+                history.pushState(null, null, '/map?' + params.toString());
+            }
+            fetch('/map-json?' + params.toString())
+                .then(response => response.json())
+                .then(data => {
+                    markupLayer.clearLayers();
+                    addDataPoints(data, markupLayer);
+                });
+        }
+
+        function openHelpModal(eventId) {
+            document.getElementById('eventIdField').value = eventId;
+            document.getElementById('helpModal').style.display='block';
+        }
         
         document.addEventListener('DOMContentLoaded', function() {
             const map = L.map('map').setView([45.5017, -73.5673], 8);
@@ -53,29 +80,46 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             })  
             layer.addTo(map)
+            
+            markupLayer = L.layerGroup().addTo(map);
+            
             let data = JSON.parse("{{ .MapItemsJson }}")
-            addDataPoints(data, map)
+            addDataPoints(data, markupLayer)
         });
 
-        function openHelpModal(eventId) {
-            document.getElementById('eventIdField').value = eventId;
-            document.getElementById('helpModal').style.display='block';
-        }
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('filters', {
+                categories: {
+                    {{ range .Categories }}
+                    '{{ . }}': true,
+                    {{ end }}
+                }
+            });
+            let params = new URLSearchParams(window.location.search);
+            if (params.size > 0) {
+                let filters = Alpine.store('filters');
+                Object.keys(filters.categories).forEach((v, k) => {
+                    filters.categories[v] = params.getAll('map_object.category').includes(v);
+                });
+                Alpine.store('filters', filters);
+            }
+        });
     </script>
 </head>
 <body>
 
 {{ template "components/navbar" . }}
+
     <h2 class="w3-center">Événements d'urgence</h2>
-    <h6>{{.ActiveSession}}</h6>
     <div class="w3-container">
         <div class="w3-card w3-auto w3-round-large" style="width: 90vw;max-width: none;">
-            <h4 class="w3-center">Filtres</h4>
-            <div x-data="{ categoriesDiv: false }">
-                <button @click="categoriesDiv = !categoriesDiv" class="w3-btn w3-white w3-border w3-border-green w3-round-xlarge">Expand</button>
+            <div x-data="{ categoriesDiv: false }" >
+                <button @click="categoriesDiv = !categoriesDiv" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" x-bind:class="categoriesDiv ? 'w3-blue' : 'w3-white'">
+                    Catégories
+                </button>
              
-                <div x-show="categoriesDiv" class="w3-panel w3-pale-green w3-padding-32">
-                    {{ .Categories }}
+                <div x-show="categoriesDiv" class="w3-panel w3-padding-32 w3-topbar	 w3-border-blue" x-transition style="display: none;">
+                    {{ template "map/filter.html" .Categories }}
                 </div>
             </div>
         </div>
@@ -93,7 +137,6 @@
                 
                 {{ template "forms/helpForm.html" . }}
 
-
                 <footer class="w3-container w3-teal">
                     <p>Merci pour votre contribution!</p>
                 </footer>
@@ -102,7 +145,7 @@
     </div>
 
     <p>
-        <button onclick="document.getElementById('eventModal').style.display='block'"  class="w3-btn w3-teal w3-round-xlarge">Créer un évènement</button>
+        <button onclick="document.getElementById('eventModal').style.display='block'"  class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}>Créer un évènement</button>
     </p>
 
     <div id="eventModal" class="w3-modal">
@@ -120,11 +163,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
 
 </body>
 </html>

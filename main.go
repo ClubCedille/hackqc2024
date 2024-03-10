@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -48,6 +50,13 @@ func main() {
 	generateSeedData(db)
 
 	r := gin.Default()
+	r.SetFuncMap(template.FuncMap{
+		"escapeSingleQuotes": func(s string) string {
+			return strings.ReplaceAll(s, "'", "\\'")
+		},
+	})
+
+	authorized := r.Group("/")
 
 	store := cookie.NewStore([]byte(GIN_SESSION_SECRET))
 	store.Options(sessions.Options{MaxAge: 60 * 60 * 24}) // expire in a day
@@ -56,6 +65,7 @@ func main() {
 	r.LoadHTMLGlob("templates/**/*.html")
 
 	registerRoutes(r, db)
+	authRegisterRoutes(r, authorized, db)
 
 	err = r.Run()
 	if err != nil {

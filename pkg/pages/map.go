@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -237,9 +238,30 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	categoryKeys := make([]string, 0, len(CategoryStyles))
+	for k := range CategoryStyles {
+		categoryKeys = append(categoryKeys, k)
+	}
+	sort.Strings(categoryKeys)
+
+	// For create event form
+	mapCategories := make([]interface{}, 0, len(CategoryStyles))
+	for key := range CategoryStyles {
+		category := struct {
+			Name string
+		}{
+			Name: key,
+		}
+		mapCategories = append(mapCategories, category)
+	}
+
+	fmt.Println("mapCategories", mapCategories)
+	
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"ActiveSession": fmt.Sprintf("Bonjour %s !", session.ActiveSession.UserName),
 		"MapItemsJson":  string(jsonValue),
+		"Categories":    categoryKeys,
+		"ActiveSession": session.ActiveSession.UserName,
+		"MapCategory": mapCategories,
 	})
 }
 

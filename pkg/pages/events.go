@@ -70,22 +70,6 @@ func SearchEventTable(c *gin.Context, db *clover.DB) {
 	})
 }
 
-func GetCreateEvent(c *gin.Context, db *clover.DB) {
-	mapCategories := make([]interface{}, 0, len(CategoryStyles))
-	for key := range CategoryStyles {
-		category := struct {
-			Name string
-		}{
-			Name: key,
-		}
-		mapCategories = append(mapCategories, category)
-	}
-
-	c.HTML(http.StatusOK, "forms/eventForm.html", gin.H{
-		"MapCategory": mapCategories,
-	})
-}
-
 func CreateEvent(c *gin.Context, db *clover.DB) {
 	dangerLvl, _ := strconv.Atoi(c.PostForm("danger_level"))
 	urgencyType, _ := strconv.Atoi(c.PostForm("urgency_type"))

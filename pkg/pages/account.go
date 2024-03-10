@@ -63,7 +63,7 @@ func Login(c *gin.Context, db *clover.DB) {
 	}
 
 	if !exist {
-		c.HTML(http.StatusUnauthorized, "forms/login.html", gin.H{
+		c.HTML(http.StatusUnauthorized, "forms/loginForm.html", gin.H{
 			"Error": "Le compte n'existe pas.",
 		})
 		return
@@ -71,6 +71,11 @@ func Login(c *gin.Context, db *clover.DB) {
 		setActiveSession(c, db, c.PostForm("user_name"))
 		c.Redirect(http.StatusSeeOther, "/map")
 	}
+}
+
+func Logout(c *gin.Context) {
+	session.ClearActiveSession(c)
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func UpdateAccount(c *gin.Context, db *clover.DB) {
