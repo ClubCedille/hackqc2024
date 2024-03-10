@@ -10,35 +10,31 @@ import (
 )
 
 func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
-	group.Use(AuthRequiredMiddleware)
+	group.Use(AuthRequiredMiddleware())
 	{
 		// Help
-		r.POST("/create-help", func(c *gin.Context) {
+		group.POST("/create-help", func(c *gin.Context) {
 			pages.CreateHelp(c, db)
 		})
 
-		r.POST("/update-help", func(c *gin.Context) {
+		group.POST("/update-help", func(c *gin.Context) {
 			pages.UpdateHelp(c, db)
 		})
 
-		r.DELETE("/delete-help", func(c *gin.Context) {
+		group.DELETE("/delete-help", func(c *gin.Context) {
 			pages.DeleteHelp(c, db)
 		})
 
 		// Event
-		r.GET("/create-event", func(c *gin.Context) {
-			pages.GetCreateEvent(c, db)
-		})
-
-		r.POST("/create-event", func(c *gin.Context) {
+		group.POST("/create-event", func(c *gin.Context) {
 			pages.CreateEvent(c, db)
 		})
 
-		r.POST("/update-event", func(c *gin.Context) {
+		group.POST("/update-event", func(c *gin.Context) {
 			pages.UpdateEvent(c, db)
 		})
 
-		r.DELETE("/delete-event", func(c *gin.Context) {
+		group.DELETE("/delete-event", func(c *gin.Context) {
 			pages.DeleteEvent(c, db)
 		})
 	}
@@ -80,6 +76,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/eventCards", func(c *gin.Context) {
 		pages.EventsPage(c, db)
+	})
+
+	r.GET("/create-event", func(c *gin.Context) {
+		pages.GetCreateEvent(c, db)
 	})
 
 	// Account

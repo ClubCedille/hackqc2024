@@ -8,9 +8,11 @@ import (
 )
 
 // Check if user is logged in
-func AuthRequiredMiddleware(c *gin.Context) {
-	if session.ActiveSession.AccountId == "" {
-		c.Redirect(http.StatusSeeOther, "/login")
-		return
+func AuthRequiredMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if session.ActiveSession.AccountId == "" {
+			c.Redirect(http.StatusSeeOther, "/login")
+			return
+		}
 	}
 }
