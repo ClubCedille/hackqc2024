@@ -16,6 +16,7 @@ type Help struct {
 	NeedHelp     bool                `json:"need_help" clover:"need_help"`
 	HowToHelp    string              `json:"how_to_help" clover:"how_to_help"`
 	HowToUseHelp string              `json:"how_to_use_help" clover:"how_to_use_help"`
+	EventId		 string 			`json:"event_id" clover:"event_id"`
 }
 
 func GetHelpById(db *clover.DB, helpId string) (Help, error) {

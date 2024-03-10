@@ -1,36 +1,69 @@
 {{ define "forms/helpForm.html" }}
-<html lang="en">
+<form method="POST" action="/create-help" class="w3-card-4 w3-light-grey" style="padding: 20px;">
 
-<head>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-</head>
-{{range .EventCards}}
-<div class="w3-card-4 w3-white w3-container w3-margin" style="max-width: 500px">
-    <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
-        <span class="category w3-round-large w3-{{.GetCategoryColor}} w3-padding-small">
-            {{.MapObject.Category}} {{.GetCategoryEmoji}}
-        </span>
-        <h2 class="name" style="margin-top: 0;">{{.MapObject.Name}}</h2>
+    <input type="hidden" id="eventIdField" name="event_id">
+    <div class="w3-margin-bottom">
+        <label>Nom</label>
+        <input class="w3-input" type="text" name="map_object_name" required>
     </div>
-    <div class="w3-container w3-margin-bottom">
-        <span class="date">Identifié le: {{.MapObject.Date}}</span>
-    </div>
-    <div class="w3-container w3-margin-bottom">
-        <b class="dangerLevel">Danger: </b> <span
-            class="w3-round-large w3-{{.GetDangerColor}} w3-padding-small">{{.GetDangerLevelString}}</span>
-        <b class="urgencyType">Urgence: </b><span
-            class="w3-round-large w3-{{.GetUrgencyColor}} w3-padding-small">{{.GetUrgencyTypeString}}</span>
-    </div>
-    <div class="w3-container">
-        <div class="description">
-            <b>Description:</b>
-            <p class="w3-container">
-                {{.MapObject.Description}}
-            </p>
-        </div>
-    </div>
-</div>
 
-</html>
-{{ end }}
+    <div class="w3-margin-bottom">
+        <label>Description</label>
+        <textarea class="w3-input" name="map_object_description" required></textarea>
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Categorie</label>
+        <select class="w3-select" name="map_object_category" required>
+            <option value="" disabled selected>Choose your option</option>
+            <option value="Hébergement">Hébergement</option>
+            <option value="Nourriture">Nourriture</option>
+            <option value="Transport">Transport</option>
+            <option value="Coup de main">Coup de main</option>
+            <option value="Renforcement">Renforcement</option>
+        </select>
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label for="map_object_geometry">Coordonnées:</label>
+        <select id="map_object_geometry_type" name="map_object_geometry_type">
+        <option value="Point">Point</option>
+        </select>
+        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label for="map_object_tags">Tags:</label>
+        <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..."  name="map_object_tags" required>
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Information de contact</label>
+        <input class="w3-input" type="text" name="contact_infos" required>
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Besoin d'aide</label>
+        <p>
+            <input class="w3-radio" type="radio" name="need_help" value="true" required>
+            <label>Oui</label>
+        </p>
+        <p>
+            <input class="w3-radio" type="radio" name="need_help" value="false">
+            <label>Non</label>
+        </p>
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Comment aider</label>
+        <textarea class="w3-input" name="how_to_help" required></textarea>
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Comment utiliser l'aide</label>
+        <textarea class="w3-input" name="how_to_use_help" required></textarea>
+    </div>
+    
+    <button class="w3-button w3-blue w3-margin-top" type="submit">Submit</button>
+</form>
 {{ end }}

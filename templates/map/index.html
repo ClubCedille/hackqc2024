@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/static/mapStyle.css"> 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
@@ -21,6 +22,9 @@
                     <p>${feature.properties.description.substring(0, 100)}...</p>
                     <p>Date: ${feature.properties.date}</p>
                     <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
+                    <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin"> <!-- change value to ${feature.properties.id}-->
+                        Aider
+                    </button>
                 </div>
             `;
             layer.bindPopup(popupContent);
@@ -52,6 +56,11 @@
             let data = JSON.parse("{{ .MapItemsJson }}")
             addDataPoints(data, map)
         });
+
+        function openHelpModal(eventId) {
+            document.getElementById('eventIdField').value = eventId;
+            document.getElementById('helpModal').style.display='block';
+        }
     </script>
 </head>
 <body>
@@ -72,6 +81,44 @@
         </div>
 
         <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
+    </div>
+
+    <div id="helpModal" class="w3-modal">
+        <div class="w3-modal-dialog">
+            <div class="w3-modal-content w3-card-8">
+                <header class="w3-container w3-teal">
+                    <span onclick="document.getElementById('helpModal').style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
+                    <h2>Soumettre une demande d'aide</h2>
+                </header>
+                
+                {{ template "forms/helpForm.html" . }}
+
+
+                <footer class="w3-container w3-teal">
+                    <p>Merci pour votre contribution!</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <button onclick="document.getElementById('eventModal').style.display='block'"  class="w3-btn w3-teal w3-round-xlarge">Créer un évènement</button>
+    </p>
+
+    <div id="eventModal" class="w3-modal">
+        <div class="w3-modal-dialog">
+            <div class="w3-modal-content w3-card-8">
+                <header class="w3-container w3-teal">
+                    <span onclick="document.getElementById('eventModal').style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
+                </header>
+                
+                {{ template "forms/eventForm.html" . }}
+
+                <footer class="w3-container w3-teal">
+                    <p>Merci pour votre contribution!</p>
+                </footer>
+            </div>
+        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
