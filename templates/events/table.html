@@ -39,7 +39,7 @@
     <div class="w3-bar-item w3-left">
         <!-- search with HTMX, will return event_list_table.html -->
         <input class="w3-input w3-border" name="search" type="search" placeholder="Recherche..." id="search-box"
-            hx-trigger="input changed delay:500ms, search" hx-indicator=".htmx-indicator" hx-get="/events/table/search"
+            hx-trigger="input changed delay:300ms, search" hx-indicator=".htmx-indicator" hx-get="/events/table/search"
             hx-target="#event-list" hx-swap="outerHTML">
     </div>
 
