@@ -1,0 +1,32 @@
+{{ define "forms/loginForm.html" }}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Se connecter</title>
+        <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+        <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="/static/formStyle.css">
+    </head>
+    <body>
+      <div class="row">
+    <div class="col-md-12">
+      <form action="/login" method="post">
+        <h1>Se connecter</h1>
+        <h5 style="color: red;">{{ .Error }}</h5>
+        <fieldset>
+          <label for="user_name">Nom d'utilisateur:</label>
+          <input type="text" placeholder="Nom d'utilisateur" id="user_name" name="user_name">
+
+          <label for="email">Courriel:</label>
+          <input type="text" placeholder="Courriel" id="email" name="email">
+        </fieldset>
+       
+        <button type="submit">Se connecter</button>
+        
+       </form>
+        </div>
+      </div>
+    </body>
+</html>
+{{ end }}

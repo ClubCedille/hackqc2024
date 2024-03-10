@@ -1,12 +1,10 @@
 package main
 
 import (
-	"io"
-	"log"
 	"net/http"
-	"time"
 
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -15,19 +13,8 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.Static("/static", "./templates/static")
 
 	r.GET("/", func(c *gin.Context) {
-		dt := time.Now()
-
-		c.HTML(http.StatusOK, "home/index.html", gin.H{
-			"Time": dt.Format("2006-01-02 15:04"),
-		})
-
-	})
-
-	r.GET("/events-geojson", func(c *gin.Context) {
-		if cachedGeoJSON == nil {
-			fetchGeoJSON()
-		}
-		c.Data(http.StatusOK, "application/json", cachedGeoJSON)
+		session.GetActiveSession(c)
+		c.Redirect(http.StatusSeeOther, "/map")
 	})
 
 	r.GET("/map", func(c *gin.Context) {
@@ -44,7 +31,6 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	// Events
-
 	r.GET("/events/table", func(c *gin.Context) {
 		pages.EventTablePage(c, db)
 	})
@@ -91,6 +77,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	// Account
+	r.GET("/create-account", func(c *gin.Context) {
+		pages.GetCreateAccount(c)
+	})
+
 	r.POST("/create-account", func(c *gin.Context) {
 		pages.CreateAccount(c, db)
 	})
@@ -99,26 +89,15 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.UpdateAccount(c, db)
 	})
 
-}
+	r.GET("/login", func(c *gin.Context) {
+		pages.GetLogin(c)
+	})
 
-// Temp example of fetching from données Québec
-var cachedGeoJSON []byte
+	r.POST("/login", func(c *gin.Context) {
+		pages.Login(c, db)
+	})
 
-func fetchGeoJSON() {
-
-	if cachedGeoJSON == nil {
-		resp, err := http.Get("https://donnees.montreal.ca/dataset/6a4cbf2c-c9b7-413a-86b1-e8f7081e2578/resource/35307457-a00f-4912-9941-8095ead51f6e/download/evenements.geojson")
-		if err != nil {
-			log.Println("Error fetching GeoJSON:", err)
-			return
-		}
-		defer resp.Body.Close()
-
-		data, err := io.ReadAll(resp.Body)
-		if err != nil {
-			log.Println("Error reading GeoJSON:", err)
-			return
-		}
-		cachedGeoJSON = data
-	}
+	r.GET("/submit-events", func(c *gin.Context) {
+		pages.SubmitEvents(c, db)
+	})
 }

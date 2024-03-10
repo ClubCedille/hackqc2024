@@ -2,10 +2,12 @@ package pages
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -58,12 +60,12 @@ var CategoryStyles = map[string]Style{
 	"Inondation": {
 		Color:    "red",
 		IconSize: 2,
-		Icon:     "severe_rain",
+		Icon:     "flood",
 	},
 	"Panne d'électricité": {
 		Color:    "yellow",
 		IconSize: 1,
-		Icon:     "water",
+		Icon:     "electric_bolt",
 	},
 	"Mouvement de terrain": {
 		Color:    "red",
@@ -98,7 +100,7 @@ var CategoryStyles = map[string]Style{
 	"Feu de forêt": {
 		Color:    "red",
 		IconSize: 2,
-		Icon:     "fire",
+		Icon:     "local_fire_department",
 	},
 	"Érosion": {
 		Color:    "yellow",
@@ -118,7 +120,7 @@ var CategoryStyles = map[string]Style{
 	"Incendie industriel": {
 		Color:    "yellow",
 		IconSize: 1,
-		Icon:     "fire",
+		Icon:     "local_fire_department",
 	},
 	"Pluie verglaçante": {
 		Color:    "blue",
@@ -143,7 +145,7 @@ var CategoryStyles = map[string]Style{
 	"Risque d'explosion": {
 		Color:    "red",
 		IconSize: 2,
-		Icon:     "explosion",
+		Icon:     "destruction",
 	},
 	"Débordement de barrage": {
 		Color:    "red",
@@ -153,7 +155,7 @@ var CategoryStyles = map[string]Style{
 	"Feu urbain": {
 		Color:    "yellow",
 		IconSize: 1,
-		Icon:     "fire",
+		Icon:     "local_fire_department",
 	},
 	"Accident maritime": {
 		Color:    "yellow",
@@ -236,7 +238,8 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"MapItemsJson": string(jsonValue),
+		"ActiveSession": fmt.Sprintf("Bonjour %s !", session.ActiveSession.UserName),
+		"MapItemsJson":  string(jsonValue),
 	})
 }
 

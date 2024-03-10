@@ -1,0 +1,8 @@
+#helpModal, #eventModal {
+	z-index: 1000;
+}
+
+.w3-button {
+	border-radius: 5px;
+	margin: 5px;
+}

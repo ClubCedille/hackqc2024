@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/query"
@@ -103,8 +103,8 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 	coordinatesArray := strings.Split(coordinates, ",")
 
 	var coordinatesArrayFloat []float64
-	for _, v := range coordinatesArray {
-		coords, err := strconv.ParseFloat(strings.TrimSpace(v), 64)
+	for i := len(coordinatesArray) - 1; i >= 0; i-- {
+		coords, err := strconv.ParseFloat(strings.TrimSpace(coordinatesArray[i]), 64)
 		if err != nil {
 			log.Println("Error parsing coordinates:", err)
 			c.Status(http.StatusInternalServerError)
@@ -121,7 +121,7 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 			Description: c.PostForm("map_object_description"),
 			Category:    c.PostForm("map_object_category"),
 			Tags:        tagsArrayString,
-			AccountId:   data_import.SYSTEM_USER_GUID,
+			AccountId:   session.ActiveSession.AccountId,
 			Date:        time.Now(),
 			Geometry: mapobject.Geometry{
 				GeomType:    c.PostForm("map_object_geometry_type"),

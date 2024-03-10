@@ -4,7 +4,15 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 </head>
 {{range .HelpCards}}
-<div class="w3-card-4 w3-light-gray w3-container w3-margin" style="max-width: 500px">
+{{ template "cards/singleHelpCard" . }}
+{{ end }}
+
+</html>
+{{ end }}
+
+
+{{ define "cards/singleHelpCard" }}
+<div class="w3-card-4 w3-light-gray w3-container w3-margin w3-round-xlarge" style="max-width: 500px">
     <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
         <span class="category w3-round-large w3-red w3-padding-small">
             {{.MapObject.Category}}
@@ -12,7 +20,7 @@
         <h2 class="name" style="margin-top: 0;">{{.MapObject.Name}}</h2>
     </div>
     <div class="w3-container w3-margin-bottom">
-        <span class="date">Ajouté le: {{.MapObject.Date}}</span>
+        <span class="date">Ajouté le: {{.MapObject.GetDateString}}</span>
     </div>
     <div class="w3-container w3-margin-bottom">
         <b class="status">Status: </b><span class="w3-round-large w3-green w3-padding-small">{{.NeedHelp}}</span>
@@ -32,9 +40,4 @@
         <p class="w3-container">{{.HowToUseHelp}}</p>
     </div>
 </div>
-
-</html>
-{{ end }}
-
-</html>
 {{ end }}
