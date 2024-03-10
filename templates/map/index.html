@@ -24,7 +24,7 @@
                     <p>${feature.properties.description.substring(0, 100)}...</p>
                     <p>Date: ${feature.properties.date}</p>
                     <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
-                    <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin"> <!-- change value to ${feature.properties.id}-->
+                    <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> <!-- change value to ${feature.properties.id}-->
                         Aider
                     </button>
                 </div>
@@ -151,7 +151,7 @@
     </div>
 
     <p>
-        <button onclick="document.getElementById('eventModal').style.display='block'"  class="w3-btn w3-teal w3-round-xlarge">Créer un évènement</button>
+        <button onclick="document.getElementById('eventModal').style.display='block'"  class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}>Créer un évènement</button>
     </p>
 
     <div id="eventModal" class="w3-modal">
