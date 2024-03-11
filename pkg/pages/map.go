@@ -312,6 +312,7 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		"MapCategory":   mapCategories,
 		"UrgencyLevels": urgencyLevels,
 		"DangerLevels":  dangerLevels,
+		"CategoryKeys":  categoryKeys, // for selection in event form
 	})
 }
 
