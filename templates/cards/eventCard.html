@@ -31,6 +31,7 @@
         <b class="urgencyType">Urgence: </b><span
             class="w3-round-large w3-{{.GetUrgencyColor}} w3-padding-small">{{.GetUrgencyTypeString}}</span>
     </div>
+    {{ if .MapObject.Description }}
     <div class="w3-container">
         <div class="description">
             <b>Description:</b>
@@ -39,5 +40,6 @@
             </p>
         </div>
     </div>
+    {{ end }}
 </div>
 {{end}}
