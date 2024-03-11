@@ -60,6 +60,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.MapJson(c, db)
 	})
 
+	r.GET("/get-pannes-overlay", func(c *gin.Context) {
+		pages.GetPannesOverlay(c, db)
+	})
+
 	// Event-Help Grid
 	r.GET("/grid", func(c *gin.Context) {
 		pages.GridPage(c, db)

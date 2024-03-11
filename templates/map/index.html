@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
     <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="/static/L.KML.js" defer></script>
 
     <script>
         var markupLayer
@@ -46,6 +47,17 @@
                         onEachFeature: addPopupContent
                     }).addTo(map);
             });
+        }
+
+        function addPannesOverlay(map) {
+            fetch('/get-pannes-overlay')
+                .then(response => response.text())
+                .then(kmltext => {
+                    const parser = new DOMParser();
+                    const kml = parser.parseFromString(kmltext, 'text/xml');
+                    var kmlLayer = new L.KML(kml);
+                    kmlLayer.addTo(map);
+                });
         }
 
         function updateDataPointsWithFilter() {
@@ -84,6 +96,7 @@
             markupLayer = L.layerGroup().addTo(map);
             
             let data = JSON.parse("{{ .MapItemsJson }}")
+            addPannesOverlay(map)
             addDataPoints(data, markupLayer)
         });
 

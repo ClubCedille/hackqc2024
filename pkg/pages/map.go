@@ -3,8 +3,11 @@ package pages
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"sort"
+	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -338,4 +341,28 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 	}
 
 	return mapItems, nil
+}
+
+func GetPannesOverlay(c *gin.Context, db *clover.DB) {
+	files, err := os.ReadDir("tmp/")
+	if err != nil {
+		log.Println("Error reading directory:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	matchingFiles := []string{}
+	for _, file := range files {
+		if !file.IsDir() && strings.Contains(file.Name(), "outageAreas") {
+			matchingFiles = append(matchingFiles, file.Name())
+		}
+	}
+	sort.Slice(matchingFiles, func(i, j int) bool {
+		return matchingFiles[i] < matchingFiles[j]
+	})
+	if len(matchingFiles) > 0 {
+		c.File("tmp/" + matchingFiles[0])
+	} else {
+		log.Println("No matching files found")
+		c.Status(http.StatusInternalServerError)
+	}
 }
