@@ -62,6 +62,7 @@ func (source DQCWeatherEventSource) GetAllEvents() ([]event.Event, error) {
 					coordinates = append(coordinates, point.X(), point.Y()) //massacre of geojson
 				}
 			}
+			weather_feature.Geometry.GeomType = "Polygon"
 			weather_feature.Geometry.Coordinates = coordinates
 		}
 
