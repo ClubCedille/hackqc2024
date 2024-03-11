@@ -33,6 +33,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
+	go.mongodb.org/mongo-driver v1.11.4 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
@@ -53,6 +54,7 @@ require (
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/ostafen/clover/v2 v2.0.0-alpha.3.0.20240131202429-e6a58d6d36bf
+	github.com/paulmach/orb v0.11.1
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	go.opencensus.io v0.24.0 // indirect

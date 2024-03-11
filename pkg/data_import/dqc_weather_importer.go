@@ -9,7 +9,16 @@ import (
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
 )
+
+var config = jsoniter.Config{
+	EscapeHTML:              true,
+	SortMapKeys:             false,
+	MarshalFloatWith6Digits: true,
+}.Froze()
 
 const DQC_WEATHER_NAME = "DonnéesQC Weather"
 const DQC_WEATHER_URL = "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi"
@@ -24,13 +33,39 @@ func (source DQCWeatherEventSource) GetAllEvents() ([]event.Event, error) {
 	events := []event.Event{}
 
 	weather, err := getWeatherData(map[string]string{})
+	alerts, err := getWeatherAlerts(map[string]string{})
 
 	if err != nil {
 		return nil, err
 	}
 
-	for _, feature := range weather.Features {
-		event, err := feature.ToEvent()
+	for _, weather_feature := range weather.Features {
+
+		// Find the alert for this feature by alert_id
+		alert_id := strings.Split(weather_feature.Properties.Id_alerte, ".")[1]
+		var foundAlert *geojson.Feature
+		for _, alert := range alerts.Features {
+			if strings.Contains(alert.Properties["id_alerte"].(string), alert_id) {
+				foundAlert = alert
+				break
+			}
+		}
+
+		// hack: convert coordinate to wrong float64 array for db
+		// see: https://github.com/paulmach/orb/issues/45
+		var coordinates []float64
+		// Replace the geometry of the feature (single point) with the alert geometry (polygon)
+		if foundAlert != nil {
+			geometry := foundAlert.Geometry
+			for _, ring := range geometry.(orb.Polygon) {
+				for _, point := range ring {
+					coordinates = append(coordinates, point.X(), point.Y()) //massacre of geojson
+				}
+			}
+			weather_feature.Geometry.Coordinates = coordinates
+		}
+
+		event, err := weather_feature.ToEvent()
 		if err != nil {
 			msg := fmt.Sprintf("Error converting feature to event: %s", err.Error())
 			fmt.Fprintln(os.Stderr, msg)
@@ -85,6 +120,34 @@ func searchWeatherData(body string) (*WeatherFeatureCollection, error) {
 	}
 
 	return &weatherFeatures, err
+}
+
+/*
+These are the WFS query params that are used to get weather alerts with polygons from the DQC WFS service.
+SERVICE: WFS
+REQUEST: GetFeature
+VERSION: 2.0.0
+TYPENAMES: ms:masas_naad_adna_s_public
+SRSNAME: urn:ogc:def:crs:EPSG::4326
+BBOX: -6050013.3284445209428668,-1035657.34829420340247452,4471994.56733370572328568,5149718.85507926531136036,urn:ogc:def:crs:EPSG::32198
+outputFormat: geojson
+*/
+
+// This gets the weather alerts from layer "ms:masas_naad_adna_s_public" on the DQC WFS service.
+func getWeatherAlerts(params map[string]string) (*geojson.FeatureCollection, error) {
+	params["typeNames"] = "ms:masas_naad_adna_s_public"
+	params["outputFormat"] = "geojson"
+	params["srsName"] = "EPSG:4326"
+	params["bbox"] = "-6050013.3284445209428668,-1035657.34829420340247452,4471994.56733370572328568,5149718.85507926531136036,urn:ogc:def:crs:EPSG::32198"
+
+	result, err := MakeWFSGetRequest(DQC_WEATHER_URL, "GetFeature", params)
+	if err != nil {
+		return nil, err
+	}
+
+	fc, _ := geojson.UnmarshalFeatureCollection(result)
+
+	return fc, err
 }
 
 func getWeatherData(params map[string]string) (*WeatherFeatureCollection, error) {

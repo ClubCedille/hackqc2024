@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "DQC WFS igo_gouvouvert.fgci",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

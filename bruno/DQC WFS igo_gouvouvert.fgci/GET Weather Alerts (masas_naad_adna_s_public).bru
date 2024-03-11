@@ -1,0 +1,21 @@
+meta {
+  name: GET Weather Alerts (masas_naad_adna_s_public)
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ms%3Amasas_naad_adna_s_public&SRSNAME=urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A4326&BBOX=-6050013.3284445209428668,-1035657.34829420340247452,4471994.56733370572328568,5149718.85507926531136036,urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A32198&outputFormat=geojson
+  body: none
+  auth: none
+}
+
+query {
+  SERVICE: WFS
+  REQUEST: GetFeature
+  VERSION: 2.0.0
+  TYPENAMES: ms%3Amasas_naad_adna_s_public
+  SRSNAME: urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A4326
+  BBOX: -6050013.3284445209428668,-1035657.34829420340247452,4471994.56733370572328568,5149718.85507926531136036,urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A32198
+  outputFormat: geojson
+}
