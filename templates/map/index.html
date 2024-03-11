@@ -16,6 +16,7 @@
 
     <script>
         var markupLayer
+        const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
         function addPopupContent(feature, layer) {
             const popupContent = `
@@ -40,6 +41,9 @@
                     html: geoJsonPair.style.icon,
                     popupAnchor: [geoJsonPair.style.iconSize*4+4, -6]
                 });
+                if(geoJsonPair.geoJson.geometry.type === "Polygon") {
+                    geoJsonPair.geoJson.geometry.coordinates = [ array_chunks(geoJsonPair.geoJson.geometry.coordinates, 2) ];
+                }
                 L.geoJSON(geoJsonPair.geoJson, {
                         pointToLayer: function (feature, latlng) {
                             return L.marker(latlng, {icon: myIcon});
