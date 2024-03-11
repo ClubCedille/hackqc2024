@@ -41,8 +41,8 @@
         <label for="map_object_category">Catégories:</label>
         <select id="map_object_category" name="map_object_category" required>
           <option value="" disabled selected>Sélectionner une catégorie</option>
-          {{ range .MapCategory }}
-          <option value="{{ .Name }}">{{ .Name }}</option>
+          {{ range .Categories }}
+          <option value="{{ . }}">{{ . }}</option>
           {{ end }}
         </select>
 

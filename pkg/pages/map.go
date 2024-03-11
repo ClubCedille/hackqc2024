@@ -11,6 +11,9 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
+
+	"golang.org/x/text/collate"
+	"golang.org/x/text/language"
 )
 
 type GeoJSONPair struct {
@@ -225,6 +228,14 @@ var CategoryStyles = map[string]Style{
 	},
 }
 
+func sortWithAccents(s []string) {
+	// Create a Collator for French
+	fr := collate.New(language.French, collate.Loose)
+
+	// Sort the strings
+	fr.SortStrings(s)
+}
+
 func MapPage(c *gin.Context, db *clover.DB) {
 	filters := c.Request.URL.Query()
 	mapItems, err := retrieveMapItems(db, filters)
@@ -243,6 +254,9 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		categoryKeys = append(categoryKeys, k)
 	}
 	sort.Strings(categoryKeys)
+	fmt.Println("categoryKeys", categoryKeys)
+	sortWithAccents(categoryKeys)
+	fmt.Println("categoryKeys", categoryKeys)
 
 	// For create event form
 	mapCategories := make([]interface{}, 0, len(CategoryStyles))
@@ -256,12 +270,12 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	}
 
 	fmt.Println("mapCategories", mapCategories)
-	
+
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
 		"MapItemsJson":  string(jsonValue),
 		"Categories":    categoryKeys,
 		"ActiveSession": session.ActiveSession.UserName,
-		"MapCategory": mapCategories,
+		"MapCategory":   mapCategories,
 	})
 }
 
