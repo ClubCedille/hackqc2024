@@ -256,10 +256,7 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	for k := range CategoryStyles {
 		categoryKeys = append(categoryKeys, k)
 	}
-	sort.Strings(categoryKeys)
-	fmt.Println("categoryKeys", categoryKeys)
 	sortWithAccents(categoryKeys)
-	fmt.Println("categoryKeys", categoryKeys)
 
 	// For create event form
 	mapCategories := make([]interface{}, 0, len(CategoryStyles))
