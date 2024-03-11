@@ -290,12 +290,28 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		},
 	}
 
+	dangerLevels := []NameValue{
+		{
+			Name:  "Élevé",
+			Value: fmt.Sprint(event.High),
+		},
+		{
+			Name:  "Modéré",
+			Value: fmt.Sprint(event.Medium),
+		},
+		{
+			Name:  "Faible",
+			Value: fmt.Sprint(event.Low),
+		},
+	}
+
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
 		"MapItemsJson":  string(jsonValue),
 		"Categories":    mapCategories,
 		"ActiveSession": session.ActiveSession.UserName,
 		"MapCategory":   mapCategories,
 		"UrgencyLevels": urgencyLevels,
+		"DangerLevels":  dangerLevels,
 	})
 }
 
