@@ -36,6 +36,11 @@ type GeoJSON struct {
 	Properties mapobject.MapObject `json:"properties"`
 }
 
+type NameValue struct {
+	Name  string
+	Value string
+}
+
 // Styling with google material icons
 // using list at all_material_icons.txt
 var CategoryStyles = map[string]Style{
@@ -259,23 +264,38 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	sortWithAccents(categoryKeys)
 
 	// For create event form
-	mapCategories := make([]interface{}, 0, len(CategoryStyles))
-	for key := range CategoryStyles {
-		category := struct {
-			Name string
-		}{
-			Name: key,
+	mapCategories := make([]interface{}, len(categoryKeys))
+	for i, key := range categoryKeys {
+		category := NameValue{
+			Name:  key,
+			Value: key,
 		}
-		mapCategories = append(mapCategories, category)
+		mapCategories[i] = category
 	}
 
 	fmt.Println("mapCategories", mapCategories)
 
+	urgencyLevels := []NameValue{
+		{
+			Name:  "Futur",
+			Value: fmt.Sprint(event.Futur),
+		},
+		{
+			Name:  "Passé",
+			Value: fmt.Sprint(event.Past),
+		},
+		{
+			Name:  "Présent",
+			Value: fmt.Sprint(event.Present),
+		},
+	}
+
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
 		"MapItemsJson":  string(jsonValue),
-		"Categories":    categoryKeys,
+		"Categories":    mapCategories,
 		"ActiveSession": session.ActiveSession.UserName,
 		"MapCategory":   mapCategories,
+		"UrgencyLevels": urgencyLevels,
 	})
 }
 

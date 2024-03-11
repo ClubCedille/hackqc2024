@@ -138,7 +138,7 @@ func HelpTablePage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "list/index.html", gin.H{
+	c.HTML(http.StatusOK, "helps/table.html", gin.H{
 		"Helps": helps,
 	})
 }
