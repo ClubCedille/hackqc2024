@@ -1,6 +1,7 @@
 package event
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
@@ -133,7 +134,7 @@ func GetEventWithFilters(conn *clover.DB, filters map[string][]string, requireGe
 
 	for k, v := range filters {
 		filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
-			return slices.Contains(v, doc.Get(k).(string)) && (!requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil)
+			return slices.Contains(v, fmt.Sprint(doc.Get(k))) && (!requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil)
 		})
 	}
 
