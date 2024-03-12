@@ -31,9 +31,9 @@
                     <p>${feature.properties.map_object.description.substring(0, 100)}...</p>
                     <p>Date: ${feature.properties.map_object.date}</p>
                     `
-                    
-                    if (feature.properties.event._id) {
-                        popupContent += `
+
+            if (feature.properties.event._id) {
+                popupContent += `
                         <button
                             onclick="dubiousFunctionality(this, 'trigger-modal')"
                             class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
@@ -50,9 +50,9 @@
                             Aider
                         </button>
                         `
-                    }
-                    else if (feature.properties.help._id) {
-                        popupContent += `
+            }
+            else if (feature.properties.help._id) {
+                popupContent += `
                         <button
                             onclick="dubiousFunctionality(this, 'trigger-modal')"
                             class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
@@ -72,9 +72,9 @@
                             Evenement lié
                         </button>
                         `
-                    }
+            }
 
-                    popupContent += "</div>";
+            popupContent += "</div>";
             layer.bindPopup(popupContent);
         }
 
@@ -143,7 +143,7 @@
                 params.append('danger_level', '-1');
             }
 
-            if(data.categories['Panne d\'électricité'] && data.urgencyLevels['1'] && data.dangerLevels['2']) {
+            if (data.categories['Panne d\'électricité'] && data.urgencyLevels['1'] && data.dangerLevels['2']) {
                 panneLayer.addTo(map);
             } else {
                 panneLayer.remove();
@@ -168,10 +168,10 @@
             document.getElementById('eventIdField').value = eventId;
             document.getElementById('helpModal').style.display = 'block';
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             map = L.map('map').setView([45.5017, -73.5673], 8);
-            map.on('popupopen', function(e){
+            map.on('popupopen', function (e) {
                 htmx.process(document.body)
             })
 
@@ -184,13 +184,13 @@
 
             markupLayer = L.layerGroup().addTo(map);
             panneLayer = L.layerGroup();
-            
+
             let data = JSON.parse("{{ .MapItemsJson }}")
             addPannesOverlay(panneLayer)
             addDataPoints(data, markupLayer)
 
             filters = Alpine.store('filters')
-            if(filters.categories['Panne d\'électricité'] && filters.urgencyLevels['1'] && filters.dangerLevels['2']) {
+            if (filters.categories['Panne d\'électricité'] && filters.urgencyLevels['1'] && filters.dangerLevels['2']) {
                 panneLayer.addTo(map);
             }
         });
@@ -200,20 +200,20 @@
                 categories: {
                     {{ range .EventCategories }}
                         '{{ .Value }}': true,
-                    {{ end }}
-                    {{ range .HelpCategories }}
-                        '{{ .Value }}': true,
-                    {{ end }}
+            {{ end }}
+            {{ range .HelpCategories }}
+            '{{ .Value }}': true,
+            {{ end }}
                 },
-                urgencyLevels: {
+            urgencyLevels: {
                     {{ range .UrgencyLevels }}
-                        '{{ .Value }}': true,
-                    {{ end }}
+            '{{ .Value }}': true,
+            {{ end }}
                 },
-                dangerLevels: {
+            dangerLevels: {
                     {{ range .DangerLevels }}
-                        '{{ .Value }}': true,
-                    {{ end }}
+            '{{ .Value }}': true,
+            {{ end }}
                 }
             });
 
@@ -280,7 +280,8 @@
                         <div class="w3-border-bottom w3-border-gray">
                             <h6 class="w3-text-blue">Événements</h6>
                             {{ range .EventCategories }}
-                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                            <button
+                                class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
                                 @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
@@ -289,7 +290,8 @@
                         <div>
                             <h6 class="w3-text-blue">Aides</h6>
                             {{ range .HelpCategories }}
-                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                            <button
+                                class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
                                 @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
@@ -311,13 +313,12 @@
                                 sélectionner rien</button>
                         </div>
                         <div></div>
-                            {{ range .UrgencyLevels }}
-                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
-                                x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                                @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                                x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
-                            {{ end }}
-                        </div>
+                        {{ range .UrgencyLevels }}
+                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
+                            x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                            @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                        {{ end }}
                     </div>
                 </div>
 
@@ -335,7 +336,8 @@
                         </div>
                         <div>
                             {{ range .DangerLevels }}
-                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                            <button
+                                class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
                                 @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
@@ -345,9 +347,10 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large"
-            style="width: 90vw;height: 70vh;max-width: none;"></div>
+    <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large"
+        style="width: 90vw;height: 70vh;max-width: none;"></div>
     </div>
 
     <!-- END OF PAGE -->
