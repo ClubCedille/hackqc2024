@@ -11,11 +11,15 @@ import (
 )
 
 func GetCreateAccount(c *gin.Context) {
-	c.HTML(http.StatusOK, "forms/accountForm.html", gin.H{})
+	c.HTML(http.StatusOK, "forms/accountForm.html", gin.H{
+		"SigningUp": "true",
+	})
 }
 
 func GetLogin(c *gin.Context) {
-	c.HTML(http.StatusOK, "forms/loginForm.html", gin.H{})
+	c.HTML(http.StatusOK, "forms/loginForm.html", gin.H{
+		"LoggingIn": "true",
+	})
 }
 
 func CreateAccount(c *gin.Context, db *clover.DB) {
