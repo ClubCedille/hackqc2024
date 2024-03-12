@@ -1,16 +1,18 @@
 {{ define "map/index.html" }}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Montreal Map View - Événements publics</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="/static/mapStyle.css"> 
+    <link rel="stylesheet" href="/static/mapStyle.css">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script src="/static/L.KML.js" defer></script>
 
@@ -41,17 +43,17 @@
                 let myIcon = L.divIcon({
                     className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-symbols-rounded`,
                     html: geoJsonPair.style.icon,
-                    popupAnchor: [geoJsonPair.style.iconSize*4+4, -6]
+                    popupAnchor: [geoJsonPair.style.iconSize * 4 + 4, -6]
                 });
-                if(geoJsonPair.geoJson.geometry.type === "Polygon") {
-                    geoJsonPair.geoJson.geometry.coordinates = [ array_chunks(geoJsonPair.geoJson.geometry.coordinates, 2) ];
+                if (geoJsonPair.geoJson.geometry.type === "Polygon") {
+                    geoJsonPair.geoJson.geometry.coordinates = [array_chunks(geoJsonPair.geoJson.geometry.coordinates, 2)];
                 }
                 L.geoJSON(geoJsonPair.geoJson, {
-                        pointToLayer: function (feature, latlng) {
-                            return L.marker(latlng, {icon: myIcon});
-                        },
-                        onEachFeature: addPopupContent
-                    }).addTo(map);
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, { icon: myIcon });
+                    },
+                    onEachFeature: addPopupContent
+                }).addTo(map);
             });
         }
 
@@ -99,7 +101,7 @@
             if (noFilter) {
                 params.append('danger_level', '-1');
             }
-            if(history.pushState) {
+            if (history.pushState) {
                 history.pushState(null, null, '/map?' + params.toString());
             }
 
@@ -119,18 +121,18 @@
 
         function openHelpModal(eventId) {
             document.getElementById('eventIdField').value = eventId;
-            document.getElementById('helpModal').style.display='block';
+            document.getElementById('helpModal').style.display = 'block';
         }
         
         document.addEventListener('DOMContentLoaded', function() {
             map = L.map('map').setView([45.5017, -73.5673], 8);
             var layer = protomapsL.leafletLayer({
-                url:'https://hackqc2024.cedille.club/my_area.pmtiles', 
+                url: 'https://hackqc2024.cedille.club/my_area.pmtiles',
                 theme: 'light',
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            })  
+            })
             layer.addTo(map)
-            
+
             markupLayer = L.layerGroup().addTo(map);
             panneLayer = L.layerGroup();
             
@@ -149,109 +151,129 @@
                 categories: {
                     {{ range .Categories }}
                     '{{ .Value }}': true,
-                    {{ end }}
+            {{ end }}
                 },
-                urgencyLevels: {
+            urgencyLevels: {
                     {{ range .UrgencyLevels }}
-                    '{{ .Value }}': true,
-                    {{ end }}
+            '{{ .Value }}': true,
+            {{ end }}
                 },
-                dangerLevels: {
+            dangerLevels: {
                     {{ range .DangerLevels }}
-                    '{{ .Value }}': true,
-                    {{ end }}
+            '{{ .Value }}': true,
+            {{ end }}
                 }
             });
 
-            let params = new URLSearchParams(window.location.search);
-            let filters = Alpine.store('filters');
-            if (params.has('map_object.category')) {
-                Object.keys(filters.categories).forEach((v, k) => {
-                    filters.categories[v] = params.getAll('map_object.category').includes(v);
-                });
-            }
-            if (params.has('urgency_type')) {
-                Object.keys(filters.urgencyLevels).forEach((v, k) => {
-                    filters.urgencyLevels[v] = params.getAll('urgency_type').includes(v);
-                });
-            }
-            if (params.has('danger_level')) {
-                Object.keys(filters.dangerLevels).forEach((v, k) => {
-                    filters.dangerLevels[v] = params.getAll('danger_level').includes(v);
-                });
-            }
-            Alpine.store('filters', filters);
+        let params = new URLSearchParams(window.location.search);
+        let filters = Alpine.store('filters');
+        if (params.has('map_object.category')) {
+            Object.keys(filters.categories).forEach((v, k) => {
+                filters.categories[v] = params.getAll('map_object.category').includes(v);
+            });
+        }
+        if (params.has('urgency_type')) {
+            Object.keys(filters.urgencyLevels).forEach((v, k) => {
+                filters.urgencyLevels[v] = params.getAll('urgency_type').includes(v);
+            });
+        }
+        if (params.has('danger_level')) {
+            Object.keys(filters.dangerLevels).forEach((v, k) => {
+                filters.dangerLevels[v] = params.getAll('danger_level').includes(v);
+            });
+        }
+        Alpine.store('filters', filters);
 
         });
     </script>
 </head>
+
 <body>
 
-{{ template "components/navbar" . }}
+    {{ template "components/navbar" . }}
 
     <h2 class="w3-center">Événements d'urgence</h2>
     <div class="w3-container">
         <div class="w3-card w3-auto w3-round-large" style="width: 90vw;max-width: none;">
-            <div x-data="{ active: '' }" >
-                <button @click="active = active == 'categories' ? '' : 'categories'" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" x-bind:class="active == 'categories' ? 'w3-blue' : 'w3-white'">
+            <div x-data="{ active: '' }">
+                <button @click="active = active == 'categories' ? '' : 'categories'"
+                    class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
+                    x-bind:class="active == 'categories' ? 'w3-blue' : 'w3-white'">
                     Catégories
                 </button>
 
-                <button @click="active = active == 'urgency' ? '' : 'urgency'" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" x-bind:class="active == 'urgency' ? 'w3-blue' : 'w3-white'">
+                <button @click="active = active == 'urgency' ? '' : 'urgency'"
+                    class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
+                    x-bind:class="active == 'urgency' ? 'w3-blue' : 'w3-white'">
                     Urgence
                 </button>
 
-                <button @click="active = active == 'dangerLevel' ? '' : 'dangerLevel'" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" x-bind:class="active == 'dangerLevel' ? 'w3-blue' : 'w3-white'">
+                <button @click="active = active == 'dangerLevel' ? '' : 'dangerLevel'"
+                    class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
+                    x-bind:class="active == 'dangerLevel' ? 'w3-blue' : 'w3-white'">
                     Danger
                 </button>
-             
-                <div x-show="active == 'categories'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
+
+                <div x-show="active == 'categories'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
+                    style="display: none;">
                     <div x-data>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom" @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = true); updateDataPointsWithFilter()">Sélectionner tout</button>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom" @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = false); updateDataPointsWithFilter()">Ne sélectionner rien</button>
+                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                            @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = true); updateDataPointsWithFilter()">Sélectionner
+                            tout</button>
+                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                            @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = false); updateDataPointsWithFilter()">Ne
+                            sélectionner rien</button>
                         {{ range .Categories }}
-                            <button 
-                            class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom" 
-                            x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'" @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"
-                            ></button>
+                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                            x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                            @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                         {{ end }}
                     </div>
                 </div>
 
                 <!-- Urgency -->
-                <div x-show="active == 'urgency'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
+                <div x-show="active == 'urgency'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
+                    style="display: none;">
                     <div x-data>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom" @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = true); updateDataPointsWithFilter()">Sélectionner tout</button>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom" @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = false); updateDataPointsWithFilter()">Ne sélectionner rien</button>
+                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                            @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
+                            tout</button>
+                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                            @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = false); updateDataPointsWithFilter()">Ne
+                            sélectionner rien</button>
                         {{ range .UrgencyLevels }}
-                            <button 
-                            class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom" 
-                            x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'" @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"
-                            ></button>
+                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                            x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                            @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                         {{ end }}
                     </div>
                 </div>
 
                 <!-- Danger Level -->
-                <div x-show="active == 'dangerLevel'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
+                <div x-show="active == 'dangerLevel'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
+                    style="display: none;">
                     <div x-data>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom" @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = true); updateDataPointsWithFilter()">Sélectionner tout</button>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom" @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = false); updateDataPointsWithFilter()">Ne sélectionner rien</button>
+                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                            @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
+                            tout</button>
+                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                            @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = false); updateDataPointsWithFilter()">Ne
+                            sélectionner rien</button>
                         {{ range .DangerLevels }}
-                            <button 
-                            class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom" 
-                            x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'" @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"
-                            ></button>
+                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                            x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                            @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                         {{ end }}
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
+        <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large"
+            style="width: 90vw;height: 70vh;max-width: none;"></div>
     </div>
 
     <!-- END OF PAGE -->
@@ -260,10 +282,11 @@
         <div class="w3-modal-dialog">
             <div class="w3-modal-content w3-card-8">
                 <header class="w3-container w3-teal">
-                    <span onclick="document.getElementById('helpModal').style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
+                    <span onclick="document.getElementById('helpModal').style.display='none'"
+                        class="w3-button w3-large w3-display-topright">&times;</span>
                     <h2>Soumettre une demande d'aide</h2>
                 </header>
-                
+
                 {{ template "forms/helpForm.html" . }}
 
                 <footer class="w3-container w3-teal">
@@ -274,16 +297,19 @@
     </div>
 
     <p>
-        <button onclick="document.getElementById('eventModal').style.display='block'"  class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}>Créer un évènement</button>
+        <button onclick="document.getElementById('eventModal').style.display='block'"
+            class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
+            {{ end }}>Créer un évènement</button>
     </p>
 
     <div id="eventModal" class="w3-modal">
         <div class="w3-modal-dialog">
-            <div class="w3-modal-content w3-card-8">
-                <header class="w3-container w3-teal">
-                    <span onclick="document.getElementById('eventModal').style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
+            <div class="w3-modal-content w3-card-8 w3-round-xlarge">
+                <header class="w3-container" style="height: 0;">
+                    <span onclick="document.getElementById('eventModal').style.display='none'"
+                        class="w3-button w3-large w3-display-topright w3-teal w3-margin">&times;</span>
                 </header>
-                
+
                 {{ template "forms/eventForm.html" . }}
 
                 <footer class="w3-container w3-teal">
@@ -294,5 +320,6 @@
     </div>
 
 </body>
+
 </html>
 {{ end }}
