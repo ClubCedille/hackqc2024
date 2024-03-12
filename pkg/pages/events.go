@@ -171,6 +171,6 @@ func EventDetails(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "modals/event-details.html", gin.H{
-		"Event": event,
+		"Event": &event,
 	})
 }
