@@ -149,19 +149,22 @@
         document.addEventListener('alpine:init', () => {
             Alpine.store('filters', {
                 categories: {
-                    {{ range .Categories }}
-                    '{{ .Value }}': true,
-            {{ end }}
+                    {{ range .EventCategories }}
+                        '{{ .Value }}': true,
+                    {{ end }}
+                    {{ range .HelpCategories }}
+                        '{{ .Value }}': true,
+                    {{ end }}
                 },
-            urgencyLevels: {
+                urgencyLevels: {
                     {{ range .UrgencyLevels }}
-            '{{ .Value }}': true,
-            {{ end }}
+                        '{{ .Value }}': true,
+                    {{ end }}
                 },
-            dangerLevels: {
+                dangerLevels: {
                     {{ range .DangerLevels }}
-            '{{ .Value }}': true,
-            {{ end }}
+                        '{{ .Value }}': true,
+                    {{ end }}
                 }
             });
 
@@ -217,18 +220,32 @@
                 <div x-show="active == 'categories'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
                     style="display: none;">
                     <div x-data>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                            @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = true); updateDataPointsWithFilter()">Sélectionner
-                            tout</button>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                            @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = false); updateDataPointsWithFilter()">Ne
-                            sélectionner rien</button>
-                        {{ range .Categories }}
-                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
-                            x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                            @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
-                        {{ end }}
+                        <div class="w3-border-bottom w3-border-gray">
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = true); updateDataPointsWithFilter()">Sélectionner
+                                tout</button>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = false); updateDataPointsWithFilter()">Ne
+                                sélectionner rien</button>
+                        </div>
+                        <div class="w3-border-bottom w3-border-gray">
+                            <h6 class="w3-text-blue">Événements</h6>
+                            {{ range .EventCategories }}
+                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                                x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                            {{ end }}
+                        </div>
+                        <div>
+                            <h6 class="w3-text-blue">Aides</h6>
+                            {{ range .HelpCategories }}
+                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                                x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                            {{ end }}
+                        </div>
                     </div>
                 </div>
 
@@ -236,18 +253,22 @@
                 <div x-show="active == 'urgency'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
                     style="display: none;">
                     <div x-data>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                            @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
-                            tout</button>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                            @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = false); updateDataPointsWithFilter()">Ne
-                            sélectionner rien</button>
-                        {{ range .UrgencyLevels }}
-                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
-                            x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                            @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
-                        {{ end }}
+                        <div>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
+                                tout</button>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = false); updateDataPointsWithFilter()">Ne
+                                sélectionner rien</button>
+                        </div>
+                        <div></div>
+                            {{ range .UrgencyLevels }}
+                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                                x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                                @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                            {{ end }}
+                        </div>
                     </div>
                 </div>
 
@@ -255,18 +276,22 @@
                 <div x-show="active == 'dangerLevel'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
                     style="display: none;">
                     <div x-data>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                            @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
-                            tout</button>
-                        <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                            @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = false); updateDataPointsWithFilter()">Ne
-                            sélectionner rien</button>
-                        {{ range .DangerLevels }}
-                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
-                            x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                            @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
-                        {{ end }}
+                        <div>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
+                                tout</button>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = false); updateDataPointsWithFilter()">Ne
+                                sélectionner rien</button>
+                        </div>
+                        <div>
+                            {{ range .DangerLevels }}
+                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom"
+                                x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                                @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                            {{ end }}
+                        </div>
                     </div>
                 </div>
             </div>

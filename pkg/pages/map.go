@@ -50,6 +50,11 @@ var CategoryStyles = map[string]Style{
 		IconSize: 0,
 		Icon:     "air",
 	},
+	"Vent violent": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "air",
+	},
 	"Pluie": {
 		Color:    "blue",
 		IconSize: 0,
@@ -237,6 +242,34 @@ var CategoryStyles = map[string]Style{
 	},
 }
 
+var HelpCategoryStyles = map[string]Style{
+	"Hébergement": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "home",
+	},
+	"Nourriture": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "food_bank",
+	},
+	"Transport": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "directions",
+	},
+	"Coup de main": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "diversity_3",
+	},
+	"Renforcement": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "healing",
+	},
+}
+
 func sortWithAccents(s []string) {
 	// Create a Collator for French
 	fr := collate.New(language.French, collate.Loose)
@@ -258,23 +291,35 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	categoryKeys := make([]string, 0, len(CategoryStyles))
+	eventCategoryKeys := make([]string, 0, len(CategoryStyles))
 	for k := range CategoryStyles {
-		categoryKeys = append(categoryKeys, k)
+		eventCategoryKeys = append(eventCategoryKeys, k)
 	}
-	sortWithAccents(categoryKeys)
 
-	// For create event form
-	mapCategories := make([]interface{}, len(categoryKeys))
-	for i, key := range categoryKeys {
+	helpCategoryKeys := make([]string, 0, len(HelpCategoryStyles))
+	for k := range HelpCategoryStyles {
+		helpCategoryKeys = append(helpCategoryKeys, k)
+	}
+	sortWithAccents(eventCategoryKeys)
+	sortWithAccents(helpCategoryKeys)
+
+	eventMapCategories := make([]interface{}, len(eventCategoryKeys))
+	for i, key := range eventCategoryKeys {
 		category := NameValue{
 			Name:  key,
 			Value: key,
 		}
-		mapCategories[i] = category
+		eventMapCategories[i] = category
 	}
 
-	fmt.Println("mapCategories", mapCategories)
+	helpMapCategories := make([]interface{}, len(helpCategoryKeys))
+	for i, key := range helpCategoryKeys {
+		category := NameValue{
+			Name:  key,
+			Value: key,
+		}
+		helpMapCategories[i] = category
+	}
 
 	urgencyLevels := []NameValue{
 		{
@@ -307,13 +352,14 @@ func MapPage(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"MapItemsJson":  string(jsonValue),
-		"Categories":    mapCategories,
-		"ActiveSession": session.ActiveSession.UserName,
-		"MapCategory":   mapCategories,
-		"UrgencyLevels": urgencyLevels,
-		"DangerLevels":  dangerLevels,
-		"CategoryKeys":  categoryKeys, // for selection in event form
+		"MapItemsJson":    string(jsonValue),
+		"EventCategories": eventMapCategories,
+		"HelpCategories":  helpMapCategories,
+		"ActiveSession":   session.ActiveSession.UserName,
+		"MapCategory":     eventCategoryKeys,
+		"UrgencyLevels":   urgencyLevels,
+		"DangerLevels":    dangerLevels,
+		"CategoryKeys":    eventCategoryKeys, // for selection in event form
 	})
 }
 
