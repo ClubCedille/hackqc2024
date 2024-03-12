@@ -250,28 +250,28 @@ var CategoryStyles = map[string]Style{
 
 var HelpCategoryStyles = map[string]Style{
 	"Hébergement": {
-		Color:    "blue",
-		IconSize: 0,
+		Color:    "green",
+		IconSize: 2,
 		Icon:     "home",
 	},
 	"Nourriture": {
-		Color:    "blue",
-		IconSize: 0,
+		Color:    "green",
+		IconSize: 2,
 		Icon:     "food_bank",
 	},
 	"Transport": {
-		Color:    "blue",
-		IconSize: 0,
+		Color:    "green",
+		IconSize: 2,
 		Icon:     "directions",
 	},
 	"Coup de main": {
-		Color:    "blue",
-		IconSize: 0,
+		Color:    "green",
+		IconSize: 2,
 		Icon:     "diversity_3",
 	},
 	"Renforcement": {
-		Color:    "blue",
-		IconSize: 0,
+		Color:    "green",
+		IconSize: 2,
 		Icon:     "healing",
 	},
 }
@@ -447,7 +447,7 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 	}
 
 	for i, v := range helps {
-		styleHelp, exists := CategoryStyles[v.MapObject.Category]
+		styleHelp, exists := HelpCategoryStyles[v.MapObject.Category]
 		if !exists {
 			styleHelp = Style{
 				Color:    "green",

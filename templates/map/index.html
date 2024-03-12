@@ -35,7 +35,6 @@
             if (feature.properties.event._id) {
                 popupContent += `
                         <button
-                            onclick="dubiousFunctionality(this, 'trigger-modal')"
                             class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
                             hx-trigger="click" hx-get="/event/${feature.properties.event._id}" 
                             hx-target="body"hx-swap="beforeend" 
@@ -54,7 +53,6 @@
             else if (feature.properties.help._id) {
                 popupContent += `
                         <button
-                            onclick="dubiousFunctionality(this, 'trigger-modal')"
                             class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
                             hx-trigger="click" 
                             hx-get="/help/${feature.properties.help._id}" 
@@ -63,7 +61,6 @@
                             Plus d'infos
                         </button>
                         <button
-                            onclick="dubiousFunctionality(this, 'trigger-modal-2')"
                             class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
                             hx-trigger="click" 
                             hx-get="/event/${feature.properties.help.event_id}" 
