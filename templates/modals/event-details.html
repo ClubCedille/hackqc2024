@@ -1,0 +1,39 @@
+<!-- Use me with HTMX!: https://htmx.org/examples/modal-custom/ -->
+{{ define "modals/event-details.html" }}
+
+<div id="modal" class="w3-modal" style="display: block; z-index: 9999;">
+    <div class="w3-modal-dialog">
+        <div class="w3-modal-content w3-card-8 w3-round-xlarge">
+            <header class="w3-container w3-teal">
+                <button hx-trigger="click" class="w3-button w3-large w3-display-topright" onclick="document.getElementById('modal').remove()">&times;</button>
+            </header>
+            <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
+                <span class="category w3-round-large w3-{{.Event.GetCategoryColor}} w3-padding-small">
+                    {{.Event.MapObject.Category}} {{.Event.GetCategoryEmoji}}
+                </span>
+                <h2 class="name" style="margin-top: 0;">{{.Event.MapObject.Name}}</h2>
+            </div>
+            <div class="w3-container w3-margin-bottom">
+                <span class="date"><b>Identifié le:</b> {{.Event.MapObject.GetDateString}}</span>
+            </div>
+            <div class="w3-container w3-margin-bottom">
+                <b class="dangerLevel">Danger: </b> <span
+                    class="w3-round-large w3-{{.GetDangerColor}} w3-padding-small">{{.Event.GetDangerLevelString}}</span>
+                <b class="urgencyType">Urgence: </b><span
+                    class="w3-round-large w3-{{.GetUrgencyColor}} w3-padding-small">{{.Event.GetUrgencyTypeString}}</span>
+            </div>
+            {{ if .Event.MapObject.Description }}
+            <div class="w3-container">
+                <div class="description">
+                    <b>Description:</b>
+                    <p class="w3-container">
+                        {{.Event.MapObject.Description}}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</div>
+
+{{ end }}

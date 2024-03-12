@@ -406,7 +406,7 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 				IconSize: 1,
 			}
 		}
-
+		v.MapObject.Id = v.Id
 		mapItems[i] = GeoJSONPair{
 			GeoJson: GeoJSON{
 				Type:       "Feature",

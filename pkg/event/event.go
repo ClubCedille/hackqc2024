@@ -112,6 +112,8 @@ func (event *Event) GetCategoryEmoji() string {
 		return "💨"
 	case "Onde de tempête":
 		return "🌊"
+	case "Panne d'électricité":
+		return "⚡"
 	default:
 		return ""
 	}

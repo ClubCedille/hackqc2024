@@ -15,6 +15,8 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script src="/static/L.KML.js" defer></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
 
     <script>
         var markupLayer
@@ -24,18 +26,28 @@
 
         function addPopupContent(feature, layer) {
             const popupContent = `
-                <div class="popup-content">
+                <div id="popup-content" class="popup-content">
                     <h3>${feature.properties.name}</h3>
                     <h5>${feature.properties.category}</h5>
                     <p>${feature.properties.description.substring(0, 100)}...</p>
                     <p>Date: ${feature.properties.date}</p>
-                    <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
+                    <button
+                        onclick="dubiousFunctionality(this)"
+                        class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
+                        Plus d'infos
+                    </button>
+                    <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/event/${feature.properties.id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
                     <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> <!-- change value to ${feature.properties.id}-->
                         Aider
                     </button>
                 </div>
             `;
             layer.bindPopup(popupContent);
+        }
+
+        function dubiousFunctionality(element) {
+            htmx.process(document.body)
+            htmx.trigger(document.getElementById('trigger-modal'), 'click')
         }
 
         function addDataPoints(dataPairs, map) {
@@ -343,7 +355,6 @@
             </div>
         </div>
     </div>
-
 </body>
 
 </html>

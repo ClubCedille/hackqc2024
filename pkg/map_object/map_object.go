@@ -5,6 +5,7 @@ import (
 )
 
 type MapObject struct {
+	Id          string    `json:"id"`
 	Geometry    Geometry  `json:"geometry" clover:"geometry"`
 	Name        string    `json:"name" clover:"name"`
 	Description string    `json:"description" clover:"description"`
