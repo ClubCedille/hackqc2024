@@ -35,9 +35,12 @@
                     if (feature.properties.event._id) {
                         popupContent += `
                         <button
-                            @click="dubiousFunctionality(this, 'trigger-modal')"
-                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
-                            <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/event/${feature.properties.event._id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                            onclick="dubiousFunctionality(this, 'trigger-modal')"
+                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
+                            hx-trigger="click" hx-get="/event/${feature.properties.event._id}" 
+                            hx-target="body"hx-swap="beforeend" 
+                            hx-trigger="click"
+                            >
                             Plus d'infos
                         </button>
                         <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps')">
@@ -51,15 +54,21 @@
                     else if (feature.properties.help._id) {
                         popupContent += `
                         <button
-                            @click="dubiousFunctionality(this, 'trigger-modal')"
-                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
-                            <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/help/${feature.properties.help._id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                            onclick="dubiousFunctionality(this, 'trigger-modal')"
+                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
+                            hx-trigger="click" 
+                            hx-get="/help/${feature.properties.help._id}" 
+                            hx-target="body"hx-swap="beforeend" 
+                            hx-trigger="click">
                             Plus d'infos
                         </button>
                         <button
-                            @click="dubiousFunctionality(this, 'trigger-modal-2')"
-                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
-                            <span style="display: none;" id="trigger-modal-2" hx-trigger="click" hx-get="/event/${feature.properties.help.event_id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                            onclick="dubiousFunctionality(this, 'trigger-modal-2')"
+                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo"
+                            hx-trigger="click" 
+                            hx-get="/event/${feature.properties.help.event_id}" 
+                            hx-target="body"hx-swap="beforeend" 
+                            hx-trigger="click">
                             Evenement lié
                         </button>
                         `
@@ -67,11 +76,6 @@
 
                     popupContent += "</div>";
             layer.bindPopup(popupContent);
-        }
-
-        function dubiousFunctionality(element, id) {
-            htmx.process(document.body)
-            htmx.trigger(document.getElementById(id), 'click')
         }
 
         function addDataPoints(dataPairs, map) {
@@ -88,7 +92,8 @@
                     pointToLayer: function (feature, latlng) {
                         return L.marker(latlng, { icon: myIcon });
                     },
-                    onEachFeature: addPopupContent
+                    onEachFeature: addPopupContent,
+
                 }).addTo(map);
             });
         }
@@ -166,6 +171,10 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             map = L.map('map').setView([45.5017, -73.5673], 8);
+            map.on('popupopen', function(e){
+                htmx.process(document.body)
+            })
+
             var layer = protomapsL.leafletLayer({
                 url: 'https://hackqc2024.cedille.club/my_area.pmtiles',
                 theme: 'light',
