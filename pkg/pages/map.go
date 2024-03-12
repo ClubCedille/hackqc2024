@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
@@ -312,6 +313,7 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		"MapCategory":   mapCategories,
 		"UrgencyLevels": urgencyLevels,
 		"DangerLevels":  dangerLevels,
+		"CategoryKeys":  categoryKeys, // for selection in event form
 	})
 }
 
@@ -327,13 +329,26 @@ func MapJson(c *gin.Context, db *clover.DB) {
 }
 
 func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair, error) {
-	events, err := event.GetEventWithFilters(db, filters, true)
-	if err != nil {
-		return nil, err
+	var events []*event.Event
+	var helps []*help.Help
+	var err error
+
+	if filters["type"] == nil || filters["type"][0] == "events" {
+		events, err = event.GetEventWithFilters(db, filters, true)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if filters["type"] == nil || filters["type"][0] == "helps" {
+		helps, err = help.GetHelpWithFilters(db, filters, true)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	evSize := len(events)
-	helpSize := 0 //len(helps)
+	helpSize := len(helps)
 	mapItems := make([]GeoJSONPair, evSize+helpSize)
 
 	for i, v := range events {
@@ -354,24 +369,25 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 			},
 			Style: styleEvent,
 		}
-		// for i, v := range helps {
-		// 	styleHelp, exists := _categoryStyles[v.MapObject.Category]
-		// 	if !exists {
-		// 		styleHelp = Style{
-		// 			Color:    "green",
-		// 			Icon:     "location_on",
-		// 			IconSize: 1,
-		// 		}
-		// 	}
-		// 	mapItems[i+evSize] = GeoJSONPair{
-		// 		GeoJson: GeoJSON{
-		// 			Type:       "Feature",
-		// 			Geometry:   v.MapObject.Geometry,
-		// 			Properties: v.MapObject,
-		// 		},
-		// 		Style: styleHelp,
-		// 	}
-		// }
+	}
+
+	for i, v := range helps {
+		styleHelp, exists := CategoryStyles[v.MapObject.Category]
+		if !exists {
+			styleHelp = Style{
+				Color:    "green",
+				Icon:     "location_on",
+				IconSize: 1,
+			}
+		}
+		mapItems[i+evSize] = GeoJSONPair{
+			GeoJson: GeoJSON{
+				Type:       "Feature",
+				Geometry:   v.MapObject.Geometry,
+				Properties: v.MapObject,
+			},
+			Style: styleHelp,
+		}
 	}
 
 	return mapItems, nil
