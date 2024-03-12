@@ -31,10 +31,16 @@ type Style struct {
 	IconSize int    `json:"iconSize"` //0-3
 }
 
+type GeoJSONProperties struct {
+	MapObject mapobject.MapObject `json:"map_object"`
+	Event     event.Event         `json:"event"`
+	Help      help.Help           `json:"help"`
+}
+
 type GeoJSON struct {
-	Type       string              `json:"type"`
-	Geometry   mapobject.Geometry  `json:"geometry"`
-	Properties mapobject.MapObject `json:"properties"`
+	Type       string             `json:"type"`
+	Geometry   mapobject.Geometry `json:"geometry"`
+	Properties GeoJSONProperties  `json:"properties"`
 }
 
 type NameValue struct {
@@ -393,6 +399,26 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 		}
 	}
 
+	if filters["show"] != nil {
+		for _, v := range filters["show"] {
+			ev, err := event.GetEventById(db, v)
+			if err != nil {
+				return nil, err
+			}
+			if ev.Id != "" {
+				events = append(events, &ev)
+			} else {
+				h, err := help.GetHelpById(db, v)
+				if err != nil {
+					return nil, err
+				}
+				if h.Id != "" {
+					helps = append(helps, &h)
+				}
+			}
+		}
+	}
+
 	evSize := len(events)
 	helpSize := len(helps)
 	mapItems := make([]GeoJSONPair, evSize+helpSize)
@@ -409,9 +435,12 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 		v.MapObject.Id = v.Id
 		mapItems[i] = GeoJSONPair{
 			GeoJson: GeoJSON{
-				Type:       "Feature",
-				Geometry:   v.MapObject.Geometry,
-				Properties: v.MapObject,
+				Type:     "Feature",
+				Geometry: v.MapObject.Geometry,
+				Properties: GeoJSONProperties{
+					MapObject: v.MapObject,
+					Event:     *v,
+				},
 			},
 			Style: styleEvent,
 		}
@@ -428,9 +457,12 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 		}
 		mapItems[i+evSize] = GeoJSONPair{
 			GeoJson: GeoJSON{
-				Type:       "Feature",
-				Geometry:   v.MapObject.Geometry,
-				Properties: v.MapObject,
+				Type:     "Feature",
+				Geometry: v.MapObject.Geometry,
+				Properties: GeoJSONProperties{
+					MapObject: v.MapObject,
+					Help:      *v,
+				},
 			},
 			Style: styleHelp,
 		}

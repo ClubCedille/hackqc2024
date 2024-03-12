@@ -132,7 +132,7 @@ func generateSeedData(db *clover.DB) {
 				Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{-73.5673, 45.5017}},
 				Name:        "Test help",
 				Description: "This is a test help object",
-				Category:    "Test",
+				Category:    "Hébergement",
 				Tags:        []string{"test", "help"},
 			},
 			ContactInfos: "test contact infos",

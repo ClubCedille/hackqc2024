@@ -16,7 +16,6 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script src="/static/L.KML.js" defer></script>
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
 
     <script>
         var markupLayer
@@ -25,29 +24,54 @@
         const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
         function addPopupContent(feature, layer) {
-            const popupContent = `
+            let popupContent = `
                 <div id="popup-content" class="popup-content">
-                    <h3>${feature.properties.name}</h3>
-                    <h5>${feature.properties.category}</h5>
-                    <p>${feature.properties.description.substring(0, 100)}...</p>
-                    <p>Date: ${feature.properties.date}</p>
-                    <button
-                        onclick="dubiousFunctionality(this)"
-                        class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
-                        Plus d'infos
-                    </button>
-                    <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/event/${feature.properties.id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
-                    <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> <!-- change value to ${feature.properties.id}-->
-                        Aider
-                    </button>
-                </div>
-            `;
+                    <h3>${feature.properties.map_object.name}</h3>
+                    <h5>${feature.properties.map_object.category}</h5>
+                    <p>${feature.properties.map_object.description.substring(0, 100)}...</p>
+                    <p>Date: ${feature.properties.map_object.date}</p>
+                    `
+                    
+                    if (feature.properties.event._id) {
+                        popupContent += `
+                        <button
+                            @click="dubiousFunctionality(this, 'trigger-modal')"
+                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
+                            <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/event/${feature.properties.event._id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                            Plus d'infos
+                        </button>
+                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps')">
+                            Aides liées
+                        </button>
+                        <button @click="openHelpModal('${feature.properties.event._id}')" class="w3-btn w3-white w3-round w3-border w3-border-lime w3-hover-green" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> 
+                            Aider
+                        </button>
+                        `
+                    }
+                    else if (feature.properties.help._id) {
+                        popupContent += `
+                        <button
+                            @click="dubiousFunctionality(this, 'trigger-modal')"
+                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
+                            <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/help/${feature.properties.help._id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                            Plus d'infos
+                        </button>
+                        <button
+                            @click="dubiousFunctionality(this, 'trigger-modal-2')"
+                            class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
+                            <span style="display: none;" id="trigger-modal-2" hx-trigger="click" hx-get="/event/${feature.properties.help.event_id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                            Evenement lié
+                        </button>
+                        `
+                    }
+
+                    popupContent += "</div>";
             layer.bindPopup(popupContent);
         }
 
-        function dubiousFunctionality(element) {
+        function dubiousFunctionality(element, id) {
             htmx.process(document.body)
-            htmx.trigger(document.getElementById('trigger-modal'), 'click')
+            htmx.trigger(document.getElementById(id), 'click')
         }
 
         function addDataPoints(dataPairs, map) {
@@ -113,9 +137,6 @@
             if (noFilter) {
                 params.append('danger_level', '-1');
             }
-            if (history.pushState) {
-                history.pushState(null, null, '/map?' + params.toString());
-            }
 
             if(data.categories['Panne d\'électricité'] && data.urgencyLevels['1'] && data.dangerLevels['2']) {
                 panneLayer.addTo(map);
@@ -123,7 +144,14 @@
                 panneLayer.remove();
             }
 
-            fetch('/map-json?' + params.toString())
+            updateDataPointsWithParams(params.toString());
+        }
+
+        function updateDataPointsWithParams(params) {
+            if (history.pushState) {
+                history.pushState(null, null, '/map?' + params);
+            }
+            fetch('/map-json?' + params)
                 .then(response => response.json())
                 .then(data => {
                     markupLayer.clearLayers();
