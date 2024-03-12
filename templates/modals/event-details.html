@@ -1,0 +1,15 @@
+<!-- Use me with HTMX!: https://htmx.org/examples/modal-custom/ -->
+{{ define "modals/event-details.html" }}
+
+<div id="modal" class="w3-modal">
+    <header class="w3-container w3-teal">
+        <span _="on click trigger closeModal" class="w3-button w3-large w3-display-topright">&times;</span>
+    </header>
+    <div class="w3-modal-dialog">
+        <div class="w3-modal-content w3-card-8">
+            {{ template "cards/singleEventCard" . }}
+        </div>
+    </div>
+</div>
+
+{{ end }}

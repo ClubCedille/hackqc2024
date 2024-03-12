@@ -24,7 +24,13 @@
                     <h5>${feature.properties.category}</h5>
                     <p>${feature.properties.description.substring(0, 100)}...</p>
                     <p>Date: ${feature.properties.date}</p>
-                    <a href="/event/${feature.properties.id}" target="_blank" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">More info</a>
+                    <button 
+                        hx-get="/event/${feature.properties.id}" 
+                        hx-target="body"
+                        hx-swap="beforeend"
+                        class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
+                        Plus d'infos
+                    </button>
                     <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> <!-- change value to ${feature.properties.id}-->
                         Aider
                     </button>
@@ -273,7 +279,6 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>
 {{ end }}
