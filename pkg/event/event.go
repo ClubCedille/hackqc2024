@@ -102,23 +102,6 @@ func (event *Event) GetCategoryColor() string {
 	}
 }
 
-func (event *Event) GetCategoryEmoji() string {
-	switch event.MapObject.Category {
-	case "Pluie":
-		return "🌧️"
-	case "Neige":
-		return "❄️"
-	case "Vent":
-		return "💨"
-	case "Onde de tempête":
-		return "🌊"
-	case "Panne d'électricité":
-		return "⚡"
-	default:
-		return ""
-	}
-}
-
 func GetEventById(conn *clover.DB, eventId string) (Event, error) {
 	docs, err := conn.FindFirst(query.NewQuery(database.EventCollection).Where(query.Field("_id").Eq(eventId)))
 	if err != nil {
