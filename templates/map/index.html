@@ -204,18 +204,18 @@
             {{ range .HelpCategories }}
             '{{ .Value }}': true,
             {{ end }}
-                },
+                    },
             urgencyLevels: {
-                    {{ range .UrgencyLevels }}
+                        {{ range .UrgencyLevels }}
             '{{ .Value }}': true,
             {{ end }}
-                },
+                    },
             dangerLevels: {
-                    {{ range .DangerLevels }}
+                        {{ range .DangerLevels }}
             '{{ .Value }}': true,
             {{ end }}
-                }
-            });
+                    }
+                });
 
         let params = new URLSearchParams(window.location.search);
         let filters = Alpine.store('filters');
@@ -266,16 +266,14 @@
                     Danger
                 </button>
 
-                <div x-show="active == 'categories'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
-                    style="display: none;">
+                <div x-show="active == 'categories'"
+                    x-data="{ showAll: true, toggleCategories() { this.showAll = !this.showAll ; Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = this.showAll) } }"
+                    class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
                         <div class="w3-border-bottom w3-border-gray">
                             <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = true); updateDataPointsWithFilter()">Sélectionner
+                                @click="toggleCategories(); updateDataPointsWithFilter()">Sélectionner
                                 tout</button>
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = false); updateDataPointsWithFilter()">Ne
-                                sélectionner rien</button>
                         </div>
                         <div class="w3-border-bottom w3-border-gray">
                             <h6 class="w3-text-blue">Événements</h6>
