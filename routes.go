@@ -127,4 +127,8 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.GET("/event/:id", func(c *gin.Context) {
 		pages.EventDetails(c, db)
 	})
+
+	r.GET("/help/:id", func(c *gin.Context) {
+		pages.HelpDetails(c, db)
+	})
 }

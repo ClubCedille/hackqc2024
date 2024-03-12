@@ -142,3 +142,17 @@ func HelpTablePage(c *gin.Context, db *clover.DB) {
 		"Helps": helps,
 	})
 }
+
+func HelpDetails(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+	help, err := help.GetHelpById(db, id)
+	if err != nil {
+		log.Println("Error getting help:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "modals/help-details.html", gin.H{
+		"Help": &help,
+	})
+}

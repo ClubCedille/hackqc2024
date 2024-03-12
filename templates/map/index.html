@@ -36,7 +36,7 @@
                         class="w3-btn w3-white w3-border w3-border-blue w3-round w3-hover-indigo">
                         Plus d'infos
                     </button>
-                    <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/event/${feature.properties.id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
+                    <span style="display: none;" id="trigger-modal" hx-trigger="click" hx-get="/${feature.properties.type}/${feature.properties.id}" hx-target="body"hx-swap="beforeend" hx-trigger="click"></span>
                     <button onclick="openHelpModal('6969')" class="w3-button w3-green w3-margin" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> <!-- change value to ${feature.properties.id}-->
                         Aider
                     </button>

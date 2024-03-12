@@ -130,15 +130,15 @@ func generateSeedData(db *clover.DB) {
 			MapObject: mapobject.MapObject{
 				AccountId:   acc.Id,
 				Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{-73.5673, 45.5017}},
-				Name:        "Test help",
-				Description: "This is a test help object",
-				Category:    "Test",
+				Name:        "Test - Utilisez ma maison",
+				Description: "J'ai deux chambres à coucher de libre",
+				Category:    "Hébergement",
 				Tags:        []string{"test", "help"},
 			},
-			ContactInfos: "test contact infos",
+			ContactInfos: "555 444 3333",
 			NeedHelp:     true,
-			HowToHelp:    "test how to help",
-			HowToUseHelp: "test how to use help",
+			HowToHelp:    "N/A",
+			HowToUseHelp: "Venez chez moi.",
 		})
 	}
 	if err != nil {

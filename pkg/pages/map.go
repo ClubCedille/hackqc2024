@@ -407,6 +407,7 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 			}
 		}
 		v.MapObject.Id = v.Id
+		v.MapObject.Type = "event"
 		mapItems[i] = GeoJSONPair{
 			GeoJson: GeoJSON{
 				Type:       "Feature",
@@ -426,6 +427,8 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 				IconSize: 1,
 			}
 		}
+		v.MapObject.Id = v.Id
+		v.MapObject.Type = "help"
 		mapItems[i+evSize] = GeoJSONPair{
 			GeoJson: GeoJSON{
 				Type:       "Feature",
