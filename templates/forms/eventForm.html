@@ -8,10 +8,10 @@
   <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/static/formStyle.css">
 </head>
-<div class="row">
+<div class="row w3-round-xlarge">
   <div class="col-md-12">
     <form action="/create-event" method="post" id="form-container">
-      <h1>Créer un évènement</h1>
+      <h1 class="w3-margin">Créer un évènement</h1>
       <fieldset>
         <legend><span class="number">1</span>Évènement</legend>
 
@@ -41,7 +41,7 @@
         <label for="map_object_category">Catégories:</label>
         <select id="map_object_category" name="map_object_category" required>
           <option value="" disabled selected>Sélectionner une catégorie</option>
-          {{ range .Categories }}
+          {{ range .CategoryKeys }}
           <option value="{{ . }}">{{ . }}</option>
           {{ end }}
         </select>

@@ -160,3 +160,17 @@ func DeleteEvent(c *gin.Context, db *clover.DB) {
 	log.Println("Event deleted successfully")
 	c.Redirect(http.StatusSeeOther, "/events")
 }
+
+func EventDetails(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+	event, err := event.GetEventById(db, id)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "modals/event-details.html", gin.H{
+		"Event": &event,
+	})
+}

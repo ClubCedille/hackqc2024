@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
@@ -45,6 +46,11 @@ type NameValue struct {
 // using list at all_material_icons.txt
 var CategoryStyles = map[string]Style{
 	"Vent": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "air",
+	},
+	"Vent violent": {
 		Color:    "blue",
 		IconSize: 0,
 		Icon:     "air",
@@ -236,6 +242,34 @@ var CategoryStyles = map[string]Style{
 	},
 }
 
+var HelpCategoryStyles = map[string]Style{
+	"Hébergement": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "home",
+	},
+	"Nourriture": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "food_bank",
+	},
+	"Transport": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "directions",
+	},
+	"Coup de main": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "diversity_3",
+	},
+	"Renforcement": {
+		Color:    "blue",
+		IconSize: 0,
+		Icon:     "healing",
+	},
+}
+
 func sortWithAccents(s []string) {
 	// Create a Collator for French
 	fr := collate.New(language.French, collate.Loose)
@@ -257,23 +291,35 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	categoryKeys := make([]string, 0, len(CategoryStyles))
+	eventCategoryKeys := make([]string, 0, len(CategoryStyles))
 	for k := range CategoryStyles {
-		categoryKeys = append(categoryKeys, k)
+		eventCategoryKeys = append(eventCategoryKeys, k)
 	}
-	sortWithAccents(categoryKeys)
 
-	// For create event form
-	mapCategories := make([]interface{}, len(categoryKeys))
-	for i, key := range categoryKeys {
+	helpCategoryKeys := make([]string, 0, len(HelpCategoryStyles))
+	for k := range HelpCategoryStyles {
+		helpCategoryKeys = append(helpCategoryKeys, k)
+	}
+	sortWithAccents(eventCategoryKeys)
+	sortWithAccents(helpCategoryKeys)
+
+	eventMapCategories := make([]interface{}, len(eventCategoryKeys))
+	for i, key := range eventCategoryKeys {
 		category := NameValue{
 			Name:  key,
 			Value: key,
 		}
-		mapCategories[i] = category
+		eventMapCategories[i] = category
 	}
 
-	fmt.Println("mapCategories", mapCategories)
+	helpMapCategories := make([]interface{}, len(helpCategoryKeys))
+	for i, key := range helpCategoryKeys {
+		category := NameValue{
+			Name:  key,
+			Value: key,
+		}
+		helpMapCategories[i] = category
+	}
 
 	urgencyLevels := []NameValue{
 		{
@@ -290,12 +336,30 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		},
 	}
 
+	dangerLevels := []NameValue{
+		{
+			Name:  "Élevé",
+			Value: fmt.Sprint(event.High),
+		},
+		{
+			Name:  "Modéré",
+			Value: fmt.Sprint(event.Medium),
+		},
+		{
+			Name:  "Faible",
+			Value: fmt.Sprint(event.Low),
+		},
+	}
+
 	c.HTML(http.StatusOK, "map/index.html", gin.H{
-		"MapItemsJson":  string(jsonValue),
-		"Categories":    mapCategories,
-		"ActiveSession": session.ActiveSession.UserName,
-		"MapCategory":   mapCategories,
-		"UrgencyLevels": urgencyLevels,
+		"MapItemsJson":    string(jsonValue),
+		"EventCategories": eventMapCategories,
+		"HelpCategories":  helpMapCategories,
+		"ActiveSession":   session.ActiveSession.UserName,
+		"MapCategory":     eventCategoryKeys,
+		"UrgencyLevels":   urgencyLevels,
+		"DangerLevels":    dangerLevels,
+		"CategoryKeys":    eventCategoryKeys, // for selection in event form
 	})
 }
 
@@ -311,13 +375,26 @@ func MapJson(c *gin.Context, db *clover.DB) {
 }
 
 func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair, error) {
-	events, err := event.GetEventWithFilters(db, filters, true)
-	if err != nil {
-		return nil, err
+	var events []*event.Event
+	var helps []*help.Help
+	var err error
+
+	if filters["type"] == nil || filters["type"][0] == "events" {
+		events, err = event.GetEventWithFilters(db, filters, true)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if filters["type"] == nil || filters["type"][0] == "helps" {
+		helps, err = help.GetHelpWithFilters(db, filters, true)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	evSize := len(events)
-	helpSize := 0 //len(helps)
+	helpSize := len(helps)
 	mapItems := make([]GeoJSONPair, evSize+helpSize)
 
 	for i, v := range events {
@@ -329,6 +406,8 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 				IconSize: 1,
 			}
 		}
+		v.MapObject.Id = v.Id
+		v.MapObject.Type = "event"
 		mapItems[i] = GeoJSONPair{
 			GeoJson: GeoJSON{
 				Type:       "Feature",
@@ -337,24 +416,27 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 			},
 			Style: styleEvent,
 		}
-		// for i, v := range helps {
-		// 	styleHelp, exists := _categoryStyles[v.MapObject.Category]
-		// 	if !exists {
-		// 		styleHelp = Style{
-		// 			Color:    "green",
-		// 			Icon:     "location_on",
-		// 			IconSize: 1,
-		// 		}
-		// 	}
-		// 	mapItems[i+evSize] = GeoJSONPair{
-		// 		GeoJson: GeoJSON{
-		// 			Type:       "Feature",
-		// 			Geometry:   v.MapObject.Geometry,
-		// 			Properties: v.MapObject,
-		// 		},
-		// 		Style: styleHelp,
-		// 	}
-		// }
+	}
+
+	for i, v := range helps {
+		styleHelp, exists := CategoryStyles[v.MapObject.Category]
+		if !exists {
+			styleHelp = Style{
+				Color:    "green",
+				Icon:     "location_on",
+				IconSize: 1,
+			}
+		}
+		v.MapObject.Id = v.Id
+		v.MapObject.Type = "help"
+		mapItems[i+evSize] = GeoJSONPair{
+			GeoJson: GeoJSON{
+				Type:       "Feature",
+				Geometry:   v.MapObject.Geometry,
+				Properties: v.MapObject,
+			},
+			Style: styleHelp,
+		}
 	}
 
 	return mapItems, nil

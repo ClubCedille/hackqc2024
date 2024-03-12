@@ -102,21 +102,6 @@ func (event *Event) GetCategoryColor() string {
 	}
 }
 
-func (event *Event) GetCategoryEmoji() string {
-	switch event.MapObject.Category {
-	case "Pluie":
-		return "🌧️"
-	case "Neige":
-		return "❄️"
-	case "Vent":
-		return "💨"
-	case "Onde de tempête":
-		return "🌊"
-	default:
-		return ""
-	}
-}
-
 func GetEventById(conn *clover.DB, eventId string) (Event, error) {
 	docs, err := conn.FindFirst(query.NewQuery(database.EventCollection).Where(query.Field("_id").Eq(eventId)))
 	if err != nil {
@@ -131,12 +116,13 @@ func GetEventById(conn *clover.DB, eventId string) (Event, error) {
 
 func GetEventWithFilters(conn *clover.DB, filters map[string][]string, requireGeoJson bool) ([]*Event, error) {
 	filterQuery := query.NewQuery(database.EventCollection)
-
-	for k, v := range filters {
-		filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
-			return slices.Contains(v, fmt.Sprint(doc.Get(k))) && (!requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil)
-		})
-	}
+	filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
+		result := !requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil
+		for k, v := range filters {
+			result = result && (!doc.Has(k) || slices.Contains(v, fmt.Sprint(doc.Get(k))))
+		}
+		return result
+	})
 
 	docs, err := conn.FindAll(filterQuery)
 	if err != nil {

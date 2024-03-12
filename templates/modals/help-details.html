@@ -1,0 +1,75 @@
+<!-- Use me with HTMX!: https://htmx.org/examples/modal-custom/ -->
+{{ define "modals/help-details.html" }}
+
+<div id="modal" class="w3-modal" style="display: block; z-index: 9999;">
+    <div class="w3-modal-dialog">
+        <div class="w3-modal-content w3-card-8 w3-round-xlarge">
+            <header class="w3-container w3-teal">
+                <button hx-trigger="click" class="w3-button w3-large w3-display-topright" onclick="document.getElementById('modal').remove()">&times;</button>
+            </header>
+            <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
+                <span class="category w3-round-large w3-{{.Event.GetCategoryColor}} w3-padding-small">
+                    {{.Help.MapObject.Category}} {{.Help.MapObject.GetCategoryEmoji}}
+                </span>
+                <h2 class="name" style="margin-top: 0;">{{.Help.MapObject.Name}}</h2>
+            </div>
+            {{ if .Help.MapObject.GetDateString }}
+            <div class="w3-container w3-margin-bottom">
+                <span class="date"><b>Identifié le:</b> {{.Help.MapObject.GetDateString}}</span>
+            </div>
+            {{ end }}
+            {{ if .Help.ContactInfos }}
+            <div class="w3-container">
+                <div class="description">
+                    <b>Informations de contact:</b>
+                    <p class="w3-container">
+                        {{.Help.ContactInfos}}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
+            {{ if .Help.NeedHelp }}
+            <div class="w3-container">
+                <div class="description">
+                    <b>Besoin d'aide:</b>
+                    <p class="w3-container">
+                        {{.Help.NeedHelp}}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
+            {{ if .Help.HowToHelp }}
+            <div class="w3-container">
+                <div class="description">
+                    <b>Comment aider:</b>
+                    <p class="w3-container">
+                        {{.Help.HowToHelp}}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
+            {{ if .Help.HowToUseHelp }}
+            <div class="w3-container">
+                <div class="description">
+                    <b>Comment profiter de l'aide:</b>
+                    <p class="w3-container">
+                        {{.Help.HowToUseHelp}}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
+            {{ if .Help.MapObject.Description }}
+            <div class="w3-container">
+                <div class="description">
+                    <b>Description:</b>
+                    <p class="w3-container">
+                        {{.Help.MapObject.Description}}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</div>
+
+{{ end }}

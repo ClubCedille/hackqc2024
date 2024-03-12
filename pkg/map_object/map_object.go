@@ -5,6 +5,12 @@ import (
 )
 
 type MapObject struct {
+	// These Properties are a hack to make the UI work. We should probably
+	// have a view model or something but I am lazy and tired
+	Id   string `json:"id"`
+	Type string `json:"type"`
+
+	//Normal stuff below
 	Geometry    Geometry  `json:"geometry" clover:"geometry"`
 	Name        string    `json:"name" clover:"name"`
 	Description string    `json:"description" clover:"description"`
@@ -48,4 +54,29 @@ func (m *MapObject) GetDateString() string {
 		month = "décembre"
 	}
 	return m.Date.Format("2") + " " + month + " " + m.Date.Format("2006 à 15:04")
+}
+
+func (mapObject *MapObject) GetCategoryEmoji() string {
+	switch mapObject.Category {
+	case "Pluie":
+		return "🌧️"
+	case "Neige":
+		return "❄️"
+	case "Vent":
+		return "💨"
+	case "Onde de tempête":
+		return "🌊"
+	case "Hébergement":
+		return "🛌"
+	case "Nourriture":
+		return "🍲"
+	case "Transport":
+		return "🚗"
+	case "Coup de main":
+		return "🤝"
+	case "Renforcement":
+		return "➕"
+	default:
+		return ""
+	}
 }

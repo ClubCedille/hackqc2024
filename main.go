@@ -123,25 +123,27 @@ func generateSeedData(db *clover.DB) {
 	docs.Unmarshal(&acc)
 
 	// Create test help object
-	err = help.CreateHelp(db, help.Help{
-		Id: uuid.NewV4().String(),
-		MapObject: mapobject.MapObject{
-			AccountId:   acc.Id,
-			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{45.5017, -73.5673}},
-			Name:        "Test help",
-			Description: "This is a test help object",
-			Category:    "Test",
-			Tags:        []string{"test", "help"},
-		},
-		ContactInfos: "test contact infos",
-		NeedHelp:     true,
-		HowToHelp:    "test how to help",
-		HowToUseHelp: "test how to use help",
-	})
+	testHelp, err := db.FindFirst(query.NewQuery(database.HelpCollection).Where(query.Field("map_object.name").Eq("Test help")))
+	if err == nil && testHelp == nil {
+		err = help.CreateHelp(db, help.Help{
+			Id: uuid.NewV4().String(),
+			MapObject: mapobject.MapObject{
+				AccountId:   acc.Id,
+				Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{-73.5673, 45.5017}},
+				Name:        "Test - Utilisez ma maison",
+				Description: "J'ai deux chambres à coucher de libre",
+				Category:    "Hébergement",
+				Tags:        []string{"test", "help"},
+			},
+			ContactInfos: "555 444 3333",
+			NeedHelp:     true,
+			HowToHelp:    "N/A",
+			HowToUseHelp: "Venez chez moi.",
+		})
+	}
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-
 }
 
 // Temp example of fetching from données Québec
