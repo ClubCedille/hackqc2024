@@ -16,6 +16,8 @@
 
     <script>
         var markupLayer
+        var panneLayer
+        var map
         const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
         function addPopupContent(feature, layer) {
@@ -100,6 +102,13 @@
             if(history.pushState) {
                 history.pushState(null, null, '/map?' + params.toString());
             }
+
+            if(data.categories['Panne d\'électricité'] && data.urgencyLevels['1'] && data.dangerLevels['2']) {
+                panneLayer.addTo(map);
+            } else {
+                panneLayer.remove();
+            }
+
             fetch('/map-json?' + params.toString())
                 .then(response => response.json())
                 .then(data => {
@@ -114,7 +123,7 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            const map = L.map('map').setView([45.5017, -73.5673], 8);
+            map = L.map('map').setView([45.5017, -73.5673], 8);
             var layer = protomapsL.leafletLayer({
                 url:'https://hackqc2024.cedille.club/my_area.pmtiles', 
                 theme: 'light',
@@ -123,10 +132,16 @@
             layer.addTo(map)
             
             markupLayer = L.layerGroup().addTo(map);
+            panneLayer = L.layerGroup();
             
             let data = JSON.parse("{{ .MapItemsJson }}")
-            addPannesOverlay(map)
+            addPannesOverlay(panneLayer)
             addDataPoints(data, markupLayer)
+
+            filters = Alpine.store('filters')
+            if(filters.categories['Panne d\'électricité'] && filters.urgencyLevels['1'] && filters.dangerLevels['2']) {
+                panneLayer.addTo(map);
+            }
         });
 
         document.addEventListener('alpine:init', () => {

@@ -134,7 +134,7 @@ func GetEventWithFilters(conn *clover.DB, filters map[string][]string, requireGe
 	filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
 		result := !requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil
 		for k, v := range filters {
-			result = result && slices.Contains(v, fmt.Sprint(doc.Get(k)))
+			result = result && (!doc.Has(k) || slices.Contains(v, fmt.Sprint(doc.Get(k))))
 		}
 		return result
 	})
