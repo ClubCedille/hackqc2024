@@ -43,7 +43,7 @@
                             >
                             Plus d'infos
                         </button>
-                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps'); $store.showAideLieeCard = true">
+                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps')">
                             Aides liées
                         </button>
                         <button @click="openHelpModal('${feature.properties.event._id}')" class="w3-btn w3-white w3-round w3-border w3-border-lime w3-hover-green" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> 
@@ -364,10 +364,16 @@
             </div>
         </div>
     </div>
+    
+    <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
 
-    <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large"
-        style="width: 90vw;height: 70vh;max-width: none;"></div>
+    <div class="w3-margin-top w3-auto w3-round-large" style="width: 90vw; max-width: none; border: none; display: flex; justify-content: start; align-items: center;">
+        <button onclick="document.getElementById('eventModal').style.display='block'"
+                class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
+                {{ end }}>Créer un évènement</button>
+        <a href="/map" class="w3-btn w3-teal w3-round-xlarge" style="margin-left: 10px;">Réinitialiser les filtres</a>
     </div>
+    
 
     <!-- END OF PAGE -->
 
@@ -388,12 +394,6 @@
             </div>
         </div>
     </div>
-
-    <p>
-        <button onclick="document.getElementById('eventModal').style.display='block'"
-            class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
-            {{ end }}>Créer un évènement</button>
-    </p>
 
     <div id="eventModal" class="w3-modal">
         <div class="w3-modal-dialog">
