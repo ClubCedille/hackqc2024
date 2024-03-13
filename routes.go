@@ -17,14 +17,6 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 			pages.CreateHelp(c, db)
 		})
 
-		group.POST("/update-help", func(c *gin.Context) {
-			pages.UpdateHelp(c, db)
-		})
-
-		group.DELETE("/help/delete/:id", func(c *gin.Context) {
-			pages.DeleteHelp(c, db)
-		})
-
 		// Event
 		group.GET("/create-event", func(c *gin.Context) {
 			pages.MapPage(c, db)
@@ -32,14 +24,6 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 
 		group.POST("/create-event", func(c *gin.Context) {
 			pages.CreateEvent(c, db)
-		})
-
-		group.POST("/update-event", func(c *gin.Context) {
-			pages.UpdateEvent(c, db)
-		})
-
-		group.DELETE("/events/delete/:id", func(c *gin.Context) {
-			pages.DeleteEvent(c, db)
 		})
 
 		// Manage posts
@@ -51,8 +35,20 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 			pages.GetEventDetailsAboutToBeDelete(c, db)
 		})
 
-		group.GET("/delete-help/:id", func(c *gin.Context) {
-			pages.GetHelpDetailsAboutToBeDelete(c, db)
+		group.DELETE("/help/delete/:id", func(c *gin.Context) {
+			pages.DeleteHelp(c, db)
+		})
+
+		group.DELETE("/events/delete/:id", func(c *gin.Context) {
+			pages.DeleteEvent(c, db)
+		})
+
+		group.GET("/update-event/:id", func(c *gin.Context) {
+			pages.GetEventDetailAboutToBeModified(c, db)
+		})
+
+		group.POST("/events/update/:id", func(c *gin.Context) {
+			pages.UpdateEvent(c, db)
 		})
 	}
 }

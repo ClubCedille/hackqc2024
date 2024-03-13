@@ -49,5 +49,5 @@ func ClearActiveSession(c *gin.Context) {
 }
 
 func SessionIsActive() bool {
-	return ActiveSession.UserName != ""
+	return ActiveSession.AccountId != ""
 }

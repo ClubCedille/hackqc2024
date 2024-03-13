@@ -72,48 +72,7 @@ func SearchEventTable(c *gin.Context, db *clover.DB) {
 }
 
 func CreateEvent(c *gin.Context, db *clover.DB) {
-	dangerLvl, _ := strconv.Atoi(c.PostForm("danger_level"))
-	urgencyType, _ := strconv.Atoi(c.PostForm("urgency_type"))
-
-	tags := c.PostForm("map_object_tags")
-	tagsArray := strings.Split(tags, ",")
-
-	var tagsArrayString []string
-	for _, v := range tagsArray {
-		tag := strings.TrimSpace(v)
-		tagsArrayString = append(tagsArrayString, tag)
-	}
-
-	coordinates := c.PostForm("map_object_geometry_coordinates")
-	coordinatesArray := strings.Split(coordinates, ",")
-
-	var coordinatesArrayFloat []float64
-	for i := len(coordinatesArray) - 1; i >= 0; i-- {
-		coords, err := strconv.ParseFloat(strings.TrimSpace(coordinatesArray[i]), 64)
-		if err != nil {
-			log.Println("Error parsing coordinates:", err)
-			c.Status(http.StatusInternalServerError)
-			return
-		}
-		coordinatesArrayFloat = append(coordinatesArrayFloat, coords)
-	}
-
-	data := event.Event{
-		DangerLevel: event.DangerLevel(dangerLvl),
-		UrgencyType: event.UrgencyType(urgencyType),
-		MapObject: mapobject.MapObject{
-			Name:        c.PostForm("map_object_name"),
-			Description: c.PostForm("map_object_description"),
-			Category:    c.PostForm("map_object_category"),
-			Tags:        tagsArrayString,
-			AccountId:   session.ActiveSession.AccountId,
-			Date:        time.Now(),
-			Geometry: mapobject.Geometry{
-				GeomType:    c.PostForm("map_object_geometry_type"),
-				Coordinates: coordinatesArrayFloat,
-			},
-		},
-	}
+	data := GetEventDataFromContext(c, db)
 
 	err := event.CreateEvent(db, data)
 	if err != nil {
@@ -126,12 +85,35 @@ func CreateEvent(c *gin.Context, db *clover.DB) {
 	c.Redirect(http.StatusSeeOther, "/map")
 }
 
-func UpdateEvent(c *gin.Context, db *clover.DB) {
-	var data event.Event
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func GetEventDetailAboutToBeModified(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+	event, err := event.GetEventById(db, id)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	// Format some data
+	var formattedCoords []string
+	for _, coord := range event.MapObject.Geometry.Coordinates {
+		formattedCoords = append(formattedCoords, strconv.FormatFloat(coord, 'f', -1, 64))
+	}
+	fCoords := strings.Join(formattedCoords, ", ")
+
+	event.MapObject.Description = strings.TrimSpace(event.MapObject.Description)
+
+	c.HTML(http.StatusOK, "modals/update-event.html", gin.H{
+		"Event":        event,
+		"CategoryKeys": GetEventCategoryKeys(c),
+		"Coordinates":  fCoords,
+		"Tags":         strings.Join(event.MapObject.Tags, ", "),
+	})
+}
+
+func UpdateEvent(c *gin.Context, db *clover.DB) {
+	data := GetEventDataFromContext(c, db)
+	data.Id = c.Param("id")
 
 	err := event.UpdateEvent(db, data)
 	if err != nil {
@@ -141,7 +123,7 @@ func UpdateEvent(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Event updated successfully")
-	c.Redirect(http.StatusSeeOther, "/events")
+	c.Redirect(http.StatusSeeOther, "/manage-post")
 }
 
 func DeleteEvent(c *gin.Context, db *clover.DB) {
@@ -227,4 +209,49 @@ func PostCreateEventComment(c *gin.Context, db *clover.DB) {
 		"Comments":   comments,
 		"IsLoggedIn": true,
 	})
+}
+
+func GetEventDataFromContext(c *gin.Context, db *clover.DB) event.Event {
+	dangerLvl, _ := strconv.Atoi(c.PostForm("danger_level"))
+	urgencyType, _ := strconv.Atoi(c.PostForm("urgency_type"))
+
+	tags := c.PostForm("map_object_tags")
+	tagsArray := strings.Split(tags, ",")
+
+	var tagsArrayString []string
+	for _, v := range tagsArray {
+		tag := strings.TrimSpace(v)
+		tagsArrayString = append(tagsArrayString, tag)
+	}
+
+	coordinates := c.PostForm("map_object_geometry_coordinates")
+	coordinatesArray := strings.Split(coordinates, ",")
+
+	var coordinatesArrayFloat []float64
+	for i := len(coordinatesArray) - 1; i >= 0; i-- {
+		coords, err := strconv.ParseFloat(strings.TrimSpace(coordinatesArray[i]), 64)
+		if err != nil {
+			log.Println("Error parsing coordinates:", err)
+			c.Status(http.StatusInternalServerError)
+			return event.Event{}
+		}
+		coordinatesArrayFloat = append(coordinatesArrayFloat, coords)
+	}
+
+	return event.Event{
+		DangerLevel: event.DangerLevel(dangerLvl),
+		UrgencyType: event.UrgencyType(urgencyType),
+		MapObject: mapobject.MapObject{
+			Name:        c.PostForm("map_object_name"),
+			Description: c.PostForm("map_object_description"),
+			Category:    c.PostForm("map_object_category"),
+			Tags:        tagsArrayString,
+			AccountId:   session.ActiveSession.AccountId,
+			Date:        time.Now(),
+			Geometry: mapobject.Geometry{
+				GeomType:    c.PostForm("map_object_geometry_type"),
+				Coordinates: coordinatesArrayFloat,
+			},
+		},
+	}
 }
