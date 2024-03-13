@@ -12,7 +12,7 @@ import (
 
 func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 
-	filePath := "tmp/soumission_aide.json"
+	filePath := "tmp/soumission-aide.json"
 	db.ExportCollection("HelpCollection", filePath)
 
 	apiKey := os.Getenv("API_KEY")
@@ -29,7 +29,7 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Jeu de données not set"})
 		return
 	}
-	
+
 	err := data_export.PostJsonHelpsToDQ(apiKey, jeuDeDonnees, filePath)
 	if err != nil {
 		log.Printf("Error posting help events to Données Québec: %s", err)

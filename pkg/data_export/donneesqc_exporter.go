@@ -59,8 +59,23 @@ func patchJsonResource(apiKey string, resourceId string, filePath string) error 
     writer := multipart.NewWriter(reqBody)
 
     writer.WriteField("id", resourceId)
-    writer.WriteField("description", "JSON avec la liste des soumissions d'aide reçus dans la province.")
+
+    markdownContent, err := os.ReadFile("docs/soumission-aide.md")
+    if err != nil {
+        return fmt.Errorf("error reading markdown file: %v", err)
+    }
+
+    writer.WriteField("description", string(markdownContent))
     writer.WriteField("taille_entier", fileSizeInMB(filePath))
+    writer.WriteField("relidi_confic_separateur_virgule", "n/a")
+    writer.WriteField("relidi_condon_valinc", "oui")
+    writer.WriteField("relidi_condon_boolee", "oui")
+    writer.WriteField("relidi_condon_nombre", "oui")
+    writer.WriteField("relidi_confic_epsg", "oui")
+    writer.WriteField("relidi_confic_utf8", "oui")
+    writer.WriteField("relidi_confic_pascom", "oui")
+    writer.WriteField("relidi_condon_datheu", "oui")
+    writer.WriteField("relidi_description_champs", "relidi.descha.foumet")
 
     file, err := os.Open(filePath)
     if err != nil {
@@ -112,12 +127,26 @@ func postJsonResource(apiKey string, datasetIdentifier string, filePath string) 
     writer.WriteField("package_id", datasetIdentifier)
     writer.WriteField("name", filepath.Base(filePath))
     writer.WriteField("url", "upload")
-    writer.WriteField("description", "JSON avec la liste des soumissions d'aide reçus dans la province.")
+
+    markdownContent, err := os.ReadFile("docs/soumission-aide.md")
+    if err != nil {
+        return fmt.Errorf("error reading markdown file: %v", err)
+    }
+
+    writer.WriteField("description", string(markdownContent))
     writer.WriteField("taille_entier", fileSizeInMB(filePath))
     writer.WriteField("format", "JSON")
-    writer.WriteField("relidi_config_separateur_virgule", "n/a")
     writer.WriteField("resource_type", "donnees")
+    writer.WriteField("relidi_confic_separateur_virgule", "n/a")
     writer.WriteField("relidi_condon_valinc", "oui")
+    writer.WriteField("relidi_condon_boolee", "oui")
+    writer.WriteField("relidi_condon_nombre", "oui")
+    writer.WriteField("relidi_confic_epsg", "oui")
+    writer.WriteField("relidi_confic_utf8", "oui")
+    writer.WriteField("relidi_confic_pascom", "oui")
+    writer.WriteField("relidi_description_champs", "relidi.descha.foumet")
+    writer.WriteField("relidi_condon_datheu", "oui")
+
 
     file, err := os.Open(filePath)
     if err != nil {
