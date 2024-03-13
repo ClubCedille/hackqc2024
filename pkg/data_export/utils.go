@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
 )
 
-func ConvertEventsToGeoJSON(events []*event.Event) ([]byte, error) {
-	//todo once we know why and what we want to export specifically
+func ConvertHelpsToGeoJSON(helps []*help.Help) ([]byte, error) {
+	//todo if we want to export geojson
 	return nil, nil
 }
 

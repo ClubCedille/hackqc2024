@@ -18,10 +18,6 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 		})
 
 		// Event
-		group.GET("/create-event", func(c *gin.Context) {
-			pages.MapPage(c, db)
-		})
-
 		group.POST("/create-event", func(c *gin.Context) {
 			pages.CreateEvent(c, db)
 		})
@@ -134,8 +130,8 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.HelpTablePage(c, db)
 	})
 
-	r.GET("/submit-events", func(c *gin.Context) {
-		pages.SubmitEvents(c, db)
+	r.GET("/submit-helps", func(c *gin.Context) {
+		pages.SubmitHelpsToDC(c, db)
 	})
 
 	r.GET("/event/:id", func(c *gin.Context) {

@@ -16,7 +16,7 @@
                 <p class="w3-container" style="color: black;"> {{.Help.MapObject.Name}} </p>
             </div>
             <div class="w3-container w3-margin-top w3-margin-bottom">
-                <button hx-delete="/help/delete/{{.Help.Id}}" class="w3-button w3-red w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Confirmer la suppression</button>
+                <button hx-delete="/help/delete/{{.Help.Id}}" class="w3-button w3-red w3-round-large w3-margin" hx-swap="outerHTML" onclick="reloadPage()">Confirmer la suppression</button>
             </div>
         </div>
     </div>
@@ -30,7 +30,6 @@
 
     function reloadPage() {
         location.reload();
-        window.location.href = '/map';
     }
 </script>
 
