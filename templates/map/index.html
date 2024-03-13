@@ -30,7 +30,7 @@
                     <h3>${feature.properties.map_object.name}</h3>
                     <h5>${feature.properties.map_object.category}</h5>
                     <p>${feature.properties.map_object.description.substring(0, 100)}...</p>
-                    <p>Date: ${feature.properties.map_object.date}</p>
+                    <p>Date: ${feature.properties.date_readable}</p>
                     `
 
             if (feature.properties.event._id) {
@@ -160,7 +160,7 @@
                 .then(data => {
                     if (urlParams.get('type') == 'helps') {
                         panneLayer.remove();
-                    }else{
+                    } else {
                         panneLayer.addTo(map);
                     }
                     markupLayer.clearLayers();
@@ -354,26 +354,29 @@
     </div>
 
     <div x-data>
-        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;" x-show="$store.showAideLieeCard">
+        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;"
+            x-show="$store.showAideLieeCard">
             <div class="w3-container w3-padding">
                 <!-- Explain this mode-->
                 <p>Ce mode permet de visualiser les aides liées à un événement.
-                <!-- Button to go back to all  -->
-                <a class="w3-btn w3-blue w3-margin-left w3-round-large" href="/map">Retourner à la carte</a>
+                    <!-- Button to go back to all  -->
+                    <a class="w3-btn w3-blue w3-margin-left w3-round-large" href="/map">Retourner à la carte</a>
                 </p>
             </div>
         </div>
     </div>
-    
-    <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;height: 70vh;max-width: none;"></div>
 
-    <div class="w3-margin-top w3-auto w3-round-large" style="width: 90vw; max-width: none; border: none; display: flex; justify-content: start; align-items: center;">
+    <div id="map" class="w3-card w3-margin-top w3-auto w3-round-large"
+        style="width: 90vw;height: 70vh;max-width: none;"></div>
+
+    <div class="w3-margin-top w3-auto w3-round-large"
+        style="width: 90vw; max-width: none; border: none; display: flex; justify-content: start; align-items: center;">
         <button onclick="document.getElementById('eventModal').style.display='block'"
-                class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
-                {{ end }}>Créer un évènement</button>
+            class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
+            {{ end }}>Créer un évènement</button>
         <a href="/map" class="w3-btn w3-teal w3-round-xlarge" style="margin-left: 10px;">Réinitialiser les filtres</a>
     </div>
-    
+
 
     <!-- END OF PAGE -->
 
