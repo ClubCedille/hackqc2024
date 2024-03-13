@@ -153,9 +153,15 @@
             if (history.pushState) {
                 history.pushState(null, null, '/map?' + params);
             }
+            urlParams = new URLSearchParams(params);
             fetch('/map-json?' + params)
                 .then(response => response.json())
                 .then(data => {
+                    if (urlParams.get('type') == 'helps') {
+                        panneLayer.remove();
+                    }else{
+                        panneLayer.addTo(map);
+                    }
                     markupLayer.clearLayers();
                     addDataPoints(data, markupLayer);
                 });
@@ -185,9 +191,11 @@
             let data = JSON.parse("{{ .MapItemsJson }}")
             addPannesOverlay(panneLayer)
             addDataPoints(data, markupLayer)
+            params = new URLSearchParams(window.location.search);
 
             filters = Alpine.store('filters')
-            if (filters.categories['Panne d\'électricité'] && filters.urgencyLevels['1'] && filters.dangerLevels['2']) {
+            if (filters.categories['Panne d\'électricité'] && filters.urgencyLevels['1'] && filters.dangerLevels['2']
+                && params.get('type') != 'helps') {
                 panneLayer.addTo(map);
             }
         });
@@ -341,6 +349,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;">
+        <div class="w3-container w3-padding">
+            <!-- Explain this mode-->
+            <p>Ce mode permet de visualiser les aides liées à une événement.
+            <!-- Button to go back to all  -->
+            <button class="w3-btn w3-blue w3-margin-left w3-round-large" @click="backMap()">Retourner à la carte</button>
+            </p>
         </div>
     </div>
 
