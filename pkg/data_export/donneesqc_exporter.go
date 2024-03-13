@@ -10,10 +10,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
 )
 
-func PostJsonEventsToDQ(apiKey string, datasetIdentifier string, filePath string) error {
+func PostJsonHelpsToDQ(apiKey string, datasetIdentifier string, filePath string) error {
     // Check if the resource already exists
     checkUrl := "https://pab.donneesquebec.ca/recherche/api/3/action/package_show?id=" + datasetIdentifier
     checkReq, err := http.NewRequest("GET", checkUrl, nil)
@@ -59,7 +59,7 @@ func patchJsonResource(apiKey string, resourceId string, filePath string) error 
     writer := multipart.NewWriter(reqBody)
 
     writer.WriteField("id", resourceId)
-    writer.WriteField("description", "JSON containing event list")
+    writer.WriteField("description", "JSON avec la liste des soumissions d'aide reçus dans la province.")
     writer.WriteField("taille_entier", fileSizeInMB(filePath))
 
     file, err := os.Open(filePath)
@@ -112,7 +112,7 @@ func postJsonResource(apiKey string, datasetIdentifier string, filePath string) 
     writer.WriteField("package_id", datasetIdentifier)
     writer.WriteField("name", filepath.Base(filePath))
     writer.WriteField("url", "upload")
-    writer.WriteField("description", "JSON containing event list")
+    writer.WriteField("description", "JSON avec la liste des soumissions d'aide reçus dans la province.")
     writer.WriteField("taille_entier", fileSizeInMB(filePath))
     writer.WriteField("format", "JSON")
     writer.WriteField("relidi_config_separateur_virgule", "n/a")
@@ -162,8 +162,8 @@ func postJsonResource(apiKey string, datasetIdentifier string, filePath string) 
 	return nil
 }
 
-func PostGeoJsonEventsToDQ(apiKey string, datasetIdentifier string, events []*event.Event) error {
-    geoJsonData, err := ConvertEventsToGeoJSON(events)
+func PostGeoJsonHelpsToDQ(apiKey string, datasetIdentifier string, helps []*help.Help) error {
+    geoJsonData, err := ConvertHelpsToGeoJSON(helps)
     if err != nil {
         return err
     }
