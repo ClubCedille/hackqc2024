@@ -144,13 +144,9 @@ func UpdateEvent(c *gin.Context, db *clover.DB) {
 }
 
 func DeleteEvent(c *gin.Context, db *clover.DB) {
-	var data event.Event
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	eventID := c.Param("id")
 
-	err := event.DeleteEvent(db, data)
+	err := event.DeleteEventById(db, eventID)
 	if err != nil {
 		log.Println("Error deleting event:", err)
 		c.Status(http.StatusInternalServerError)
@@ -158,7 +154,20 @@ func DeleteEvent(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Event deleted successfully")
-	c.Redirect(http.StatusSeeOther, "/events")
+}
+
+func GetEventDetailsAboutToBeDelete(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+	event, err := event.GetEventById(db, id)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "modals/delete-event.html", gin.H{
+		"Event": &event,
+	})
 }
 
 func EventDetails(c *gin.Context, db *clover.DB) {

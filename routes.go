@@ -21,7 +21,7 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 			pages.UpdateHelp(c, db)
 		})
 
-		group.DELETE("/delete-help", func(c *gin.Context) {
+		group.DELETE("/help/delete/:id", func(c *gin.Context) {
 			pages.DeleteHelp(c, db)
 		})
 
@@ -38,7 +38,7 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 			pages.UpdateEvent(c, db)
 		})
 
-		group.DELETE("/delete-event", func(c *gin.Context) {
+		group.DELETE("/events/delete/:id", func(c *gin.Context) {
 			pages.DeleteEvent(c, db)
 		})
 	}
@@ -138,7 +138,11 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.GetManagedPost(c, db)
 	})
 
-	r.POST("/manage-post", func(c *gin.Context) {
-		pages.GetManagedPost(c, db)
+	r.GET("/delete-event/:id", func(c *gin.Context) {
+		pages.GetEventDetailsAboutToBeDelete(c, db)
+	})
+
+	r.GET("/delete-help/:id", func(c *gin.Context) {
+		pages.GetHelpDetailsAboutToBeDelete(c, db)
 	})
 }
