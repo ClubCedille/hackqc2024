@@ -14,6 +14,9 @@
     <form action="/logout" method="post" style="display: inline;">
         <button type="submit" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Se déconnecter</button>
     </form>
+    <form action="/manage-post" method="post" style="display: inline;">
+        <button type="submit" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Bonjour, {{ .UserName }} !</button>
+    </form>
     {{ else if .SigningUp }}
     <a href="/login" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Se connecter</a>
     <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Déjà inscrit ?</span>

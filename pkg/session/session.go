@@ -47,3 +47,7 @@ func ClearActiveSession(c *gin.Context) {
 
 	ActiveSession = SessionInformation{}
 }
+
+func SessionIsActive() bool {
+	return ActiveSession.UserName != ""
+}

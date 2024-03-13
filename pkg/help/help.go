@@ -50,6 +50,22 @@ func GetAllHelps(db *clover.DB) ([]*Help, error) {
 	return helps, nil
 }
 
+func GetAllHelpsByAccountId(db *clover.DB, accountId string) ([]*Help, error) {
+	docs, err := db.FindAll(query.NewQuery(database.HelpCollection).Where(query.Field("map_object.account_id").Eq(accountId)))
+	if err != nil {
+		return nil, err
+	}
+
+	var helps []*Help
+	for _, d := range docs {
+		var help Help
+		d.Unmarshal(&help)
+		helps = append(helps, &help)
+	}
+
+	return helps, nil
+}
+
 func GetHelpWithFilters(conn *clover.DB, filters map[string][]string, requireGeoJson bool) ([]*Help, error) {
 	filterQuery := query.NewQuery(database.HelpCollection)
 	filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
