@@ -200,8 +200,8 @@ func UpdateEvent(conn *clover.DB, event Event) error {
 	return nil
 }
 
-func DeleteEvent(conn *clover.DB, event Event) error {
-	err := conn.DeleteById(database.EventCollection, event.Id)
+func DeleteEventById(conn *clover.DB, eventId string) error {
+	err := conn.DeleteById(database.EventCollection, eventId)
 	if err != nil {
 		return err
 	}

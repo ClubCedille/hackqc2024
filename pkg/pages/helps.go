@@ -109,13 +109,9 @@ func UpdateHelp(c *gin.Context, db *clover.DB) {
 }
 
 func DeleteHelp(c *gin.Context, db *clover.DB) {
-	var data help.Help
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	helpId := c.Param("id")
 
-	err := help.DeleteHelp(db, data)
+	err := help.DeleteHelpById(db, helpId)
 	if err != nil {
 		log.Println("Error deleting help:", err)
 		c.Status(http.StatusInternalServerError)
@@ -123,7 +119,20 @@ func DeleteHelp(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Help deleted successfully")
-	c.Redirect(http.StatusSeeOther, "/helps")
+}
+
+func GetHelpDetailsAboutToBeDelete(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+	help, err := help.GetHelpById(db, id)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "modals/delete-help.html", gin.H{
+		"Help": &help,
+	})
 }
 
 func HelpTablePage(c *gin.Context, db *clover.DB) {
