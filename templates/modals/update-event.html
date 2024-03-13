@@ -49,7 +49,7 @@
                 <select id="map_object_category" name="map_object_category" required>
                     {{ range .CategoryKeys }}
                         <!-- Not working -->
-                        <option value="{{ . }} {{if eq .Event.MapObject.Category .}}selected{{end}}">{{ . }}</option>
+                        <option value="{{ . }}">{{ . }}</option>
                     {{ end }}
                 </select>
         
@@ -82,6 +82,7 @@
 <script>
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
+        console.log("TEST")
         location.reload(); 
     }
 
