@@ -1,91 +1,78 @@
 {{ define "modals/update-event.html" }}
 
-<div id="modal" class="w3-modal" style="display: block; z-index: 9999;">
-  <div class="w3-modal-dialog">
-      <div class="w3-modal-content w3-card-8 w3-round-xlarge">
-        <header class="w3-container" style="height: 0;">
-          <span onclick="closeModal()"
-              class="w3-button w3-large w3-display-topright w3-teal w3-margin">&times;</span>
-      </header>
+<div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
+  <div class="modal-underlay" _="on click trigger closeModal"></div>
+  <div class="modal-content">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Modifier un évènement</title>
+      <link rel="icon" href="static/favicon.svg" type="image/x-icon">
+      <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+      <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="/static/formStyle.css">
+      <link rel="stylesheet" href="/static/modal.css">
+    </head>
+    <form id="form-container">
+      <h1 class="w3-margin">Modifier un évènement</h1>
+      <fieldset>
+        <legend><span class="number">1</span>Évènement</legend>
 
-      <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Modifier un évènement</title>
-          <link rel="icon" href="static/favicon.svg" type="image/x-icon">
-          <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
-          <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-          <link rel="stylesheet" href="/static/formStyle.css">
-        </head>
-        <div class="row w3-round-xlarge">
-          <div class="col-md-12">
-            <form hx-target="#modal" hx-swap="innerHTML" id="form-container">
-              <h1 class="w3-margin">Modifier un évènement</h1>
-              <fieldset>
-                <legend><span class="number">1</span>Évènement</legend>
-        
-                <label for="danger_level">Niveau de danger:</label>
-                <select id="danger_level" name="danger_level" required>
-                    <option value="0" {{if eq .Event.DangerLevel 0}}selected{{end}}>Élevé</option>
-                    <option value="1" {{if eq .Event.DangerLevel 1}}selected{{end}}>Modéré</option>
-                    <option value="2" {{if eq .Event.DangerLevel 2}}selected{{end}}>Faible</option>
-                </select>
-        
-                <label for="urgency_type">Niveau d'urgence:</label>
-                <select id="urgency_type" name="urgency_type" required>
-                    <option value="0" {{if eq .Event.UrgencyType 0}}selected{{end}}>Futur</option>
-                    <option value="1" {{if eq .Event.UrgencyType 1}}selected{{end}}>Présent</option>
-                    <option value="2" {{if eq .Event.UrgencyType 2}}selected{{end}}>Passé</option>
-                </select>
-              </fieldset>
-        
-              <fieldset>
-                <legend><span class="number">2</span>Coordonnées sur la carte</legend>
-        
-                <label for="map_object_name">Nom:</label>
-                <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" value="{{ .Event.MapObject.Name }}" required>
-        
-                <label for="map_object_category">Catégories:</label>
-                <select id="map_object_category" name="map_object_category" required>
-                    {{ range .CategoryKeys }}
-                        <!-- Not working -->
-                        <option value="{{ . }}">{{ . }}</option>
-                    {{ end }}
-                </select>
-        
-                <label for="map_object_geometry">Coordonnées:</label>
-                <select id="map_object_geometry_type" name="map_object_geometry_type">
-                  <option value="Point">Point</option>
-                </select>
-                <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates"
-                  name="map_object_geometry_coordinates" value="{{ .Coordinates }}" required>
-        
-                <label for="map_object_description">Description:</label>
-                <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required>
-                  {{ .Event.MapObject.Description }}
-                </textarea>
-        
-                <label for="map_object_tags">Tags:</label>
-                <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." value="{{ .Tags }}" name="map_object_tags" required>
-        
-              </fieldset>
-        
-              <button hx-post="/events/update/{{.Event.Id}}" class="w3-button w3-yellow w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Modifier</button>
-        
-            </form>
-          </div>
-        </div>
+        <label for="danger_level">Niveau de danger:</label>
+        <select id="danger_level" name="danger_level" required>
+            <option value="0" {{if eq .Event.DangerLevel 0}}selected{{end}}>Élevé</option>
+            <option value="1" {{if eq .Event.DangerLevel 1}}selected{{end}}>Modéré</option>
+            <option value="2" {{if eq .Event.DangerLevel 2}}selected{{end}}>Faible</option>
+        </select>
+
+        <label for="urgency_type">Niveau d'urgence:</label>
+        <select id="urgency_type" name="urgency_type" required>
+            <option value="0" {{if eq .Event.UrgencyType 0}}selected{{end}}>Futur</option>
+            <option value="1" {{if eq .Event.UrgencyType 1}}selected{{end}}>Présent</option>
+            <option value="2" {{if eq .Event.UrgencyType 2}}selected{{end}}>Passé</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="number">2</span>Coordonnées sur la carte</legend>
+
+        <label for="map_object_name">Nom:</label>
+        <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" value="{{ .Event.MapObject.Name }}" required>
+
+        <label for="map_object_category">Catégories:</label>
+        <select id="map_object_category" name="map_object_category" required>
+            {{ range .CategoryKeys }}
+                <option value="{{ . }}">{{ . }}</option>
+            {{ end }}
+        </select>
+
+        <label for="map_object_geometry">Coordonnées:</label>
+        <select id="map_object_geometry_type" name="map_object_geometry_type">
+          <option value="Point">Point</option>
+        </select>
+        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates"
+          name="map_object_geometry_coordinates" value="{{ .Coordinates }}" required>
+
+        <label for="map_object_description">Description:</label>
+        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required>
+          {{ .Event.MapObject.Description }}
+        </textarea>
+
+        <label for="map_object_tags">Tags:</label>
+        <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." value="{{ .Tags }}" name="map_object_tags" required>
+
+      </fieldset>
+
+      <div class="button-container">
+        <button hx-post="/events/update/{{.Event.Id}}" class="w3-button w3-yellow w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Modifier</button>
+        <button _="on click trigger closeModal" class="w3-button w3-red w3-round-large">Annuler</button>
       </div>
+
+    </form>
   </div>
 </div>
 
 <script>
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
-        console.log("TEST")
-        location.reload(); 
-    }
-
     function reloadPage() {
         location.reload();
         window.location.href = '/map';

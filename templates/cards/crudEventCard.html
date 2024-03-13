@@ -40,9 +40,9 @@
         </div>
     </div>
     <div class="w3-container w3-margin-bottom">
-        <button id="edit_button" class="w3-round-large w3-yellow w3-padding-small" hx-trigger="click" hx-get="/update-event/{{.Id}}">Modifier</button>
+        <button class="w3-round-large w3-yellow w3-padding-small" hx-get="/update-event/{{.Id}}" hx-target="body" hx-swap="beforeend">Modifier</button>
         <button class="w3-round-large w3-red w3-padding-small" hx-get="/delete-event/{{.Id}}">Supprimer</button>
     </div>
-    {{ end }}
 </div>
+    {{ end }}
 {{end}}
