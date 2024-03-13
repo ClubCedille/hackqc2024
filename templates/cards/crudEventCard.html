@@ -1,0 +1,48 @@
+{{ define "cards/eventCard.html" }}
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+</head>
+{{range .EventCards}}
+
+{{template "cards/crudSingleEventCard" .}}
+<br>
+
+</html>
+{{ end }}
+{{ end }}
+
+{{define "cards/crudSingleEventCard"}}
+<div class="w3-card-4 w3-container w3-margin w3-round-xlarge" style="width: 500px">
+    <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
+        <span class="category w3-round-large w3-{{.GetCategoryColor}} w3-padding-small">
+            {{.MapObject.Category}} {{.MapObject.GetCategoryEmoji}}
+        </span>
+        <h2 class="name" style="margin-top: 0;">{{.MapObject.Name}}</h2>
+    </div>
+    <div class="w3-container w3-margin-bottom">
+        <span class="date"><b>Identifié le:</b> {{.MapObject.GetDateString}}</span>
+    </div>
+    <div class="w3-container w3-margin-bottom">
+        <b class="dangerLevel">Danger: </b> <span
+            class="w3-round-large w3-{{.GetDangerColor}} w3-padding-small">{{.GetDangerLevelString}}</span>
+        <b class="urgencyType">Urgence: </b><span
+            class="w3-round-large w3-{{.GetUrgencyColor}} w3-padding-small">{{.GetUrgencyTypeString}}</span>
+    </div>
+    {{ if .MapObject.Description }}
+    <div class="w3-container">
+        <div class="description">
+            <b>Description:</b>
+            <p class="w3-container">
+                {{.MapObject.Description}}
+            </p>
+        </div>
+    </div>
+    <div class="w3-container w3-margin-bottom">
+        <button class="w3-round-large w3-yellow w3-padding-small">Editer</button>
+        <button class="w3-round-large w3-red w3-padding-small">Supprimer</button>
+    </div>
+    {{ end }}
+</div>
+{{end}}

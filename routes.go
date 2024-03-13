@@ -53,6 +53,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	r.GET("/map", func(c *gin.Context) {
+		session.GetActiveSession(c)
 		pages.MapPage(c, db)
 	})
 
@@ -130,5 +131,14 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/help/:id", func(c *gin.Context) {
 		pages.HelpDetails(c, db)
+	})
+
+	// Event and Help management
+	r.GET("/manage-post", func(c *gin.Context) {
+		pages.GetManagedPost(c, db)
+	})
+
+	r.POST("/manage-post", func(c *gin.Context) {
+		pages.GetManagedPost(c, db)
 	})
 }

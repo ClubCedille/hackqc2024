@@ -1,0 +1,63 @@
+{{ define "profile/index.html" }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Document</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+    
+        .grid-container > div {
+            padding: 1em;
+        }
+    
+        .grid-container {
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+            grid-template-rows: masonry;
+            grid-gap: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    
+    {{ template "components/navbar" . }}
+
+    <h1>Liste des événements d'urgence et des afficages de besoin en aide</h1>
+    
+    {{ template "components/crudGrid" . }}
+
+</body>
+
+{{ end }}
+
+{{ define "components/crudGrid" }}
+    <h2> Mes événements</h2> 
+    <hr> 
+    <div id="grid" class="grid-container">    
+        {{ range .Events }}
+            {{ template "cards/crudSingleEventCard" . }}
+        {{ end }}
+    </div> 
+
+    <h2> Mes offres d'aide </h2> 
+    <hr> 
+    <div id="grid" class="grid-container"> {{ range .Helps }}
+            {{ template "cards/crudSingleHelpCard" . }}
+        {{ end }}
+    </div>
+{{ end }}

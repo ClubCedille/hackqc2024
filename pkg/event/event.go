@@ -161,6 +161,20 @@ func GetAllEvents(conn *clover.DB) ([]*Event, error) {
 	return events, nil
 }
 
+func GetAllEventsByAccountId(conn *clover.DB, accountId string) ([]*Event, error) {
+	docs, err := conn.FindAll(query.NewQuery(database.EventCollection).Where(query.Field("map_object.account_id").Eq(accountId)))
+	if err != nil {
+		return nil, err
+	}
+
+	events, err := GetEventFromDocuments(docs)
+	if err != nil {
+		return nil, err
+	}
+
+	return events, nil
+}
+
 func CreateEvent(conn *clover.DB, event Event) error {
 	event.Id = uuid.NewV4().String()
 	eventDoc := document.NewDocumentOf(event)
