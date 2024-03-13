@@ -38,6 +38,9 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Help created successfully")
+
+	SubmitHelpsToDC(c, db)
+
 	c.Redirect(http.StatusSeeOther, "/map")
 }
 

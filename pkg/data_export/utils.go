@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/ClubCedille/hackqc2024/pkg/help"
-	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 )
 
 type GeoJSONFeatureCollection struct {
@@ -17,40 +14,82 @@ type GeoJSONFeatureCollection struct {
 
 type GeoJSONFeature struct {
 	Type       string                 `json:"type"`
-	Geometry   mapobject.Geometry     `json:"geometry"`
+	Geometry   Geometry     `json:"geometry"`
 	Properties map[string]interface{} `json:"properties"`
 }
 
-func ConvertHelpsToGeoJSON(helps []*help.Help) ([]byte, error) {
-	features := make([]GeoJSONFeature, 0, len(helps))
+type Geometry struct {
+	Type        string      `json:"type"`
+	Coordinates interface{} `json:"coordinates"` 
+}
 
-	for _, help := range helps {
-		properties := make(map[string]interface{})
-		properties["_id"] = help.Id
-		properties["need_help"] = help.NeedHelp
-		properties["how_to_help"] = help.HowToHelp
-		properties["how_to_use_help"] = help.HowToUseHelp
-		properties["name"] = help.MapObject.Name
-		properties["description"] = help.MapObject.Description
-		properties["category"] = help.MapObject.Category
-		properties["tags"] = help.MapObject.Tags
-		properties["date"] = help.MapObject.Date
+func ConvertMapDocsToGeoJSON(docs []map[string]interface{}) ([]byte, error) {
+    features := make([]GeoJSONFeature, 0, len(docs))
 
-		feature := GeoJSONFeature{
-			Type:       "Feature",
-			Geometry:   help.MapObject.Geometry,
-			Properties: properties,
+    for _, doc := range docs {
+        properties := make(map[string]interface{})
+
+        // Extract and assign values from doc. You'll need to assert the type of each value.
+        if id, ok := doc["_id"].(string); ok {
+            properties["_id"] = id
+        }
+        if needHelp, ok := doc["need_help"].(bool); ok {
+            properties["need_help"] = needHelp
+        }
+        if howToHelp, ok := doc["how_to_help"].(string); ok {
+            properties["how_to_help"] = howToHelp
+        }
+		if howToUseHelp, ok := doc["how_to_use_help"].(string); ok {
+			properties["how_to_use_help"] = howToUseHelp
+		}
+		if name, ok := doc["name"].(string); ok {
+			properties["name"] = name
+		}
+		if categorieCatastrophe, ok := doc["categorie_catastrophe"].(string); ok {
+			properties["categorie_catastrophe"] = categorieCatastrophe
+		}
+		if sourceExterneLinked, ok := doc["source_externe_linked"].(string); ok {
+			properties["source_externe_linked"] = sourceExterneLinked
 		}
 
-		features = append(features, feature)
-	}
+        if mapObject, ok := doc["map_object"].(map[string]interface{}); ok {
+            if name, ok := mapObject["name"].(string); ok {
+                properties["name"] = name
+            }
+            if description, ok := mapObject["description"].(string); ok {
+                properties["description"] = description
+            }
+            if category, ok := mapObject["category"].(string); ok {
+                properties["category"] = category
+            }
+            if tags, ok := mapObject["tags"].([]string); ok {
+				properties["tags"] = tags
+			}
+			if date, ok := mapObject["date"].(string); ok {
+				properties["date"] = date
+			}
 
-	geoJSON := GeoJSONFeatureCollection{
-		Type:     "FeatureCollection",
-		Features: features,
-	}
+            if geomMap, ok := mapObject["geometry"].(map[string]interface{}); ok {
+				geometry := Geometry{
+                    Type:        geomMap["type"].(string),
+                    Coordinates: geomMap["coordinates"],
+                }
+                feature := GeoJSONFeature{
+                    Type:       "Feature",
+                    Geometry:   geometry,
+                    Properties: properties,
+                }
+				features = append(features, feature)
+            }
+        }
+    }
 
-	return json.Marshal(geoJSON)
+    geoJSON := GeoJSONFeatureCollection{
+        Type:     "FeatureCollection",
+        Features: features,
+    }
+
+    return json.Marshal(geoJSON)
 }
 
 func fileSizeInMB(filename string) string {

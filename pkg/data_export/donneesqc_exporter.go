@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/ClubCedille/hackqc2024/pkg/help"
 )
 
 func PostJsonHelpsToDQ(apiKey string, datasetIdentifier string, filePath string) error {
@@ -125,8 +123,8 @@ func postJsonResource(apiKey, datasetIdentifier, resourceId, filePath string) er
 	return nil
 }
 
-func PostGeoJsonHelpsToDQ(apiKey string, datasetIdentifier string, helps []*help.Help) error {
-    geoJsonData, err := ConvertHelpsToGeoJSON(helps)
+func PostGeoJsonHelpsToDQ(apiKey string, datasetIdentifier string, helps []map[string]interface{}) error {
+    geoJsonData, err := ConvertMapDocsToGeoJSON(helps)
     if err != nil {
         return err
     }

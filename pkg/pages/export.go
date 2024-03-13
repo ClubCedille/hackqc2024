@@ -9,7 +9,6 @@ import (
 
 	data_export "github.com/ClubCedille/hackqc2024/pkg/data_export"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
-	"github.com/ClubCedille/hackqc2024/pkg/help"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -41,7 +40,12 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	updateExternalSourceLinkedToHelp(filePath, events)
+	updatedHelp, err := updateExternalSourceLinkedToHelp(filePath, events)
+	if err != nil {
+		log.Printf("Error updating external source linked to help: %s", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
+		return
+	}
 
 	err = data_export.PostJsonHelpsToDQ(apiKey, jeuDeDonnees, filePath)
 	if err != nil {
@@ -50,14 +54,13 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	helps, err := help.GetAllHelps(db)
 	if err != nil {
-		log.Println("Error fetching events:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch help data"})
+		log.Println("Error converting help doc to helps:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
 		return
 	}
 
-	err = data_export.PostGeoJsonHelpsToDQ(apiKey, jeuDeDonnees, helps)
+	err = data_export.PostGeoJsonHelpsToDQ(apiKey, jeuDeDonnees, updatedHelp)
 	if err != nil {
 		log.Printf("Error posting help events to Données Québec: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to post help data"})
@@ -67,17 +70,16 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 	c.JSON(http.StatusOK, gin.H{"status": "submitted"})
 }
 
-
-func updateExternalSourceLinkedToHelp(filePath string, events []*event.Event) error {
+func updateExternalSourceLinkedToHelp(filePath string, events []*event.Event) ([]map[string]interface{}, error) {
     data, err := os.ReadFile(filePath)
     if err != nil {
         log.Printf("Failed to read the file: %v", err)
-        return err
+        return nil, err
     }
 
     var docs []map[string]interface{}
     if err := json.Unmarshal(data, &docs); err != nil {
-        return fmt.Errorf("failed to unmarshal JSON data: %w", err)
+        return nil, fmt.Errorf("failed to unmarshal JSON data: %w", err)
     }
 
     for _, doc := range docs {
@@ -85,27 +87,27 @@ func updateExternalSourceLinkedToHelp(filePath string, events []*event.Event) er
             for _, event := range events {
                 if event.Id == eventID {
                     doc["source_externe_linked"] = event.ExternalId
-					doc["categorie_catastrophe"] = event.MapObject.Category
+                    doc["categorie_catastrophe"] = event.MapObject.Category
                     break
                 }
             }
-			delete(doc, "event_id")
-			delete(doc, "contact_infos")
+            delete(doc, "event_id")
+            delete(doc, "contact_infos")
         }
-		if mapObject, ok := doc["map_object"].(map[string]interface{}); ok {
-			delete(mapObject, "account_id")
-			delete(mapObject, "Id")
-		}
+        if mapObject, ok := doc["map_object"].(map[string]interface{}); ok {
+            delete(mapObject, "account_id")
+            delete(mapObject, "Id")
+        }
     }
 
     updatedData, err := json.Marshal(docs)
     if err != nil {
-        return fmt.Errorf("failed to marshal the updated JSON data: %w", err)
+        return nil, fmt.Errorf("failed to marshal the updated JSON data: %w", err)
     }
 
     if err := os.WriteFile(filePath, updatedData, 0644); err != nil {
-        return fmt.Errorf("failed to write the updated JSON back to the file: %w", err)
+        return nil, fmt.Errorf("failed to write the updated JSON back to the file: %w", err)
     }
 
-    return nil
+    return docs, nil
 }
