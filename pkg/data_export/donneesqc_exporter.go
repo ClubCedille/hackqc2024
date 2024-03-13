@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -44,99 +45,33 @@ func PostJsonHelpsToDQ(apiKey string, datasetIdentifier string, filePath string)
         }
     }
 
-    if resourceId != "" {
-        // Resource exists, update it
-        return patchJsonResource(apiKey, resourceId, filePath)
+    return postJsonResource(apiKey, datasetIdentifier, resourceId, filePath)
+}
+
+func postJsonResource(apiKey, datasetIdentifier, resourceId, filePath string) error {
+    var url string
+    reqBody := &bytes.Buffer{}
+    writer := multipart.NewWriter(reqBody)
+
+    if resourceId == "" {
+        url = "https://pab.donneesquebec.ca/recherche/api/3/action/resource_create"
+        writer.WriteField("package_id", datasetIdentifier)
+        writer.WriteField("format", "JSON")
+        writer.WriteField("name", filepath.Base(filePath))
+        writer.WriteField("resource_type", "donnees")
+        writer.WriteField("url", "upload")
     } else {
-        // Resource does not exist, create it
-        return postJsonResource(apiKey, datasetIdentifier, filePath)
+        url = "https://pab.donneesquebec.ca/recherche/api/3/action/resource_patch"
+        writer.WriteField("id", resourceId)
     }
-}
 
-func patchJsonResource(apiKey string, resourceId string, filePath string) error {
-    url := "https://pab.donneesquebec.ca/recherche/api/3/action/resource_patch"
-    reqBody := &bytes.Buffer{}
-    writer := multipart.NewWriter(reqBody)
-
-    writer.WriteField("id", resourceId)
-
-    markdownContent, err := os.ReadFile("docs/soumission-aide.md")
+    markdownContent, err := os.ReadFile("docs/soumissions-aide-json.md")
     if err != nil {
         return fmt.Errorf("error reading markdown file: %v", err)
     }
 
     writer.WriteField("description", string(markdownContent))
     writer.WriteField("taille_entier", fileSizeInMB(filePath))
-    writer.WriteField("relidi_confic_separateur_virgule", "n/a")
-    writer.WriteField("relidi_condon_valinc", "oui")
-    writer.WriteField("relidi_condon_boolee", "oui")
-    writer.WriteField("relidi_condon_nombre", "oui")
-    writer.WriteField("relidi_confic_epsg", "oui")
-    writer.WriteField("relidi_confic_utf8", "oui")
-    writer.WriteField("relidi_confic_pascom", "oui")
-    writer.WriteField("relidi_condon_datheu", "oui")
-    writer.WriteField("relidi_description_champs", "relidi.descha.foumet")
-
-    file, err := os.Open(filePath)
-    if err != nil {
-        return err
-    }
-    defer file.Close()
-
-    part, err := writer.CreateFormFile("upload", filepath.Base(filePath))
-    if err != nil {
-        return err
-    }
-    _, err = io.Copy(part, file)
-    if err != nil {
-        return err
-    }
-
-    err = writer.Close()
-    if err != nil {
-        return err
-    }
-
-    req, err := http.NewRequest("POST", url, reqBody)
-    if err != nil {
-        return err
-    }
-
-    req.Header.Set("Authorization", apiKey)
-    req.Header.Set("Content-Type", writer.FormDataContentType())
-
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        return err
-    }
-    defer resp.Body.Close()
-
-    if resp.StatusCode != http.StatusOK {
-        return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-    }
-
-    return nil
-}
-
-func postJsonResource(apiKey string, datasetIdentifier string, filePath string) error {
-    url := "https://pab.donneesquebec.ca/recherche/api/3/action/resource_create"
-    reqBody := &bytes.Buffer{}
-    writer := multipart.NewWriter(reqBody)
-
-    writer.WriteField("package_id", datasetIdentifier)
-    writer.WriteField("name", filepath.Base(filePath))
-    writer.WriteField("url", "upload")
-
-    markdownContent, err := os.ReadFile("docs/soumission-aide.md")
-    if err != nil {
-        return fmt.Errorf("error reading markdown file: %v", err)
-    }
-
-    writer.WriteField("description", string(markdownContent))
-    writer.WriteField("taille_entier", fileSizeInMB(filePath))
-    writer.WriteField("format", "JSON")
-    writer.WriteField("resource_type", "donnees")
     writer.WriteField("relidi_confic_separateur_virgule", "n/a")
     writer.WriteField("relidi_condon_valinc", "oui")
     writer.WriteField("relidi_condon_boolee", "oui")
@@ -167,7 +102,6 @@ func postJsonResource(apiKey string, datasetIdentifier string, filePath string) 
     if err != nil {
         return err
     }
-      
 
     req, err := http.NewRequest("POST", url, reqBody)
     if err != nil {
@@ -197,6 +131,13 @@ func PostGeoJsonHelpsToDQ(apiKey string, datasetIdentifier string, helps []*help
         return err
     }
 
+    filePath := "tmp/soumissions-aide.geojson"
+    err = os.WriteFile(filePath, geoJsonData, 0644)
+    if err != nil {
+        log.Fatalf("Failed to write to file: %v", err)
+        return err
+    }
+
     checkUrl := "https://pab.donneesquebec.ca/recherche/api/3/action/package_show?id=" + datasetIdentifier
     checkReq, err := http.NewRequest("GET", checkUrl, nil)
     if err != nil {
@@ -216,49 +157,65 @@ func PostGeoJsonHelpsToDQ(apiKey string, datasetIdentifier string, helps []*help
         return err
     }
 
-    // resources := result["result"].(map[string]interface{})["resources"].([]interface{})
-    // var resourceId string
-    // for _, resource := range resources {
-    //     res := resource.(map[string]interface{})
-    //     if res["name"] == "events.geojson" {
-    //         resourceId = res["id"].(string)
-    //         break
-    //     }
-    // }
+    resources := result["result"].(map[string]interface{})["resources"].([]interface{})
+    var resourceId string
+    for _, resource := range resources {
+        res := resource.(map[string]interface{})
+        if res["name"] == filepath.Base(filePath) {
+            resourceId = res["id"].(string)
+            break
+        }
+    }
 
-    // If the resourceId is not empty, patch the existing resource
-    // if resourceId != "" {
-    //     return patchGeoJsonResource(apiKey, resourceId, geoJsonData)
-    // } else {
-    //     return postGeoJsonResource(apiKey, datasetIdentifier, geoJsonData)
-    // }
-    return postGeoJsonResource(apiKey, datasetIdentifier, geoJsonData)
-
+    return postGeoJsonResource(apiKey, datasetIdentifier, resourceId, filePath)
 }
 
-// func patchGeoJsonResource(apiKey string, resourceId string, geoJsonData []byte) error {
-//     // todo
-//     return nil
-// }
-
-func postGeoJsonResource(apiKey string, datasetIdentifier string, geoJsonData []byte) error {
-    url := "https://pab.donneesquebec.ca/recherche/api/3/action/resource_create"
+func postGeoJsonResource(apiKey, datasetIdentifier, resourceId, filePath string) error {
+    var url string
     reqBody := &bytes.Buffer{}
     writer := multipart.NewWriter(reqBody)
 
-    writer.WriteField("package_id", datasetIdentifier)
-    writer.WriteField("name", "events.geojson")
+    if resourceId == "" {
+        url = "https://pab.donneesquebec.ca/recherche/api/3/action/resource_create"
+        writer.WriteField("package_id", datasetIdentifier)
+    } else {
+        url = "https://pab.donneesquebec.ca/recherche/api/3/action/resource_patch"
+        writer.WriteField("id", resourceId)
+    }
+
+    writer.WriteField("name", filepath.Base(filePath))
     writer.WriteField("url", "upload")
-    writer.WriteField("description", "GeoJSON data containing events spatial information")
     writer.WriteField("format", "GeoJSON")
     writer.WriteField("resource_type", "donnees")
 
-    part, err := writer.CreateFormField("upload")
+    markdownContent, err := os.ReadFile("docs/soumissions-aide-geojson.md")
+    if err != nil {
+        return fmt.Errorf("error reading markdown file: %v", err)
+    }
+
+    writer.WriteField("description", string(markdownContent))
+    writer.WriteField("taille_entier", fileSizeInMB(filePath))
+    writer.WriteField("relidi_confic_separateur_virgule", "n/a")
+    writer.WriteField("relidi_condon_valinc", "oui")
+    writer.WriteField("relidi_condon_boolee", "oui")
+    writer.WriteField("relidi_condon_nombre", "oui")
+    writer.WriteField("relidi_confic_epsg", "oui")
+    writer.WriteField("relidi_confic_utf8", "oui")
+    writer.WriteField("relidi_confic_pascom", "oui")
+    writer.WriteField("relidi_condon_datheu", "oui")
+    writer.WriteField("relidi_description_champs", "relidi.descha.foumet")
+
+    file, err := os.Open(filePath)
     if err != nil {
         return err
     }
+    defer file.Close()
 
-    _, err = part.Write(geoJsonData)
+    part, err := writer.CreateFormFile("upload", filepath.Base(filePath))
+    if err != nil {
+        return err
+    }
+    _, err = io.Copy(part, file)
     if err != nil {
         return err
     }
