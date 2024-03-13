@@ -31,20 +31,32 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 			pages.GetEventDetailsAboutToBeDelete(c, db)
 		})
 
-		group.DELETE("/help/delete/:id", func(c *gin.Context) {
-			pages.DeleteHelp(c, db)
+		group.DELETE("/event/delete/:id", func(c *gin.Context) {
+			pages.DeleteEvent(c, db)
 		})
 
-		group.DELETE("/events/delete/:id", func(c *gin.Context) {
-			pages.DeleteEvent(c, db)
+		group.GET("/delete-help/:id", func(c *gin.Context) {
+			pages.GetHelpDetailsAboutToBeDelete(c, db)
+		})
+
+		group.DELETE("/help/delete/:id", func(c *gin.Context) {
+			pages.DeleteHelp(c, db)
 		})
 
 		group.GET("/update-event/:id", func(c *gin.Context) {
 			pages.GetEventDetailAboutToBeModified(c, db)
 		})
 
-		group.POST("/events/update/:id", func(c *gin.Context) {
+		group.POST("/event/update/:id", func(c *gin.Context) {
 			pages.UpdateEvent(c, db)
+		})
+
+		group.GET("/update-help/:id", func(c *gin.Context) {
+			pages.GetHelpDetailAboutToBeModified(c, db)
+		})
+
+		group.POST("/help/update/:id", func(c *gin.Context) {
+			pages.UpdateHelp(c, db)
 		})
 	}
 }

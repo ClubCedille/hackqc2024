@@ -374,7 +374,7 @@
         style="width: 90vw; max-width: none; border: none; display: flex; justify-content: start; align-items: center;">
         <button onclick="document.getElementById('eventModal').style.display='block'"
             class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
-            {{ end }}>Créer un évènement</button>
+            {{ end }}>Créer un événement</button>
         <a href="/map" class="w3-btn w3-teal w3-round-xlarge" style="margin-left: 10px;">Réinitialiser les filtres</a>
     </div>
 
@@ -401,10 +401,11 @@
 
     <div id="eventModal" class="w3-modal">
         <div class="w3-modal-dialog">
-            <div class="w3-modal-content w3-card-8 w3-round-xlarge">
-                <header class="w3-container" style="height: 0;">
+            <div class="w3-modal-content w3-card-8">
+                <header class="w3-container w3-teal" style="height: 0;">
                     <span onclick="document.getElementById('eventModal').style.display='none'"
-                        class="w3-button w3-large w3-display-topright w3-teal w3-margin">&times;</span>
+                        class="w3-button w3-large w3-display-topright">&times;</span>
+                    <h2>Soumettre un événement</h2>
                 </header>
 
                 {{ template "forms/eventForm.html" . }}

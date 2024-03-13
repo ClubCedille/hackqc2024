@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Créer un évènement</title>
+  <title>Créer un événement</title>
   <link rel="icon" href="static/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
   <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
@@ -11,10 +11,9 @@
 </head>
 <div class="row w3-round-xlarge">
   <div class="col-md-12">
-    <form action="/create-event" method="post" id="form-container">
-      <h1 class="w3-margin">Créer un évènement</h1>
+    <form action="/create-event" method="post" id="form-container" class="w3-card-4" style="padding: 20px;">
       <fieldset>
-        <legend><span class="number">1</span>Évènement</legend>
+        <legend><span class="number">1</span>Événement</legend>
 
         <label for="danger_level">Niveau de danger:</label>
         <select id="danger_level" name="danger_level" required>
@@ -39,6 +38,9 @@
         <label for="map_object_name">Nom:</label>
         <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" required>
 
+        <label for="map_object_description">Description:</label>
+        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required></textarea>
+
         <label for="map_object_category">Catégories:</label>
         <select id="map_object_category" name="map_object_category" required>
           <option value="" disabled selected>Sélectionner une catégorie</option>
@@ -51,19 +53,14 @@
         <select id="map_object_geometry_type" name="map_object_geometry_type">
           <option value="Point">Point</option>
         </select>
-        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates"
-          name="map_object_geometry_coordinates" required>
-
-        <label for="map_object_description">Description:</label>
-        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5"
-          required></textarea>
+        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates" required>
 
         <label for="map_object_tags">Tags:</label>
         <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." name="map_object_tags" required>
 
       </fieldset>
 
-      <button type="submit">Créer</button>
+      <button class="w3-button w3-teal w3-margin-top" type="submit">Soumettre</button>
 
     </form>
   </div>

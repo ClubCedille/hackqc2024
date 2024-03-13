@@ -28,56 +28,7 @@ func HelpPage(c *gin.Context, db *clover.DB) {
 }
 
 func CreateHelp(c *gin.Context, db *clover.DB) {
-	eventName := c.PostForm("map_object_name")
-	eventDescription := c.PostForm("map_object_description")
-	eventCategory := c.PostForm("map_object_category")
-	eventId := c.PostForm("event_id")
-
-	// Processing tags
-	tags := c.PostForm("map_object_tags")
-	tagsArray := strings.Split(tags, ",")
-	var tagsArrayString []string
-	for _, tag := range tagsArray {
-		trimmedTag := strings.TrimSpace(tag)
-		if trimmedTag != "" {
-			tagsArrayString = append(tagsArrayString, trimmedTag)
-		}
-	}
-
-	// Processing coordinates
-	coordinatesStr := c.PostForm("map_object_geometry_coordinates")
-	coordinatesArray := strings.Split(coordinatesStr, ",")
-	var coordinatesArrayFloat []float64
-	for _, coord := range coordinatesArray {
-		floatCoord, err := strconv.ParseFloat(strings.TrimSpace(coord), 64)
-		if err != nil {
-			log.Println("Error parsing coordinates:", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid coordinates format"})
-			return
-		}
-		coordinatesArrayFloat = append(coordinatesArrayFloat, floatCoord)
-	}
-
-	contactInfos := c.PostForm("contact_infos")
-	needHelp := c.PostForm("need_help") == "true"
-	howToHelp := c.PostForm("how_to_help")
-	howToUseHelp := c.PostForm("how_to_use_help")
-
-	helpRequest := help.Help{
-		ContactInfos: contactInfos,
-		NeedHelp:     needHelp,
-		HowToHelp:    howToHelp,
-		HowToUseHelp: howToUseHelp,
-		EventId:      eventId,
-		MapObject: mapobject.MapObject{
-			AccountId:   session.ActiveSession.AccountId,
-			Name:        eventName,
-			Description: eventDescription,
-			Category:    eventCategory,
-			Tags:        tagsArrayString,
-			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: coordinatesArrayFloat},
-		},
-	}
+	helpRequest := GetHelpFromContext(c, db)
 
 	err := help.CreateHelp(db, helpRequest)
 	if err != nil {
@@ -90,12 +41,34 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 	c.Redirect(http.StatusSeeOther, "/map")
 }
 
-func UpdateHelp(c *gin.Context, db *clover.DB) {
-	var data help.Help
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func GetHelpDetailAboutToBeModified(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+	help, err := help.GetHelpById(db, id)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	// Format some data
+	var formattedCoords []string
+	for _, coord := range help.MapObject.Geometry.Coordinates {
+		formattedCoords = append(formattedCoords, strconv.FormatFloat(coord, 'f', -1, 64))
+	}
+	fCoords := strings.Join(formattedCoords, ", ")
+
+	help.MapObject.Description = strings.TrimSpace(help.MapObject.Description)
+
+	c.HTML(http.StatusOK, "modals/update-help.html", gin.H{
+		"Help":        help,
+		"Coordinates": fCoords,
+		"Tags":        strings.Join(help.MapObject.Tags, ", "),
+	})
+}
+
+func UpdateHelp(c *gin.Context, db *clover.DB) {
+	data := GetHelpFromContext(c, db)
+	data.Id = c.Param("id")
 
 	err := help.UpdateHelp(db, data)
 	if err != nil {
@@ -105,7 +78,6 @@ func UpdateHelp(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Help updated successfully")
-	c.Redirect(http.StatusSeeOther, "/helps")
 }
 
 func DeleteHelp(c *gin.Context, db *clover.DB) {
@@ -164,4 +136,57 @@ func HelpDetails(c *gin.Context, db *clover.DB) {
 	c.HTML(http.StatusOK, "modals/help-details.html", gin.H{
 		"Help": &help,
 	})
+}
+
+func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
+	eventName := c.PostForm("map_object_name")
+	eventDescription := c.PostForm("map_object_description")
+	eventCategory := c.PostForm("map_object_category")
+	eventId := c.PostForm("event_id")
+
+	// Processing tags
+	tags := c.PostForm("map_object_tags")
+	tagsArray := strings.Split(tags, ",")
+	var tagsArrayString []string
+	for _, tag := range tagsArray {
+		trimmedTag := strings.TrimSpace(tag)
+		if trimmedTag != "" {
+			tagsArrayString = append(tagsArrayString, trimmedTag)
+		}
+	}
+
+	// Processing coordinates
+	coordinatesStr := c.PostForm("map_object_geometry_coordinates")
+	coordinatesArray := strings.Split(coordinatesStr, ",")
+	var coordinatesArrayFloat []float64
+	for _, coord := range coordinatesArray {
+		floatCoord, err := strconv.ParseFloat(strings.TrimSpace(coord), 64)
+		if err != nil {
+			log.Println("Error parsing coordinates:", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid coordinates format"})
+			return help.Help{}
+		}
+		coordinatesArrayFloat = append(coordinatesArrayFloat, floatCoord)
+	}
+
+	contactInfos := c.PostForm("contact_infos")
+	needHelp := c.PostForm("need_help") == "true"
+	howToHelp := c.PostForm("how_to_help")
+	howToUseHelp := c.PostForm("how_to_use_help")
+
+	return help.Help{
+		ContactInfos: contactInfos,
+		NeedHelp:     needHelp,
+		HowToHelp:    howToHelp,
+		HowToUseHelp: howToUseHelp,
+		EventId:      eventId,
+		MapObject: mapobject.MapObject{
+			AccountId:   session.ActiveSession.AccountId,
+			Name:        eventName,
+			Description: eventDescription,
+			Category:    eventCategory,
+			Tags:        tagsArrayString,
+			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: coordinatesArrayFloat},
+		},
+	}
 }

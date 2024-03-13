@@ -1,0 +1,118 @@
+{{ define "modals/update-help.html" }}
+
+<div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
+  <div class="modal-underlay" _="on click trigger closeModal"></div>
+  <div class="modal-content">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Modifier mon offre d'aide</title>
+      <link rel="icon" href="static/favicon.svg" type="image/x-icon">
+      <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+      <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="/static/formStyle.css">
+      <link rel="stylesheet" href="/static/modal.css">
+    </head>
+    <form id="form-container"  class="w3-card-4" style="padding: 20px; max-height: 1200px; overflow-y: auto;">
+      <h1 class="w3-margin">Modifier mon offre d'aide</h1>
+      <fieldset>
+        <legend><span class="number">1</span>Offre d'aide</legend>
+        <div class="w3-margin-bottom">
+            <label>Information de contact</label>
+            <input class="w3-input" type="text" name="contact_infos" value="{{ .Help.ContactInfos }}" required>
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label>Comment aider</label>
+            <textarea class="w3-input" name="how_to_help" required>
+                {{ .Help.HowToHelp }}
+            </textarea>
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label>Comment utiliser l'aide</label>
+            <textarea class="w3-input" name="how_to_use_help" required>
+                {{ .Help.HowToUseHelp }}
+            </textarea>
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label>Besoin d'aide</label>
+            <p>
+                <input class="w3-radio" type="radio" name="need_help" value="true" {{if eq .Help.NeedHelp true}}checked{{end}} required>
+                <label>Oui</label>
+            </p>
+            <p>
+                <input class="w3-radio" type="radio" name="need_help" value="false" {{if eq .Help.NeedHelp false}}checked{{end}}>
+                <label>Non</label>
+            </p>
+        </div>
+      </fieldset>
+
+      <fieldset>        
+        <legend><span class="number">1</span>Coordonnées sur la carte</legend>
+        <input type="hidden" id="eventIdField" name="event_id">
+        <div class="w3-margin-bottom">
+            <label>Nom</label>
+            <input class="w3-input" type="text" name="map_object_name" value="{{ .Help.MapObject.Name }}" required>
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label>Description</label>
+            <textarea class="w3-input" name="map_object_description" required>
+                {{ .Help.MapObject.Description }}
+            </textarea>
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label>Categorie</label>
+            <select class="w3-select" name="map_object_category" required>
+                <option value="Hébergement" {{if eq .Help.MapObject.Category "Hébergement"}}selected{{end}}>Hébergement</option>
+                <option value="Nourriture" {{if eq .Help.MapObject.Category "Nourriture"}}selected{{end}}>Nourriture</option>
+                <option value="Transport" {{if eq .Help.MapObject.Category "Transport"}}selected{{end}}>Transport</option>
+                <option value="Coup de main" {{if eq .Help.MapObject.Category "Coup de main"}}selected{{end}}>Coup de main</option>
+                <option value="Renforcement" {{if eq .Help.MapObject.Category "Renforcement"}}selected{{end}}>Renforcement</option>
+            </select>
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label for="map_object_geometry">Coordonnées:</label>
+            <select id="map_object_geometry_type" name="map_object_geometry_type">
+            <option value="Point">Point</option>
+            </select>
+            <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" value="{{ .Coordinates }}" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
+        </div>
+
+        <div class="w3-margin-bottom">
+            <label for="map_object_tags">Tags:</label>
+            <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." value="{{ .Tags }}" name="map_object_tags" required>
+        </div>
+      </fieldset>
+
+      <div class="button-container">
+        <button hx-post="/help/update/{{.Help.Id}}" class="w3-button w3-teal w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Modifier</button>
+        <button _="on click trigger closeModal" class="w3-button w3-red w3-round-large">Annuler</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+    function reloadPage() {
+        fetch('/manage-post')
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+                console.log('Reloaded');
+            } else {
+                console.error('Erreur lors de la requête:', response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la requête:', error);
+        });
+    }
+</script>
+
+{{ end }}
