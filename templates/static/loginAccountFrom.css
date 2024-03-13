@@ -1,0 +1,111 @@
+#form-container *, 
+#form-container *:before, 
+#form-container *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#form-container form {
+    margin: 10px auto;
+    max-width: none !important;
+    padding: 10px 20px;
+    background: #f4f7f8;
+    border-radius: 8px;
+}
+
+#form-container h1 {
+    margin: 0 0 30px 0;
+    text-align: center;
+}
+
+#form-container input[type="text"],
+#form-container input[type="password"],
+#form-container input[type="date"],
+#form-container input[type="datetime"],
+#form-container input[type="email"],
+#form-container input[type="number"],
+#form-container input[type="search"],
+#form-container input[type="tel"],
+#form-container input[type="time"],
+#form-container input[type="url"],
+#form-container textarea,
+#form-container select {
+    background: rgb(0, 0, 0);
+    border: none;
+    font-size: 16px;
+    height: auto;
+    margin: 0;
+    outline: 0;
+    padding: 15px;
+    width: 100%;
+    background-color: #e8eeef;
+    color: #000000;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+    margin-bottom: 30px;
+}
+
+#form-container input[type="radio"],
+#form-container input[type="checkbox"] {
+    margin: 0 4px 8px 0;
+}
+
+#form-container select {
+    padding: 6px;
+    height: 32px;
+    border-radius: 2px;
+}
+
+#form-container button {
+    display: block;
+    width: 150px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 30px;
+  }
+
+#form-container fieldset {
+    margin: 30px;
+    border: none;
+}
+
+#form-container legend {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+}
+
+#form-container label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#form-container label.light {
+    font-weight: 300;
+    display: inline;
+}
+
+#form-container .number {
+    background-color: #5fcf80;
+    color: #fff;
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+    font-size: 0.8em;
+    margin-right: 4px;
+    line-height: 30px;
+    text-align: center;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+    border-radius: 100%;
+}
+
+@media screen and (min-width: 480px) {
+    #form-container form {
+        max-width: none;
+    }
+}
