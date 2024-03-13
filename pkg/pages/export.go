@@ -1,11 +1,14 @@
 package pages
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	data_export "github.com/ClubCedille/hackqc2024/pkg/data_export"
+	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -30,7 +33,16 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	err := data_export.PostJsonHelpsToDQ(apiKey, jeuDeDonnees, filePath)
+	events, err := event.GetAllEvents(db)
+	if err != nil {
+		log.Println("Error fetching events:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch help data"})
+		return
+	}
+
+	updateExternalSourceLinkedToHelp(filePath, events)
+
+	err = data_export.PostJsonHelpsToDQ(apiKey, jeuDeDonnees, filePath)
 	if err != nil {
 		log.Printf("Error posting help events to Données Québec: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to post help data"})
@@ -52,4 +64,42 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 	// }
 
 	c.JSON(http.StatusOK, gin.H{"status": "submitted"})
+}
+
+
+func updateExternalSourceLinkedToHelp(filePath string, events []*event.Event) error {
+    data, err := os.ReadFile(filePath)
+    if err != nil {
+        log.Printf("Failed to read the file: %v", err)
+        return err
+    }
+
+    var docs []map[string]interface{}
+    if err := json.Unmarshal(data, &docs); err != nil {
+        return fmt.Errorf("failed to unmarshal JSON data: %w", err)
+    }
+
+    for _, doc := range docs {
+        if eventID, ok := doc["event_id"].(string); ok {
+            for _, event := range events {
+                if event.Id == eventID {
+                    doc["source_externe_linked"] = event.ExternalId
+					doc["categorie_catastrophe"] = event.MapObject.Category
+                    break
+                }
+            }
+			delete(doc, "event_id")
+        }
+    }
+
+    updatedData, err := json.Marshal(docs)
+    if err != nil {
+        return fmt.Errorf("failed to marshal the updated JSON data: %w", err)
+    }
+
+    if err := os.WriteFile(filePath, updatedData, 0644); err != nil {
+        return fmt.Errorf("failed to write the updated JSON back to the file: %w", err)
+    }
+
+    return nil
 }

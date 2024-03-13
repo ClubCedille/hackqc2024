@@ -4,7 +4,8 @@
 
 - `_id` : Un identifiant unique pour l'enregistrement, généralement un UUID.
 - `contact_infos` : Informations de contact, typiquement un numéro de téléphone.
-- `event_id` : Un identifiant pour l'événement.
+- `source_externe_linked` : Un lien vers la source externe de l'incident pour lequel l'aide est proposée.
+- `categorie_catastrophe` : La catégorie de la catastrophe pour laquelle l'aide est proposée.
 - `how_to_help` : Instructions ou informations sur comment fournir de l'aide.
 - `how_to_use_help` : Instructions ou informations sur comment utiliser l'aide proposée.
 - `need_help` : Un booléen indiquant si de l'aide est nécessaire.
