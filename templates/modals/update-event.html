@@ -78,7 +78,7 @@
         .then(response => {
             if (response.ok) {
                 location.reload();
-                console.error('Reloaded');
+                console.log('Reloaded');
             } else {
                 console.error('Erreur lors de la requête:', response.status);
             }
