@@ -122,10 +122,8 @@ func UpdateEvent(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	log.Printf("Event STATUS: %v", data)
-
 	log.Println("Event updated successfully")
-	c.Redirect(http.StatusSeeOther, "/manage-post")
+	c.Redirect(http.StatusSeeOther, "/map")
 }
 
 func DeleteEvent(c *gin.Context, db *clover.DB) {

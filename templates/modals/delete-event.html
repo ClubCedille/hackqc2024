@@ -29,8 +29,18 @@
     }
 
     function reloadPage() {
-        location.reload();
-        window.location.href = '/map';
+        fetch('/manage-post')
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+                console.error('Reloaded');
+            } else {
+                console.error('Erreur lors de la requête:', response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la requête:', error);
+        });
     }
 </script>
 
