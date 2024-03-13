@@ -26,10 +26,6 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 		})
 
 		// Event
-		group.GET("/create-event", func(c *gin.Context) {
-			pages.MapPage(c, db)
-		})
-
 		group.POST("/create-event", func(c *gin.Context) {
 			pages.CreateEvent(c, db)
 		})

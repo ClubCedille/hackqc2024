@@ -73,7 +73,13 @@ func Login(c *gin.Context, db *clover.DB) {
 		return
 	} else {
 		setActiveSession(c, db, c.PostForm("user_name"))
-		c.Redirect(http.StatusSeeOther, "/map")
+		redirectURL, err := c.Cookie("redirect_url")
+		if err != nil || redirectURL == "" {
+			redirectURL = "/map"
+		}
+	
+		c.SetCookie("redirect_url", "", -1, "/", "", false, true)
+		c.Redirect(http.StatusSeeOther, redirectURL)
 	}
 }
 
