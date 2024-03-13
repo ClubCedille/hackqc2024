@@ -42,7 +42,7 @@
         <label for="map_object_category">Catégories:</label>
         <select id="map_object_category" name="map_object_category" required>
             {{ range .CategoryKeys }}
-                <option value="{{ . }}">{{ . }}</option>
+                <option value="{{ . }}" {{if eq . $.Event.MapObject.Category }}selected{{end}}>{{ . }}</option>
             {{ end }}
         </select>
 
