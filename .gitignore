@@ -29,3 +29,5 @@ hackqc-preproject
 *-db/
 test.json
 tmp
+
+.env

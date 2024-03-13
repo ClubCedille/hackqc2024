@@ -45,7 +45,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	generateSeedData(db)
+	// generateSeedData(db)
 
 	r := gin.Default()
 	r.SetFuncMap(template.FuncMap{
