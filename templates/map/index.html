@@ -43,7 +43,7 @@
                             >
                             Plus d'infos
                         </button>
-                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps')">
+                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps');$store.showAideLieeCard=true">
                             Aides liées
                         </button>
                         <button @click="openHelpModal('${feature.properties.event._id}')" class="w3-btn w3-white w3-round w3-border w3-border-lime w3-hover-green" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> 
@@ -241,6 +241,7 @@
             });
         }
         Alpine.store('filters', filters);
+        Alpine.store('showAideLieeCard', params.has('event_id') && params.get('type') == 'helps');
 
         });
     </script>
@@ -354,7 +355,7 @@
     </div>
 
     <div x-data>
-        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;"
+        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;display: none"
             x-show="$store.showAideLieeCard">
             <div class="w3-container w3-padding">
                 <!-- Explain this mode-->
