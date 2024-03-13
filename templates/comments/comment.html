@@ -1,0 +1,8 @@
+{{ define "comments/comment" }}
+<div class="w3-card w3-margin w3-white">
+    <div class="w3-container">
+      <b>{{ .OwnerName }}</b> <span class="w3-opacity">{{ .CommentDate }}</span>
+      <p>{{ .Comment }}</p>
+    </div>
+  </div>
+{{ end }}

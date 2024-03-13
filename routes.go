@@ -87,6 +87,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.EventsPage(c, db)
 	})
 
+	r.POST("/event/comment", func(c *gin.Context) {
+		pages.PostCreateEventComment(c, db)
+	})
+
 	// Account
 	r.GET("/create-account", func(c *gin.Context) {
 		pages.GetCreateAccount(c)

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -170,7 +171,51 @@ func EventDetails(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	comments, err := comment.GetCommentsFormData(db, id)
+	if err != nil {
+		log.Println("Error fetching comments:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	c.HTML(http.StatusOK, "modals/event-details.html", gin.H{
-		"Event": &event,
+		"Event":      &event,
+		"Comments":   comments,
+		"IsLoggedIn": session.ActiveSession.AccountId != "",
+	})
+}
+
+func PostCreateEventComment(c *gin.Context, db *clover.DB) {
+
+	err := comment.CreateComment(db, comment.Comment{
+		Comment:  c.PostForm("comment"),
+		OwnerId:  session.ActiveSession.AccountId,
+		TargetId: c.PostForm("target_id"),
+	})
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Comment created successfully")
+
+	comments, err := comment.GetCommentsFormData(db, c.PostForm("target_id"))
+	if err != nil {
+		log.Println("Error fetching comments:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	event, err := event.GetEventById(db, c.PostForm("target_id"))
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "modals/event-details.html", gin.H{
+		"Event":      &event,
+		"Comments":   comments,
+		"IsLoggedIn": true,
 	})
 }

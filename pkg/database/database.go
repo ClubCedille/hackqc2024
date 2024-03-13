@@ -12,6 +12,7 @@ const AccountCollection = "AccountCollection"
 const EventCollection = "EventCollection"
 const HelpCollection = "HelpCollection"
 const WatermarkCollection = "WatermarkCollection"
+const CommentCollection = "CommentCollection"
 
 func createCollectionIfNotExists(collectionName string, db *clover.DB) error {
 	exists, err := db.HasCollection(collectionName)
@@ -40,6 +41,7 @@ func InitDatabase() (*clover.DB, error) {
 	createCollectionIfNotExists(EventCollection, db)
 	createCollectionIfNotExists(HelpCollection, db)
 	createCollectionIfNotExists(WatermarkCollection, db)
+	createCollectionIfNotExists(CommentCollection, db)
 
 	return db, nil
 }
@@ -49,6 +51,7 @@ func ExportDatabase(db *clover.DB) error {
 	db.ExportCollection(EventCollection, "event.json")
 	db.ExportCollection(HelpCollection, "help.json")
 	db.ExportCollection(WatermarkCollection, "watermark.json")
+	db.ExportCollection(CommentCollection, "comment.json")
 
 	return nil
 }
@@ -70,6 +73,11 @@ func ImportDatabase(db *clover.DB) error {
 	}
 
 	err = db.ImportCollection("watermark.json", WatermarkCollection)
+	if err != nil {
+		return err
+	}
+
+	err = db.ImportCollection("comment.json", CommentCollection)
 	if err != nil {
 		return err
 	}
