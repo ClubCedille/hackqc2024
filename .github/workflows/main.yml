@@ -65,6 +65,7 @@ jobs:
           author_email: actions@github.com
           message: 'Update version with kustomize'
           add: 'k8s/kustomization.yaml'
+          pull: ' '
 
       - name: Refresh ArgoCD
         run: |
