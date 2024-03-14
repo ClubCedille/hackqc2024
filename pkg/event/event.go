@@ -140,20 +140,24 @@ func SearchEvents(conn *clover.DB, filters map[string][]string, requireGeoJson b
 	filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
 		geoRes := !requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil
 
-		filterRes := false
+		filterRes := true
 		for k, v := range filters {
-			filterRes = (!doc.Has(k) || slices.Contains(v, fmt.Sprint(doc.Get(k))))
+			docKeyValue := doc.Get(k)
+			hasKey := doc.Has(k)
+			hasValue := slices.Contains(v, fmt.Sprint(docKeyValue))
+			filterRes = filterRes && (!hasKey || hasValue)
 		}
 
 		// If there are search terms, check if the document contains any of them
-		searchRes := true
+		searchRes := false
 		searchTerms := filters["search"]
 		for _, search := range searchTerms {
 			if search == "" {
+				searchRes = true
 				continue
 			}
 			for k := range doc.AsMap() {
-				searchRes = (strings.Contains(fmt.Sprint(doc.Get(k)), search))
+				searchRes = searchRes || (strings.Contains(fmt.Sprint(doc.Get(k)), search))
 			}
 		}
 
