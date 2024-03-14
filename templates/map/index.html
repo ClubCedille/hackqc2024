@@ -220,22 +220,32 @@
             Alpine.store('filters', {
                 categories: {
                     {{ range .EventCategories }}
-                        '{{ .Value }}': true,
+                    '{{ .Value }}': true,
             {{ end }}
             {{ range .HelpCategories }}
             '{{ .Value }}': true,
             {{ end }}
-                    },
+                },
             urgencyLevels: {
-                        {{ range .UrgencyLevels }}
+                    {{ range .UrgencyLevels }}
             '{{ .Value }}': true,
             {{ end }}
-                    },
+                },
             dangerLevels: {
-                        {{ range .DangerLevels }}
+                    {{ range .DangerLevels }}
             '{{ .Value }}': true,
             {{ end }}
-                    }
+                },
+            eventCategories: [
+            {{ range .EventCategories }}
+            "{{ .Value }}",
+            {{ end }}
+        ],
+            helpCategories: [
+            {{ range .HelpCategories }}
+            "{{ .Value }}",
+            {{ end }}
+        ]
                 });
 
         let params = new URLSearchParams(window.location.search);
@@ -259,6 +269,11 @@
         Alpine.store('showAideLieeCard', params.has('event_id') && params.get('type') == 'helps');
 
         });
+
+        function isAllSelected(categoryArray, filter) {
+            filters = Alpine.store("filters")
+            return categoryArray.every(v => filters[filter][v] == true)
+        }
     </script>
 </head>
 
@@ -289,31 +304,35 @@
                 </button>
 
                 <div x-show="active == 'categories'"
-                    x-data="{ showAll: true, toggleCategories() { this.showAll = !this.showAll ; Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = this.showAll) } }"
+                    x-data="{ showAllEvents: true, toggleEvents() { this.showAllEvents = !this.showAllEvents ; $store.filters.eventCategories.forEach(v => $store.filters.categories[v] = this.showAllEvents) },
+                              showAllHelps: true, toggleHelps() { this.showAllHelps = !this.showAllHelps ; $store.filters.helpCategories.forEach(v => $store.filters.categories[v] = this.showAllHelps) } }"
                     class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
                         <div class="w3-border-bottom w3-border-gray">
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="toggleCategories(); updateDataPointsWithFilter()">Sélectionner
-                                tout</button>
                         </div>
                         <div class="w3-border-bottom w3-border-gray">
                             <h6 class="w3-text-blue">Événements</h6>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="toggleEvents(); updateDataPointsWithFilter()">Sélectionner
+                                tout</button>
                             {{ range .EventCategories }}
                             <button
                                 class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAllEvents = isAllSelected($store.filters.eventCategories, 'categories')"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
                         <div>
                             <h6 class="w3-text-blue">Aides</h6>
+                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
+                                @click="toggleHelps(); updateDataPointsWithFilter()">Sélectionner
+                                tout</button>
                             {{ range .HelpCategories }}
                             <button
                                 class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAllHelps = isAllSelected($store.filters.helpCategories, 'categories')"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
