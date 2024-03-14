@@ -3,6 +3,7 @@ package help
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -84,6 +85,43 @@ func GetHelpWithFilters(conn *clover.DB, filters map[string][]string, requireGeo
 	helps, _ := GetHelpFromDocuments(docs)
 
 	return helps, nil
+}
+
+func SearchHelps(conn *clover.DB, filters map[string][]string, requireGeoJson bool) ([]*Help, error) {
+	filterQuery := query.NewQuery(database.HelpCollection)
+	filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
+		geoRes := !requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil
+
+		filterRes := false
+		for k, v := range filters {
+			filterRes = (!doc.Has(k) || slices.Contains(v, fmt.Sprint(doc.Get(k))))
+		}
+
+		// If there are search terms, check if the document contains any of them
+		searchRes := true
+		searchTerms := filters["search"]
+		for _, search := range searchTerms {
+			if search == "" {
+				continue
+			}
+			for k := range doc.AsMap() {
+				searchRes = (strings.Contains(fmt.Sprint(doc.Get(k)), search))
+			}
+		}
+
+		finalRes := ((geoRes && filterRes) && (searchRes))
+
+		return finalRes
+	})
+
+	docs, err := conn.FindAll(filterQuery)
+	if err != nil {
+		return nil, err
+	}
+
+	events, _ := GetHelpFromDocuments(docs)
+
+	return events, nil
 }
 
 func CreateHelp(db *clover.DB, help Help) error {

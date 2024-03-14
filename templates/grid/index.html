@@ -11,17 +11,21 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/v4-font-face.min.css"
+        integrity="sha512-vU8GapgME7Cc/sHTwbn2Q1eMBgE/ZBU8JL/oRo+Cw/frBXtmeekNEYbNe2gezj/cPaSdkTdERyimVSb+2F6f0A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <title>Document</title>
 
     <style>
         * {
             box-sizing: border-box;
         }
-    
-        .grid-container > div {
+
+        .grid-container>div {
             padding: 1em;
         }
-    
+
         .grid-container {
             display: grid;
             grid-gap: 10px;
@@ -29,7 +33,6 @@
             grid-template-rows: masonry;
             grid-gap: 10px;
         }
-
     </style>
 
 </head>
@@ -39,7 +42,7 @@
     {{ template "components/navbar" . }}
 
     <h1>Liste des événements d'urgence et des afficages de besoin en aide</h1>
-    
+
     {{ template "components/grid-toolbar" . }}
 
     {{ template "components/grid" . }}
@@ -51,211 +54,249 @@
 {{ define "components/grid" }}
 <div id="grid" class="grid-container">
     {{ range .Events }}
-        {{ template "cards/singleEventCard" . }}
+    {{ template "cards/singleEventCard" . }}
     {{ end }}
     {{ range .Helps }}
-        {{ template "cards/singleHelpCard" . }}
+    {{ template "cards/singleHelpCard" . }}
     {{ end }}
 </div>
-{{ end}}
+{{ end }}
 
 {{ define "components/grid-toolbar" }}
 <div id="tool-bar" class="w3-bar w3-light-grey">
+    <form style="margin-block-end: 0px;" hx-get="/grid/search" hx-boost="true" hx-target="#grid"
+        hx-trigger="change from:.filter delay:500ms" hx-swap="outerHTML">
+    
     <!-- search box-->
     <div class="w3-bar-item w3-left">
         <!-- search with HTMX, will return event_list_table.html -->
-        <input class="w3-input w3-border" name="search" type="search" placeholder="Recherche..." id="search-box"
-            hx-trigger="input changed delay:300ms, search" hx-indicator=".htmx-indicator" hx-get="/events/table/search"
-            hx-target="#event-list" hx-swap="outerHTML">
+        <input class="w3-input w3-border filter" name="search" type="search" placeholder="Recherche..." id="search-box">
     </div>
 
     <div class="w3-bar-item w3-left">Afficher seulement:</div>
 
     <!-- Type : Event, Help, Both : Toutes , Evenements, Aides -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML">
-    <div class="w3-bar-item w3-left">
-        <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button">Type<i class="fa fa-caret-down"></i></button>
-            <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="type" value="all" checked>
-                    Tous
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="type" value="event">
-                    Événement
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="type" value="help">
-                    Aide
-                </label>
-            </div>
-        </div>
-    </div>
+    
 
-    <!-- Category -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML">
-    <div class="w3-bar-item w3-left">
-        <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button">Catégorie<i class="fa fa-caret-down"></i></button>
-            <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="all" checked>
-                    Tous
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="vent">
-                    Vent
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="pluie">
-                    Pluie                
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="neige">
-                    Neige
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="tempête hivernale">
-                    Tempête hivernale
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="onde de tempête">
-                    Onde de tempête
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="inondation">
-                    Inondation
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="panne de télécommunication">
-                    Panne de télécommunication
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="effondrement de structure">
-                    Effondrement de structure
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="tornade">
-                    Tornade
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="crise civile">
-                    Crise civile
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="risque de gaz toxiques">
-                    Risque de gaz toxiques
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="accès à la chaleur">
-                    Accès à la chaleur
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="accès à l'eau">
-                    Accès à l'eau
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="avalanche">
-                    Avalanche
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="maladie infectieuse">
-                    Maladie infectieuse
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="category" value="coronavirus">
-                    Coronavirus
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <!-- Urgency -->
-    <div class="w3-bar-item w3-left">
-        <form style="margin-block-end: 0px;" id="urgency-form" hx-get="/events/table/search" hx-trigger="change from:.w3-check delay:300ms" hx-target="#event-list" hx-swap="outerHTML">
+        <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <button class="w3-button" type="button">Urgence<i class="fa fa-caret-down"></i></button>
+                <div class="w3-button">Type<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <div class="w3-bar-item w3-button" _="
+           on click
+           set value to ((<input[name='type']:not(:checked)/>).length == 0)
+           repeat in <input[name='type']/>
+             set it.checked to value
+             it.click()
+           end">
+                        Tout (dé)selectionner
+                    </div>
+                    <!-- <label class="w3-bar-item w3-button">
+                            <input type="checkbox" class="w3-check" name="type" value="all" checked>
+                            Tous
+                        </label> -->
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check" name="urgency" value="all" checked>
-                        Tous
+                        <input type="checkbox" class="w3-check filter" name="_.type" value="event" checked>
+                        Événement
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check" name="urgency" value="futur">
+                        <input type="checkbox" class="w3-check filter" name="_.type" value="help" checked>
+                        Aide
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Category -->
+        <div class="w3-bar-item w3-left">
+            <div class="w3-dropdown-hover w3-mobile">
+                <div _="" class="w3-button">Catégorie<i class="fa fa-caret-down"></i></div>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <!-- <label class="w3-bar-item w3-button">
+                            <input type="checkbox" class="w3-check" name="MapObject.Category" value="all" checked>
+                            Tous
+                        </label> -->
+                    <div class="w3-bar-item w3-button" _="
+                        on click
+                        set value to ((<input[name='category']:not(:checked)/>).length == 0)
+                        repeat in <input[name='category']/>
+                          set it.checked to value
+                          it.click()
+                        end">
+                        Tout (dé)selectionner
+                    </div>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Vent" checked>
+                        Vent
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Pluie" checked>
+                        Pluie
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Neige" checked>
+                        Neige
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Tempête hivernale" checked>
+                        Tempête hivernale
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Onde de tempête" checked>
+                        Onde de tempête
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Inondation" checked>
+                        Inondation
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Panne de télécommunication"
+                            checked>
+                        Panne de télécommunication
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Effondrement de structure"
+                            checked>
+                        Effondrement de structure
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Tornade" checked>
+                        Tornade
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Crise civile" checked>
+                        Crise civile
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Risque de gaz toxiques" checked>
+                        Risque de gaz toxiques
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Accès à la chaleur" checked>
+                        Accès à la chaleur
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Accès à l'eau" checked>
+                        Accès à l'eau
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Avalanche" checked>
+                        Avalanche
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Maladie infectieuse" checked>
+                        Maladie infectieuse
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Coronavirus" checked>
+                        Coronavirus
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Urgency -->
+        <div class="w3-bar-item w3-left">
+            <div class="w3-dropdown-hover w3-mobile">
+                <div class="w3-button" type="button">Urgence<i class="fa fa-caret-down"></i></div>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <!-- <label class="w3-bar-item w3-button">
+                            <input type="checkbox" class="w3-check" name="UrgencyType" value="all" checked>
+                            Tous
+                        </label> -->
+                    <div class="w3-bar-item w3-button" _="
+           on click
+           set value to ((<input[name='urgency']:not(:checked)/>).length == 0)
+           repeat in <input[name='urgency']/>
+             set it.checked to value
+             it.click()
+           end">
+                        Tout (dé)selectionner
+                    </div>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="UrgencyType" value="0" checked>
                         Futur
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check" name="urgency" value="present">
+                        <input type="checkbox" class="w3-check filter" name="UrgencyType" value="1" checked>
                         Présent
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check" name="urgency" value="past">
+                        <input type="checkbox" class="w3-check filter" name="UrgencyType" value="2" checked>
                         Passé
                     </label>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
 
-    <!-- Danger -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML"></form>
-    <div class="w3-bar-item w3-left">
-        <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button">Danger<i class="fa fa-caret-down"></i></button>
-            <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="danger" value="all" checked>
-                    Tous
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="danger" value="high">
-                    Élevé
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="danger" value="medium">
-                    Modéré
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="checkbox" class="w3-check" name="danger" value="low">
-                    Faible
-                </label>
+        <!-- Danger -->
+
+        <div class="w3-bar-item w3-left">
+            <div class="w3-dropdown-hover w3-mobile">
+                <div class="w3-button">Danger<i class="fa fa-caret-down"></i></div>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <!-- <label class="w3-bar-item w3-button">
+                            <input type="checkbox" class="w3-check" name="DangerLevel" value="all" checked>
+                            Tous
+                        </label> -->
+                    <div class="w3-bar-item w3-button" _="
+           on click
+           set value to ((<input[name='danger']:not(:checked)/>).length == 0)
+           repeat in <input[name='danger']/>
+             set it.checked to value
+             it.click()
+           end">
+                        Tout (dé)selectionner
+                    </div>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="DangerLevel" value="0" checked>
+                        Élevé
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="DangerLevel" value="1" checked>
+                        Modéré
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="checkbox" class="w3-check filter" name="DangerLevel" value="2" checked>
+                        Faible
+                    </label>
+                </div>
             </div>
         </div>
-    </div>
-    </form>
-    
-    <div class="w3-bar-item w3-left">Trier par:</div>
 
-    <!-- Sorting, radio buttons -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-radio delay:300ms" hx-swap="outerHTML"></form>
-    <div class="w3-bar-item w3-left">
-        <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button">Trier par<i class="fa fa-caret-down"></i></button>
-            <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <label class="w3-bar-item w3-button">
-                    <input type="radio" class="w3-radio" name="sort" value="date" checked>
-                    Date
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="radio" class="w3-radio" name="sort" value="name">
-                    Nom
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="radio" class="w3-radio" name="sort" value="urgency">
-                    Urgence
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="radio" class="w3-radio" name="sort" value="danger">
-                    Danger
-                </label>
-                <label class="w3-bar-item w3-button">
-                    <input type="radio" class="w3-radio" name="sort" value="category">
-                    Catégorie
-                </label>
+
+        <div class="w3-bar-item w3-left">Trier par:</div>
+
+        <!-- Sorting, radio buttons -->
+
+        <div class="w3-bar-item w3-left">
+            <div class="w3-dropdown-hover w3-mobile">
+                <div class="w3-button">Trier par<i class="fa fa-caret-down"></i></div>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="date" checked>
+                        Date
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="name">
+                        Nom
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="urgency">
+                        Urgence
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="danger">
+                        Danger
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="category">
+                        Catégorie
+                    </label>
+                </div>
             </div>
         </div>
-    </div>
     </form>
 
 </div>

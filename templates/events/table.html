@@ -50,7 +50,7 @@
     <div class="w3-bar-item w3-left">Afficher seulement:</div>
 
     <!-- Category -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML">
+    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-boost="true" hx-target="#event-list" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML">
     <div class="w3-bar-item w3-left">
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button">Catégorie<i class="fa fa-caret-down"></i></button>
@@ -129,7 +129,7 @@
 
     <!-- Urgency -->
     <div class="w3-bar-item w3-left">
-        <form style="margin-block-end: 0px;" id="urgency-form" hx-get="/events/table/search" hx-trigger="change from:.w3-check delay:300ms" hx-target="#event-list" hx-swap="outerHTML">
+        <form style="margin-block-end: 0px;" id="urgency-form" hx-get="/events/table/search" hx-boost="true" hx-trigger="change from:.w3-check delay:300ms" hx-target="#event-list" hx-swap="outerHTML">
             <div class="w3-dropdown-hover w3-mobile">
                 <button class="w3-button" type="button">Urgence<i class="fa fa-caret-down"></i></button>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
@@ -155,7 +155,7 @@
     </div>
 
     <!-- Danger -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML"></form>
+    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-boost="true" hx-trigger="change from:.w3-check delay:300ms" hx-swap="outerHTML"></form>
     <div class="w3-bar-item w3-left">
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button">Danger<i class="fa fa-caret-down"></i></button>
@@ -184,7 +184,7 @@
     <div class="w3-bar-item w3-left">Trier par:</div>
 
     <!-- Sorting, radio buttons -->
-    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-trigger="change from:.w3-radio delay:300ms" hx-swap="outerHTML"></form>
+    <form style="margin-block-end: 0px;" hx-get="/events/table/search" hx-target="#event-list" hx-boost="true" hx-trigger="change from:.w3-radio delay:300ms" hx-swap="outerHTML"></form>
     <div class="w3-bar-item w3-left">
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button">Trier par<i class="fa fa-caret-down"></i></button>

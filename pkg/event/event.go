@@ -3,6 +3,7 @@ package event
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -122,6 +123,43 @@ func GetEventWithFilters(conn *clover.DB, filters map[string][]string, requireGe
 			result = result && (!doc.Has(k) || slices.Contains(v, fmt.Sprint(doc.Get(k))))
 		}
 		return result
+	})
+
+	docs, err := conn.FindAll(filterQuery)
+	if err != nil {
+		return nil, err
+	}
+
+	events, _ := GetEventFromDocuments(docs)
+
+	return events, nil
+}
+
+func SearchEvents(conn *clover.DB, filters map[string][]string, requireGeoJson bool) ([]*Event, error) {
+	filterQuery := query.NewQuery(database.EventCollection)
+	filterQuery = filterQuery.MatchFunc(func(doc *document.Document) bool {
+		geoRes := !requireGeoJson || doc.Get("map_object.geometry.coordinates") != nil
+
+		filterRes := false
+		for k, v := range filters {
+			filterRes = (!doc.Has(k) || slices.Contains(v, fmt.Sprint(doc.Get(k))))
+		}
+
+		// If there are search terms, check if the document contains any of them
+		searchRes := true
+		searchTerms := filters["search"]
+		for _, search := range searchTerms {
+			if search == "" {
+				continue
+			}
+			for k := range doc.AsMap() {
+				searchRes = (strings.Contains(fmt.Sprint(doc.Get(k)), search))
+			}
+		}
+
+		finalRes := ((geoRes && filterRes) && (searchRes))
+
+		return finalRes
 	})
 
 	docs, err := conn.FindAll(filterQuery)
