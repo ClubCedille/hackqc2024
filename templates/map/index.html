@@ -322,10 +322,9 @@
                         <div class="w3-border-bottom w3-border-gray">
                             <h6 class="w3-text-blue">Événements</h6>
                             <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
-                                x-bind:class="isAllSelected($store.filters.eventCategories, 'categories') ? 'w3-border-blue w3-border' : 'w3-blue'"
-                                @click="toggleEvents(); updateDataPointsWithFilter()"
-                                x-text="isAllSelected($store.filters.eventCategories, 'categories') ? 'Tout déselectionner' : 'Tout sélectionner'"
-                                >Tout sélectionner</button>
+                                x-bind:class="isAllSelected($store.filters.eventCategories, 'categories') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
+                                x-text="isAllSelected($store.filters.eventCategories, 'categories') ? 'Tout désélectionner' : 'Tout sélectionner'"
+                                @click="toggleEvents(); updateDataPointsWithFilter()">Tout sélectionner</button>
                             {{ range .EventCategories }}
                             <button
                                 class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
@@ -337,11 +336,9 @@
                         <div>
                             <h6 class="w3-text-blue">Aides</h6>
                             <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
-                                x-bind:class="isAllSelected($store.filters.helpCategories, 'categories') ? 'w3-border-blue w3-border' : 'w3-blue'"
-                                @click="toggleHelps(); updateDataPointsWithFilter()"
-                                x-text="isAllSelected($store.filters.helpCategories, 'categories') ? 'Tout déselectionner' : 'Tout sélectionner'"
-                                >Tout sélectionner</button>
-
+                                x-bind:class="isAllSelected($store.filters.helpCategories, 'categories') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
+                                x-text="isAllSelected($store.filters.helpCategories, 'categories') ? 'Tout désélectionner' : 'Tout sélectionner'"
+                                @click="toggleHelps(); updateDataPointsWithFilter()">Tout sélectionner</button>
                             {{ range .HelpCategories }}
                             <button
                                 class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
@@ -359,10 +356,9 @@
                     class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
                         <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
-                            x-bind:class="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'w3-border-blue w3-border' : 'w3-blue'"
-                            @click="toggle(); updateDataPointsWithFilter()"
-                            x-text="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'Tout déselectionner' : 'Tout sélectionner'"
-                            >Tout sélectionner</button>
+                            x-bind:class="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
+                            x-text="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'Tout désélectionner' : 'Tout sélectionner'"
+                            @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
                         {{ range .UrgencyLevels }}
                         <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                             x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
@@ -378,10 +374,9 @@
                     class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
                         <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
-                            x-bind:class="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'w3-border-blue w3-border' : 'w3-blue'"
-                            @click="toggle(); updateDataPointsWithFilter()"
-                            x-text="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'Tout déselectionner' : 'Tout sélectionner'"
-                            >Tout sélectionner</button>
+                            x-bind:class="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
+                            x-text="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'Tout désélectionner' : 'Tout sélectionner'"
+                            @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
                         {{ range .DangerLevels }}
                         <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                             x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
