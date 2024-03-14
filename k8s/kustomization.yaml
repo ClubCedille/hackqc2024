@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hackqc2024
+images:
+  - name: ghcr.io/clubcedille/hackqc2024
+    newTag: commit-9153183a8958689e65021b0d43d1c53948fa4f2c
+
+resources:
+  - namespace.yaml
+  - pv.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
