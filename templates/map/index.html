@@ -285,6 +285,7 @@
     <div class="w3-container">
         <div class="w3-card w3-auto w3-round-large" style="width: 90vw;max-width: none;">
             <div x-data="{ active: '' }">
+                <span class="w3-margin-left"><b>Filtres</b></span>
                 <button @click="active = active == 'categories' ? '' : 'categories'"
                     class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                     x-bind:class="active == 'categories' ? 'w3-blue' : 'w3-white'">
@@ -412,38 +413,34 @@
     <!-- END OF PAGE -->
 
     <div id="helpModal" class="w3-modal">
-        <div class="w3-modal-dialog">
-            <div class="w3-modal-content w3-card-8">
-                <header class="w3-container w3-teal">
-                    <span onclick="document.getElementById('helpModal').style.display='none'"
-                        class="w3-button w3-large w3-display-topright">&times;</span>
-                    <h2>Soumettre une demande d'aide</h2>
-                </header>
+        <div class="w3-modal-content w3-animate-opacity w3-card-8">
+            <header class="w3-container w3-teal">
+                <span onclick="document.getElementById('helpModal').style.display='none'"
+                    class="w3-button w3-large w3-display-topright">&times;</span>
+                <h2>Soumettre une demande d'aide</h2>
+            </header>
 
-                {{ template "forms/helpForm.html" . }}
+            {{ template "forms/helpForm.html" . }}
 
-                <footer class="w3-container w3-teal">
-                    <p>Merci pour votre contribution!</p>
-                </footer>
-            </div>
+            <footer class="w3-container w3-teal">
+                <p>Merci pour votre contribution!</p>
+            </footer>
         </div>
     </div>
 
     <div id="eventModal" class="w3-modal">
-        <div class="w3-modal-dialog">
-            <div class="w3-modal-content w3-card-8">
-                <header class="w3-container w3-teal" style="height: 0;">
-                    <span onclick="document.getElementById('eventModal').style.display='none'"
-                        class="w3-button w3-large w3-display-topright">&times;</span>
-                    <h2>Soumettre un événement</h2>
-                </header>
+        <div class="w3-modal-content w3-animate-opacity w3-card-8 w3-round-xlarge">
+            <header class="w3-container" style="height: 0;">
+                <span onclick="document.getElementById('eventModal').style.display='none'"
+                    class="w3-button w3-teal w3-large w3-display-topright w3-round-large w3-margin">&times;</span>
+                <h2>Soumettre un événement</h2>
+            </header>
 
-                {{ template "forms/eventForm.html" . }}
+            {{ template "forms/eventForm.html" . }}
 
-                <footer class="w3-container w3-teal">
-                    <p>Merci pour votre contribution!</p>
-                </footer>
-            </div>
+            <footer class="w3-container w3-teal">
+                <p>Merci pour votre contribution!</p>
+            </footer>
         </div>
     </div>
 </body>
