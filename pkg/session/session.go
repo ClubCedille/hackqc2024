@@ -37,6 +37,8 @@ func GetActiveSession(c *gin.Context) {
 		ActiveSession.AccountId = accountId.(string)
 		ActiveSession.UserName = userName.(string)
 		ActiveSession.Email = email.(string)
+	} else {
+		ActiveSession = SessionInformation{}
 	}
 }
 
