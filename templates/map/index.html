@@ -27,11 +27,26 @@
         function addPopupContent(feature, layer) {
             let popupContent = `
                 <div id="popup-content" class="popup-content">
-                    <h3>${feature.properties.map_object.name}</h3>
-                    <h5>${feature.properties.map_object.category}</h5>
-                    <p>${feature.properties.map_object.description.substring(0, 100)}...</p>
-                    <p>Date: ${feature.properties.date_readable}</p>
-                    `
+                    <h3>${feature.properties.map_object.name}</h3>`
+
+            if (feature.properties.map_object.name != feature.properties.map_object.category) {
+                popupContent += `
+                <h5>${feature.properties.map_object.category}</h5>`
+            }
+
+            if (feature.properties.map_object.description) {
+                if (feature.properties.map_object.description.length > 100) {
+                    popupContent += `
+                <p>${feature.properties.map_object.description.substring(0, 100)}...</p>`
+                } else {
+                    popupContent += `
+                <p>${feature.properties.map_object.description}</p>`
+                }
+            }
+
+            popupContent += `
+            <p>Date: ${feature.properties.date_readable}</p>
+            `
 
             if (feature.properties.event._id) {
                 popupContent += `
@@ -355,8 +370,8 @@
     </div>
 
     <div x-data>
-        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;display: none"
-            x-show="$store.showAideLieeCard">
+        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large"
+            style="width: 90vw;max-width: none;display: none" x-show="$store.showAideLieeCard">
             <div class="w3-container w3-padding">
                 <!-- Explain this mode-->
                 <p>Ce mode permet de visualiser les aides liées à un événement.
