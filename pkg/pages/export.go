@@ -40,7 +40,7 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	updatedHelp, err := updateExternalSourceLinkedToHelp(filePath, events)
+	updatedHelp, err := prepareHelpDataForExport(filePath, events)
 	if err != nil {
 		log.Printf("Error updating external source linked to help: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
@@ -67,10 +67,10 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "submitted"})
+	log.Println("Helps submitted to Données Québec")
 }
 
-func updateExternalSourceLinkedToHelp(filePath string, events []*event.Event) ([]map[string]interface{}, error) {
+func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]map[string]interface{}, error) {
     data, err := os.ReadFile(filePath)
     if err != nil {
         log.Printf("Failed to read the file: %v", err)
@@ -84,7 +84,7 @@ func updateExternalSourceLinkedToHelp(filePath string, events []*event.Event) ([
 
     for _, doc := range docs {
         if eventID, ok := doc["event_id"].(string); ok {
-            for _, event := range events {
+            for _, event := range linkedEvents {
                 if event.Id == eventID {
                     doc["source_externe_linked"] = event.ExternalId
                     doc["categorie_catastrophe"] = event.MapObject.Category
