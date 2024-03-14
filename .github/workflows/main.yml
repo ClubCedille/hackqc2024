@@ -49,3 +49,16 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Update version with kustomize
+        run: |
+          cd k8s
+          kustomize edit set image ghcr.io/clubcedille/hackqc2024:commit-${{ github.sha }}
+      
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          author_name: GitHub Action
+          author_email: actions@github.com
+          message: 'Update version with kustomize'
+          add: 'k8s/kustomization.yaml'
