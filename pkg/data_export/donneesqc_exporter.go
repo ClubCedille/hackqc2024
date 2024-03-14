@@ -129,7 +129,7 @@ func PostGeoJsonHelpsToDQ(apiKey string, datasetIdentifier string, helps []map[s
         return err
     }
 
-    filePath := "tmp/soumissions-aide.geojson"
+    filePath := "/tmp/soumissions-aide.geojson"
     err = os.WriteFile(filePath, geoJsonData, 0644)
     if err != nil {
         log.Fatalf("Failed to write to file: %v", err)
