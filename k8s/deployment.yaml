@@ -16,7 +16,7 @@ spec:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "secret-reader"
         vault.hashicorp.com/agent-inject-template-hackqc2024: |
-          {{- with secret "kv/data/hackqc2024/default/secrets" }}
+          {{- with secret "kv/data/hackqc2024/default/secrets" -}}
           export API_KEY="{{ .Data.api_key }}"
           export JEU_DE_DONNEES="{{ .Data.jeu_de_donnees }}"
           {{- end }}
