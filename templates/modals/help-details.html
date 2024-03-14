@@ -68,6 +68,26 @@
                 </div>
             </div>
             {{ end }}
+            <div class="w3-border-top w3-border-gray w3-margin w3-padding">
+                <h4>Commentaires</h4>
+                <div id="comments-table">
+                {{ range .Comments }}
+                {{ template "comments/comment" . }}
+                {{ end }}
+                {{ if .IsLoggedIn }}
+                <div class="w3-white">
+                    <div >
+                    <form id="create-comment-form" hx-post="/help/comment" hx-target="#modal" hx-swap="outerHTML">
+                        <input type="hidden" name="target_id" value="{{ .Help.Id }}">
+                        <label for="comment">Ajouter un commentaire:</label><br>
+                        <textarea id="comment" name="comment" class="w3-input w3-border w3-round" required></textarea>
+                        <button class="w3-button w3-blue w3-round-xlarge w3-margin-top" type="submit">Envoyer</button>
+                    </form>
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+        </div>
         </div>
     </div>
 </div>

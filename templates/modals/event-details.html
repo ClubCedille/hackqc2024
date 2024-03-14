@@ -41,7 +41,7 @@
                 {{ if .IsLoggedIn }}
                 <div class="w3-white">
                     <div >
-                    <form id="create-comment-form" hx-post="/event/comment" hx-target="#comments-table">
+                    <form id="create-comment-form" hx-post="/event/comment" hx-target="#modal" hx-swap="outerHTML">
                         <input type="hidden" name="target_id" value="{{ .Event.Id }}">
                         <label for="comment">Ajouter un commentaire:</label><br>
                         <textarea id="comment" name="comment" class="w3-input w3-border w3-round" required></textarea>
