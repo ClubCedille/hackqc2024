@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -136,8 +137,17 @@ func HelpDetails(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	comments, err := comment.GetCommentsFormData(db, id)
+	if err != nil {
+		log.Println("Error fetching comments:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	c.HTML(http.StatusOK, "modals/help-details.html", gin.H{
-		"Help": &help,
+		"Help":       &help,
+		"Comments":   comments,
+		"IsLoggedIn": session.ActiveSession.AccountId != "",
 	})
 }
 
@@ -192,4 +202,39 @@ func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
 			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: coordinatesArrayFloat},
 		},
 	}
+}
+
+func PostCreateHelpComment(c *gin.Context, db *clover.DB) {
+
+	err := comment.CreateComment(db, comment.Comment{
+		Comment:  c.PostForm("comment"),
+		OwnerId:  session.ActiveSession.AccountId,
+		TargetId: c.PostForm("target_id"),
+	})
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Comment created successfully")
+
+	comments, err := comment.GetCommentsFormData(db, c.PostForm("target_id"))
+	if err != nil {
+		log.Println("Error fetching comments:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	help, err := help.GetHelpById(db, c.PostForm("target_id"))
+	if err != nil {
+		log.Println("Error getting help:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.HTML(http.StatusOK, "modals/help-details.html", gin.H{
+		"Help":       &help,
+		"Comments":   comments,
+		"IsLoggedIn": true,
+	})
 }

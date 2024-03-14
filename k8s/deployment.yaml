@@ -1,0 +1,63 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hackqc2024
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackqc2024
+  template:
+    metadata:
+      labels:
+        app: hackqc2024
+      annotations:
+        vault.hashicorp.com/tls-skip-verify: 'true'
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "secret-reader"
+        vault.hashicorp.com/agent-inject-template-hackqc2024: |
+          {{- with secret "kv/data/hackqc2024/default/secrets" }}
+          export API_KEY="{{ .Data.api_key }}"
+          export JEU_DE_DONNEES="{{ .Data.jeu_de_donnees }}"
+          {{- end }}
+
+    spec:
+      containers:
+        - name: hackqc2024
+          image: ghcr.io/clubcedille/hackqc2024:latest
+          imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - source /vault/secrets/hackqc2024 && /go/bin/app
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+              ephemeral-storage: 10Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: clover-db
+              mountPath: /go/bin/clover-db
+      volumes:
+        - name: clover-db
+          persistentVolumeClaim:
+            claimName: clover-db
+      securityContext:
+        fsGroup: 10001

@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: hackqc2024
+spec:
+  selector:
+    app: hackqc2024
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

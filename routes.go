@@ -58,6 +58,12 @@ func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
 		group.POST("/help/update/:id", func(c *gin.Context) {
 			pages.UpdateHelp(c, db)
 		})
+		group.POST("/help/comment", func(c *gin.Context) {
+			pages.PostCreateHelpComment(c, db)
+		})
+		group.POST("/event/comment", func(c *gin.Context) {
+			pages.PostCreateEventComment(c, db)
+		})
 	}
 }
 
@@ -102,10 +108,6 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/eventCards", func(c *gin.Context) {
 		pages.EventsPage(c, db)
-	})
-
-	r.POST("/event/comment", func(c *gin.Context) {
-		pages.PostCreateEventComment(c, db)
 	})
 
 	// Account

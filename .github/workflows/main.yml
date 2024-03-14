@@ -3,10 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - main
 
 env:
   REGISTRY: ghcr.io/clubcedille
@@ -14,6 +11,9 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment:
+      name: Kubernetes CEDILLE
+      url: https://hackqc2024.omni.cedille.club
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
@@ -52,3 +52,21 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Update version with kustomize
+        run: |
+          cd k8s
+          kustomize edit set image ghcr.io/clubcedille/hackqc2024:commit-${{ github.sha }}
+      
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          author_name: GitHub Action
+          author_email: actions@github.com
+          message: 'Update version with kustomize'
+          add: 'k8s/kustomization.yaml'
+          pull: ' '
+
+      - name: Refresh ArgoCD
+        run: |
+          curl -X POST -H 'Content-type: application/json' -H 'X-GitHub-Event:push' -d '{"ref": "","repository": {"html_url":"https://github.com/ClubCedille/hackqc2024"}}' https://argocd.omni.cedille.club/api/webhook

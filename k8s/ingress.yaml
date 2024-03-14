@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hackqc2024-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: contour
+  tls:
+  - secretName: hackqc2024-tls
+    hosts:
+    - hackqc2024.omni.cedille.club
+  rules:
+  - host: hackqc2024.omni.cedille.club
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: hackqc2024
+            port:
+              number: 8080

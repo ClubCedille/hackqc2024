@@ -9,9 +9,9 @@
   <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/static/formStyle.css">
 </head>
-<div class="row w3-round-xlarge">
+<div class="row">
   <div class="col-md-12">
-    <form action="/create-event" method="post" id="form-container" class="w3-card-4" style="padding: 20px;">
+    <form action="/create-event" method="post" id="form-container" style="padding: 20px;">
       <fieldset>
         <legend><span class="number">1</span>Événement</legend>
 
@@ -39,7 +39,8 @@
         <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" required>
 
         <label for="map_object_description">Description:</label>
-        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required></textarea>
+        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5"
+          required></textarea>
 
         <label for="map_object_category">Catégories:</label>
         <select id="map_object_category" name="map_object_category" required>
@@ -53,7 +54,8 @@
         <select id="map_object_geometry_type" name="map_object_geometry_type">
           <option value="Point">Point</option>
         </select>
-        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates" required>
+        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates"
+          name="map_object_geometry_coordinates" required>
 
         <label for="map_object_tags">Tags:</label>
         <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." name="map_object_tags" required>
