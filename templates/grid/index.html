@@ -84,8 +84,8 @@
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <div class="w3-bar-item w3-button" _="
            on click
-           set value to ((<input[name='type']:not(:checked)/>).length == 0)
-           repeat in <input[name='type']/>
+           set value to ((<input[name='_.type']:not(:checked)/>).length == 0)
+           repeat in <input[name='_.type']/>
              set it.checked to value
              it.click()
            end">
@@ -114,82 +114,82 @@
                 <div _="" class="w3-button">Catégorie<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <!-- <label class="w3-bar-item w3-button">
-                            <input type="checkbox" class="w3-check" name="MapObject.Category" value="all" checked>
+                            <input type="checkbox" class="w3-check" name="map_object.Category" value="all" checked>
                             Tous
                         </label> -->
                     <div class="w3-bar-item w3-button" _="
                         on click
-                        set value to ((<input[name='category']:not(:checked)/>).length == 0)
-                        repeat in <input[name='category']/>
+                        set value to ((<input[name='map_object.Category']:not(:checked)/>).length == 0)
+                        repeat in <input[name='map_object.Category']/>
                           set it.checked to value
                           it.click()
                         end">
                         Tout (dé)selectionner
                     </div>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Vent" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Vent" checked>
                         Vent
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Pluie" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Pluie" checked>
                         Pluie
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Neige" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Neige" checked>
                         Neige
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Tempête hivernale" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Tempête hivernale" checked>
                         Tempête hivernale
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Onde de tempête" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Onde de tempête" checked>
                         Onde de tempête
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Inondation" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Inondation" checked>
                         Inondation
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Panne de télécommunication"
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Panne de télécommunication"
                             checked>
                         Panne de télécommunication
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Effondrement de structure"
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Effondrement de structure"
                             checked>
                         Effondrement de structure
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Tornade" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Tornade" checked>
                         Tornade
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Crise civile" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Crise civile" checked>
                         Crise civile
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Risque de gaz toxiques" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Risque de gaz toxiques" checked>
                         Risque de gaz toxiques
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Accès à la chaleur" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Accès à la chaleur" checked>
                         Accès à la chaleur
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Accès à l'eau" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Accès à l'eau" checked>
                         Accès à l'eau
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Avalanche" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Avalanche" checked>
                         Avalanche
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Maladie infectieuse" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Maladie infectieuse" checked>
                         Maladie infectieuse
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="MapObject.Category" value="Coronavirus" checked>
+                        <input type="checkbox" class="w3-check filter" name="map_object.Category" value="Coronavirus" checked>
                         Coronavirus
                     </label>
                 </div>
@@ -202,28 +202,28 @@
                 <div class="w3-button" type="button">Urgence<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <!-- <label class="w3-bar-item w3-button">
-                            <input type="checkbox" class="w3-check" name="UrgencyType" value="all" checked>
+                            <input type="checkbox" class="w3-check" name="urgency_type" value="all" checked>
                             Tous
                         </label> -->
                     <div class="w3-bar-item w3-button" _="
            on click
-           set value to ((<input[name='urgency']:not(:checked)/>).length == 0)
-           repeat in <input[name='urgency']/>
+           set value to ((<input[name='urgency_type']:not(:checked)/>).length == 0)
+           repeat in <input[name='urgency_type']/>
              set it.checked to value
              it.click()
            end">
                         Tout (dé)selectionner
                     </div>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="UrgencyType" value="0" checked>
+                        <input type="checkbox" class="w3-check filter" name="urgency_type" value="0" checked>
                         Futur
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="UrgencyType" value="1" checked>
+                        <input type="checkbox" class="w3-check filter" name="urgency_type" value="1" checked>
                         Présent
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="UrgencyType" value="2" checked>
+                        <input type="checkbox" class="w3-check filter" name="urgency_type" value="2" checked>
                         Passé
                     </label>
                 </div>
@@ -237,28 +237,28 @@
                 <div class="w3-button">Danger<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <!-- <label class="w3-bar-item w3-button">
-                            <input type="checkbox" class="w3-check" name="DangerLevel" value="all" checked>
+                            <input type="checkbox" class="w3-check" name="danger_level" value="all" checked>
                             Tous
                         </label> -->
                     <div class="w3-bar-item w3-button" _="
            on click
-           set value to ((<input[name='danger']:not(:checked)/>).length == 0)
-           repeat in <input[name='danger']/>
+           set value to ((<input[name='danger_level']:not(:checked)/>).length == 0)
+           repeat in <input[name='danger_level']/>
              set it.checked to value
              it.click()
            end">
                         Tout (dé)selectionner
                     </div>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="DangerLevel" value="0" checked>
+                        <input type="checkbox" class="w3-check filter" name="danger_level" value="0" checked>
                         Élevé
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="DangerLevel" value="1" checked>
+                        <input type="checkbox" class="w3-check filter" name="danger_level" value="1" checked>
                         Modéré
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="DangerLevel" value="2" checked>
+                        <input type="checkbox" class="w3-check filter" name="danger_level" value="2" checked>
                         Faible
                     </label>
                 </div>
