@@ -4,79 +4,18 @@ import (
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
-	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
-
-func authRegisterRoutes(r *gin.Engine, group *gin.RouterGroup, db *clover.DB) {
-	group.Use(AuthRequiredMiddleware())
-	{
-		// Help
-		group.POST("/create-help", func(c *gin.Context) {
-			pages.CreateHelp(c, db)
-		})
-
-		// Event
-		group.POST("/create-event", func(c *gin.Context) {
-			pages.CreateEvent(c, db)
-		})
-
-		// Manage posts
-		group.GET("/manage-post", func(c *gin.Context) {
-			pages.GetManagedPost(c, db)
-		})
-
-		group.GET("/delete-event/:id", func(c *gin.Context) {
-			pages.GetEventDetailsAboutToBeDelete(c, db)
-		})
-
-		group.DELETE("/event/delete/:id", func(c *gin.Context) {
-			pages.DeleteEvent(c, db)
-		})
-
-		group.GET("/delete-help/:id", func(c *gin.Context) {
-			pages.GetHelpDetailsAboutToBeDelete(c, db)
-		})
-
-		group.DELETE("/help/delete/:id", func(c *gin.Context) {
-			pages.DeleteHelp(c, db)
-		})
-
-		group.GET("/update-event/:id", func(c *gin.Context) {
-			pages.GetEventDetailAboutToBeModified(c, db)
-		})
-
-		group.POST("/event/update/:id", func(c *gin.Context) {
-			pages.UpdateEvent(c, db)
-		})
-
-		group.GET("/update-help/:id", func(c *gin.Context) {
-			pages.GetHelpDetailAboutToBeModified(c, db)
-		})
-
-		group.POST("/help/update/:id", func(c *gin.Context) {
-			pages.UpdateHelp(c, db)
-		})
-		group.POST("/help/comment", func(c *gin.Context) {
-			pages.PostCreateHelpComment(c, db)
-		})
-		group.POST("/event/comment", func(c *gin.Context) {
-			pages.PostCreateEventComment(c, db)
-		})
-	}
-}
 
 func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.Static("/static", "./templates/static")
 
 	r.GET("/", func(c *gin.Context) {
-		session.GetActiveSession(c)
 		c.Redirect(http.StatusSeeOther, "/map")
 	})
 
 	r.GET("/map", func(c *gin.Context) {
-		session.GetActiveSession(c)
 		pages.MapPage(c, db)
 	})
 
@@ -154,5 +93,61 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.GET("/help/:id", func(c *gin.Context) {
 		pages.HelpDetails(c, db)
+	})
+
+	// The requests below require the user to be authenticated
+	// Help
+	r.POST("/create-help", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.CreateHelp(c, db)
+	})
+
+	// Event
+	r.POST("/create-event", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.CreateEvent(c, db)
+	})
+
+	// Manage posts
+	r.GET("/manage-post", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.GetManagedPost(c, db)
+	})
+
+	r.GET("/delete-event/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.GetEventDetailsAboutToBeDelete(c, db)
+	})
+
+	r.DELETE("/event/delete/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.DeleteEvent(c, db)
+	})
+
+	r.GET("/delete-help/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.GetHelpDetailsAboutToBeDelete(c, db)
+	})
+
+	r.DELETE("/help/delete/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.DeleteHelp(c, db)
+	})
+
+	r.GET("/update-event/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.GetEventDetailAboutToBeModified(c, db)
+	})
+
+	r.POST("/event/update/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.UpdateEvent(c, db)
+	})
+
+	r.GET("/update-help/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.GetHelpDetailAboutToBeModified(c, db)
+	})
+
+	r.POST("/help/update/:id", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.UpdateHelp(c, db)
+	})
+
+	r.POST("/help/comment", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.PostCreateHelpComment(c, db)
+	})
+
+	r.POST("/event/comment", AuthRequiredMiddleware(), func(c *gin.Context) {
+		pages.PostCreateEventComment(c, db)
 	})
 }

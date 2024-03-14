@@ -54,16 +54,16 @@ func main() {
 		},
 	})
 
-	authorized := r.Group("/")
-
 	store := cookie.NewStore([]byte(GIN_SESSION_SECRET))
 	store.Options(sessions.Options{MaxAge: 60 * 60 * 24}) // expire in a day
 
 	r.Use(sessions.Sessions(GIN_SESSION_NAME, store))
+
+	r.Use(LoginMiddleware())
+
 	r.LoadHTMLGlob("templates/**/*.html")
 
 	registerRoutes(r, db)
-	authRegisterRoutes(r, authorized, db)
 
 	err = r.Run()
 	if err != nil {
