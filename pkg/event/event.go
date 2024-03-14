@@ -166,6 +166,20 @@ func SearchEvents(conn *clover.DB, filters map[string][]string, requireGeoJson b
 		return finalRes
 	})
 
+	// If we have _.sort, we need to sort the results by that field
+	if filters["_.sort"] != nil {
+		var sortOrder int
+		if filters["_.sortOrder"][0] == "1" {
+			sortOrder = 1 // Ascending
+		} else {
+			sortOrder = -1 // Descending
+		}
+		sortField := filters["_.sort"][0]
+		filterQuery.Sort(query.SortOption{Field: sortField, Direction: sortOrder})
+	} else {
+		filterQuery.Sort(query.SortOption{Field: "map_object.date", Direction: -1})
+	}
+
 	docs, err := conn.FindAll(filterQuery)
 	if err != nil {
 		return nil, err

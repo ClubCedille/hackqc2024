@@ -4,20 +4,22 @@ import (
 	"net/http"
 	"slices"
 
+	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
+	"github.com/ostafen/clover/v2/query"
 )
 
 func GridPage(c *gin.Context, db *clover.DB) {
 
 	// Get all events and helps
-	var events []*event.Event
-	events, _ = event.GetAllEvents(db)
+	docs, _ := db.FindAll(query.NewQuery(database.EventCollection).Sort(query.SortOption{Field: "map_object.date", Direction: -1}))
+	events, _ := event.GetEventFromDocuments(docs)
 
-	var helps []*help.Help
-	helps, _ = help.GetAllHelps(db)
+	docs, _ = db.FindAll(query.NewQuery(database.HelpCollection).Sort(query.SortOption{Field: "map_object.date", Direction: -1}))
+	helps, _ := help.GetHelpFromDocuments(docs)
 
 	c.HTML(http.StatusOK, "grid/index.html", gin.H{
 		"Events": events,

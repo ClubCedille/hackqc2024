@@ -275,7 +275,7 @@
                 <div class="w3-button">Trier par<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <label class="w3-bar-item w3-button">
-                        <input type="radio" class="w3-radio filter" name="_.sort" value="date" checked>
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="map_object.date" checked>
                         Date
                     </label>
                     <label class="w3-bar-item w3-button">
@@ -291,13 +291,41 @@
                         Danger
                     </label>
                     <label class="w3-bar-item w3-button">
-                        <input type="radio" class="w3-radio filter" name="_.sort" value="category">
+                        <input type="radio" class="w3-radio filter" name="_.sort" value="map_object.category">
                         Catégorie
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sort Order -->
+        <div class="w3-bar-item w3-left">
+            <div class="w3-dropdown-hover w3-mobile">
+                <div class="w3-button">Trier par ordre<i class="fa fa-caret-down"></i></div>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sortOrder" value="1" checked>
+                        Asc
+                    </label>
+                    <label class="w3-bar-item w3-button">
+                        <input type="radio" class="w3-radio filter" name="_.sortOrder" value="-1">
+                        Desc
                     </label>
                 </div>
             </div>
         </div>
     </form>
 
+    <!-- Sorting note -->
+    <div class="w3-bar-item w3-left">
+        <div class="w3-dropdown-hover w3-mobile">
+            <div class="w3-button">* Note<i class="fa fa-caret-down"></i></div>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                <div class="w3-bar-item w3-button">
+                    <p>Les evenemets seront toujours affichées avant les aides, peut importe l'ordre de tri.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {{ end }}
