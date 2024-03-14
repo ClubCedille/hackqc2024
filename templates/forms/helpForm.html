@@ -1,4 +1,5 @@
 {{ define "forms/helpForm.html" }}
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,40 +11,9 @@
 </head>
 <div class="row w3-round-xlarge">
     <div class="col-md-12">
-        <form method="POST" action="/create-help" id="form-container" class="w3-card-4" style="padding: 20px;">
+        <form method="POST" action="/create-help" id="form-container" style="padding: 20px;">
             <fieldset>
                 <legend><span class="number">1</span>Offre d'aide</legend>
-            
-                <input type="hidden" id="eventIdField" name="event_id">
-                <div class="w3-margin-bottom">
-                    <label>Information de contact</label>
-                    <input class="w3-input" type="text" name="contact_infos" required>
-                </div>
-
-                <div class="w3-margin-bottom">
-                    <label>Comment aider</label>
-                    <textarea class="w3-input" name="how_to_help" required></textarea>
-                </div>
-
-                <div class="w3-margin-bottom">
-                    <label>Comment utiliser l'aide</label>
-                    <textarea class="w3-input" name="how_to_use_help" required></textarea>
-                </div>
-
-                <div class="w3-margin-bottom">
-                    <label>Besoin d'aide</label>
-                    <p>
-                        <input class="w3-radio" type="radio" name="need_help" value="true" required>
-                        <label>Oui</label>
-                    </p>
-                    <p>
-                        <input class="w3-radio" type="radio" name="need_help" value="false">
-                        <label>Non</label>
-                    </p>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend><span class="number">2</span>Coordonnées sur la carte</legend>
 
                 <div class="w3-margin-bottom">
                     <label>Nom</label>
@@ -54,6 +24,37 @@
                     <label>Description</label>
                     <textarea class="w3-input" name="map_object_description" required></textarea>
                 </div>
+
+                <input type="hidden" id="eventIdField" name="event_id">
+                <div class="w3-margin-bottom">
+                    <label>Information de contact</label>
+                    <input class="w3-input" type="text" name="contact_infos" required>
+                </div>
+
+                <div class="w3-margin-bottom">
+                    <label>Comment utiliser l'aide</label>
+                    <textarea class="w3-input" name="how_to_use_help" required></textarea>
+                </div>
+
+                <div class="w3-margin-bottom">
+                    <label>D'autres personnes peuvent-elles se joindrent à l'aide ?</label>
+                    <div class="w3-padding w3-cell">
+                        <input id="helpPossible" class="w3-radio" type="radio" name="need_help" value="true" required>
+                        <label style="display: inline;">Oui</label>
+                    </div>
+                    <div class="w3-cell">
+                        <input class="w3-radio" type="radio" name="need_help" value="false">
+                        <label style="display: inline;">Non</label>
+                    </div>
+                </div>
+
+                <div class="w3-margin-bottom">
+                    <label>Comment aider</label>
+                    <textarea class="w3-input" name="how_to_help" required></textarea>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend><span class="number">2</span>Informations supplémentaires</legend>
 
                 <div class="w3-margin-bottom">
                     <label>Categorie</label>
@@ -70,14 +71,16 @@
                 <div class="w3-margin-bottom">
                     <label for="map_object_geometry">Coordonnées:</label>
                     <select id="map_object_geometry_type" name="map_object_geometry_type">
-                    <option value="Point">Point</option>
+                        <option value="Point">Point</option>
                     </select>
-                    <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates" name="map_object_geometry_coordinates">
+                    <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates"
+                        name="map_object_geometry_coordinates">
                 </div>
 
                 <div class="w3-margin-bottom">
                     <label for="map_object_tags">Tags:</label>
-                    <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..."  name="map_object_tags" required>
+                    <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." name="map_object_tags"
+                        required>
                 </div>
             </fieldset>
             <button class="w3-button w3-teal w3-margin-top" type="submit">Soumettre</button>

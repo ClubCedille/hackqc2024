@@ -15,6 +15,25 @@
       <fieldset>
         <legend><span class="number">1</span>Événement</legend>
 
+        <label for="map_object_name">Nom:</label>
+        <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" required>
+
+        <label for="map_object_description">Description:</label>
+        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5"
+          required></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="number">2</span>Informations supplémentaires</legend>
+
+        <label for="map_object_category">Catégorie:</label>
+        <select id="map_object_category" name="map_object_category" required>
+          <option value="" disabled selected>Sélectionner une catégorie</option>
+          {{ range .CategoryKeys }}
+          <option value="{{ . }}">{{ . }}</option>
+          {{ end }}
+        </select>
+
         <label for="danger_level">Niveau de danger:</label>
         <select id="danger_level" name="danger_level" required>
           <option value="" disabled selected>Sélectionner un niveau de danger</option>
@@ -29,25 +48,6 @@
           <option value="0">Futur</option>
           <option value="1">Présent</option>
           <option value="2">Passé</option>
-        </select>
-      </fieldset>
-
-      <fieldset>
-        <legend><span class="number">2</span>Coordonnées sur la carte</legend>
-
-        <label for="map_object_name">Nom:</label>
-        <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" required>
-
-        <label for="map_object_description">Description:</label>
-        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5"
-          required></textarea>
-
-        <label for="map_object_category">Catégories:</label>
-        <select id="map_object_category" name="map_object_category" required>
-          <option value="" disabled selected>Sélectionner une catégorie</option>
-          {{ range .CategoryKeys }}
-          <option value="{{ . }}">{{ . }}</option>
-          {{ end }}
         </select>
 
         <label for="map_object_geometry">Coordonnées:</label>
