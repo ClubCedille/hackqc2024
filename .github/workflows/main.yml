@@ -3,10 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - main
 
 env:
   REGISTRY: ghcr.io/clubcedille
