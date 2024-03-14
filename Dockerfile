@@ -10,6 +10,8 @@ FROM alpine:3.19
 COPY --from=build /go/src/app/app /go/bin/app
 COPY --from=build /go/src/app/templates /go/bin/templates
 WORKDIR /go/bin
+
+USER 10001
 RUN mkdir -p /go/bin/tmp
 
 ENTRYPOINT ["/go/bin/app"]
