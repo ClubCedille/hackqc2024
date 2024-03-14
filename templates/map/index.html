@@ -6,7 +6,7 @@
     <title>Montreal Map View - Événements publics</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="static/favicon.svg" type="image/x-icon">
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="/static/mapStyle.css">
@@ -27,11 +27,26 @@
         function addPopupContent(feature, layer) {
             let popupContent = `
                 <div id="popup-content" class="popup-content">
-                    <h3>${feature.properties.map_object.name}</h3>
-                    <h5>${feature.properties.map_object.category}</h5>
-                    <p>${feature.properties.map_object.description.substring(0, 100)}...</p>
-                    <p>Date: ${feature.properties.date_readable}</p>
-                    `
+                    <h3>${feature.properties.map_object.name}</h3>`
+
+            if (feature.properties.map_object.name != feature.properties.map_object.category) {
+                popupContent += `
+                <h5>${feature.properties.map_object.category}</h5>`
+            }
+
+            if (feature.properties.map_object.description) {
+                if (feature.properties.map_object.description.length > 100) {
+                    popupContent += `
+                <p>${feature.properties.map_object.description.substring(0, 100)}...</p>`
+                } else {
+                    popupContent += `
+                <p>${feature.properties.map_object.description}</p>`
+                }
+            }
+
+            popupContent += `
+            <p>Date: ${feature.properties.date_readable}</p>
+            `
 
             if (feature.properties.event._id) {
                 popupContent += `
@@ -43,7 +58,7 @@
                             >
                             Plus d'infos
                         </button>
-                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps')">
+                        <button class="w3-btn w3-white w3-round w3-border w3-border-amber w3-hover-orange" @click="updateDataPointsWithParams('show=${feature.properties.event._id}&event_id=${feature.properties.event._id}&type=helps');$store.showAideLieeCard=true">
                             Aides liées
                         </button>
                         <button @click="openHelpModal('${feature.properties.event._id}')" class="w3-btn w3-white w3-round w3-border w3-border-lime w3-hover-green" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> 
@@ -205,22 +220,32 @@
             Alpine.store('filters', {
                 categories: {
                     {{ range .EventCategories }}
-                        '{{ .Value }}': true,
+                    '{{ .Value }}': true,
             {{ end }}
             {{ range .HelpCategories }}
             '{{ .Value }}': true,
             {{ end }}
-                    },
+                },
             urgencyLevels: {
-                        {{ range .UrgencyLevels }}
+                    {{ range .UrgencyLevels }}
             '{{ .Value }}': true,
             {{ end }}
-                    },
+                },
             dangerLevels: {
-                        {{ range .DangerLevels }}
+                    {{ range .DangerLevels }}
             '{{ .Value }}': true,
             {{ end }}
-                    }
+                },
+            eventCategories: [
+            {{ range .EventCategories }}
+            "{{ .Value }}",
+            {{ end }}
+        ],
+            helpCategories: [
+            {{ range .HelpCategories }}
+            "{{ .Value }}",
+            {{ end }}
+        ]
                 });
 
         let params = new URLSearchParams(window.location.search);
@@ -241,8 +266,14 @@
             });
         }
         Alpine.store('filters', filters);
+        Alpine.store('showAideLieeCard', params.has('event_id') && params.get('type') == 'helps');
 
         });
+
+        function isAllSelected(categoryArray, filter) {
+            filters = Alpine.store("filters")
+            return categoryArray.every(v => filters[filter][v] == true)
+        }
     </script>
 </head>
 
@@ -258,46 +289,58 @@
                     class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                     x-bind:class="active == 'categories' ? 'w3-blue' : 'w3-white'">
                     Catégories
+                    <span
+                        x-bind:class="isAllSelected(Object.keys($store.filters.categories), 'categories') ? 'w3-hide' : ''"
+                        class="w3-badge w3-gray">1</span>
                 </button>
 
                 <button @click="active = active == 'urgency' ? '' : 'urgency'"
                     class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                     x-bind:class="active == 'urgency' ? 'w3-blue' : 'w3-white'">
                     Urgence
+                    <span
+                        x-bind:class="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'w3-hide' : ''"
+                        class="w3-badge w3-gray">1</span>
                 </button>
 
                 <button @click="active = active == 'dangerLevel' ? '' : 'dangerLevel'"
                     class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                     x-bind:class="active == 'dangerLevel' ? 'w3-blue' : 'w3-white'">
                     Danger
+                    <span
+                        x-bind:class="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'w3-hide' : ''"
+                        class="w3-badge w3-gray">1</span>
                 </button>
 
                 <div x-show="active == 'categories'"
-                    x-data="{ showAll: true, toggleCategories() { this.showAll = !this.showAll ; Object.keys($store.filters.categories).forEach(v => $store.filters.categories[v] = this.showAll) } }"
+                    x-data="{ showAllEvents: isAllSelected($store.filters.eventCategories, 'categories'),    toggleEvents() { this.showAllEvents = !this.showAllEvents ; $store.filters.eventCategories.forEach(v => $store.filters.categories[v] = this.showAllEvents) },
+                              showAllHelps: isAllSelected($store.filters.helpCategories, 'categories'), toggleHelps() { this.showAllHelps = !this.showAllHelps ; $store.filters.helpCategories.forEach(v => $store.filters.categories[v] = this.showAllHelps) } }"
                     class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
                         <div class="w3-border-bottom w3-border-gray">
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="toggleCategories(); updateDataPointsWithFilter()">Sélectionner
-                                tout</button>
-                        </div>
-                        <div class="w3-border-bottom w3-border-gray">
                             <h6 class="w3-text-blue">Événements</h6>
+                            <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
+                                x-bind:class="isAllSelected($store.filters.eventCategories, 'categories') ? 'w3-border-blue w3-border' : 'w3-blue'"
+                                @click="toggleEvents(); updateDataPointsWithFilter()">Tout sélectionner</button>
                             {{ range .EventCategories }}
                             <button
                                 class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAllEvents = isAllSelected($store.filters.eventCategories, 'categories')"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
                         <div>
                             <h6 class="w3-text-blue">Aides</h6>
+                            <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
+                                x-bind:class="isAllSelected($store.filters.helpCategories, 'categories') ? 'w3-border-blue w3-border' : 'w3-blue'"
+                                @click="toggleHelps(); updateDataPointsWithFilter()">Tout sélectionner</button>
+
                             {{ range .HelpCategories }}
                             <button
                                 class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.categories['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                                @click="$store.filters.categories['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.categories['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAllHelps = isAllSelected($store.filters.helpCategories, 'categories')"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
@@ -305,48 +348,36 @@
                 </div>
 
                 <!-- Urgency -->
-                <div x-show="active == 'urgency'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
-                    style="display: none;">
+                <div x-show="active == 'urgency'"
+                    x-data="{ showAll: isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels'), toggle() { this.showAll = !this.showAll ; Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = this.showAll) } }"
+                    class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
-                        <div>
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
-                                tout</button>
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = false); updateDataPointsWithFilter()">Ne
-                                sélectionner rien</button>
-                        </div>
-                        <div></div>
+                        <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
+                            x-bind:class="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'w3-border-blue w3-border' : 'w3-blue'"
+                            @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
                         {{ range .UrgencyLevels }}
                         <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                             x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                            @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
+                            @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAll = isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels')"
                             x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                         {{ end }}
                     </div>
                 </div>
 
                 <!-- Danger Level -->
-                <div x-show="active == 'dangerLevel'" class="w3-panel w3-padding-32 w3-topbar w3-border-blue"
-                    style="display: none;">
+                <div x-show="active == 'dangerLevel'"
+                    x-data="{ showAll: isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels'), toggle() { this.showAll = !this.showAll ; Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = this.showAll) } }"
+                    class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
-                        <div>
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = true); updateDataPointsWithFilter()">Sélectionner
-                                tout</button>
-                            <button class="w3-btn w3-gray w3-margin-right w3-margin-bottom"
-                                @click="Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = false); updateDataPointsWithFilter()">Ne
-                                sélectionner rien</button>
-                        </div>
-                        <div>
-                            {{ range .DangerLevels }}
-                            <button
-                                class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
-                                x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                                @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter()"
-                                x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
-                            {{ end }}
-                        </div>
+                        <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
+                            x-bind:class="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'w3-border-blue w3-border' : 'w3-blue'"
+                            @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
+                        {{ range .DangerLevels }}
+                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
+                            x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                            @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAll = isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels')"
+                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                        {{ end }}
                     </div>
                 </div>
             </div>
@@ -354,8 +385,8 @@
     </div>
 
     <div x-data>
-        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large" style="width: 90vw;max-width: none;"
-            x-show="$store.showAideLieeCard">
+        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large"
+            style="width: 90vw;max-width: none;display: none" x-show="$store.showAideLieeCard">
             <div class="w3-container w3-padding">
                 <!-- Explain this mode-->
                 <p>Ce mode permet de visualiser les aides liées à un événement.
@@ -373,7 +404,7 @@
         style="width: 90vw; max-width: none; border: none; display: flex; justify-content: start; align-items: center;">
         <button onclick="document.getElementById('eventModal').style.display='block'"
             class="w3-btn w3-teal w3-round-xlarge" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter"
-            {{ end }}>Créer un évènement</button>
+            {{ end }}>Créer un événement</button>
         <a href="/map" class="w3-btn w3-teal w3-round-xlarge" style="margin-left: 10px;">Réinitialiser les filtres</a>
     </div>
 
@@ -400,10 +431,11 @@
 
     <div id="eventModal" class="w3-modal">
         <div class="w3-modal-dialog">
-            <div class="w3-modal-content w3-card-8 w3-round-xlarge">
-                <header class="w3-container" style="height: 0;">
+            <div class="w3-modal-content w3-card-8">
+                <header class="w3-container w3-teal" style="height: 0;">
                     <span onclick="document.getElementById('eventModal').style.display='none'"
-                        class="w3-button w3-large w3-display-topright w3-teal w3-margin">&times;</span>
+                        class="w3-button w3-large w3-display-topright">&times;</span>
+                    <h2>Soumettre un événement</h2>
                 </header>
 
                 {{ template "forms/eventForm.html" . }}

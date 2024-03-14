@@ -298,17 +298,8 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	eventCategoryKeys := make([]string, 0, len(CategoryStyles))
-	for k := range CategoryStyles {
-		eventCategoryKeys = append(eventCategoryKeys, k)
-	}
-
-	helpCategoryKeys := make([]string, 0, len(HelpCategoryStyles))
-	for k := range HelpCategoryStyles {
-		helpCategoryKeys = append(helpCategoryKeys, k)
-	}
-	sortWithAccents(eventCategoryKeys)
-	sortWithAccents(helpCategoryKeys)
+	eventCategoryKeys := GetEventCategoryKeys(c)
+	helpCategoryKeys := GetHelpCategoryKeys(c)
 
 	eventMapCategories := make([]interface{}, len(eventCategoryKeys))
 	for i, key := range eventCategoryKeys {
@@ -369,6 +360,26 @@ func MapPage(c *gin.Context, db *clover.DB) {
 		"DangerLevels":    dangerLevels,
 		"CategoryKeys":    eventCategoryKeys, // for selection in event form
 	})
+}
+
+func GetEventCategoryKeys(c *gin.Context) []string {
+	eventCategoryKeys := make([]string, 0, len(CategoryStyles))
+	for k := range CategoryStyles {
+		eventCategoryKeys = append(eventCategoryKeys, k)
+	}
+
+	sortWithAccents(eventCategoryKeys)
+	return eventCategoryKeys
+}
+
+func GetHelpCategoryKeys(c *gin.Context) []string {
+	helpCategoryKeys := make([]string, 0, len(HelpCategoryStyles))
+	for k := range HelpCategoryStyles {
+		helpCategoryKeys = append(helpCategoryKeys, k)
+	}
+
+	sortWithAccents(helpCategoryKeys)
+	return helpCategoryKeys
 }
 
 func MapJson(c *gin.Context, db *clover.DB) {

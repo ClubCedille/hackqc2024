@@ -1,0 +1,18 @@
+{{ define "comments/comments_table.html" }}
+<div id="comments-table">
+  {{ range .Comments }}
+  {{ template "comments/comment" . }}
+  {{ end }}
+  <div class="w3-card w3-margin w3-white">
+    <div class="w3-container">
+      <h4><b>Add Comment</b></h4>
+      <form id="create-comment-form" hx-post="/comment/create" hx-target="#comments-table">
+        <input type="hidden" name="target_id" value="{{ .TargetId }}">
+        <label for="comment">Ajouter un commentaire:</label><br>
+        <textarea id="comment" name="comment" rows="4" cols="50" required></textarea><br>
+        <button class="w3-button w3-blue" type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+</div>
+{{end}}

@@ -15,8 +15,6 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/account"
 	"github.com/ClubCedille/hackqc2024/pkg/data_import"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
-	"github.com/ClubCedille/hackqc2024/pkg/help"
-	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 )
@@ -47,7 +45,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	generateSeedData(db)
+	// generateSeedData(db)
 
 	r := gin.Default()
 	r.SetFuncMap(template.FuncMap{
@@ -123,46 +121,25 @@ func generateSeedData(db *clover.DB) {
 	docs.Unmarshal(&acc)
 
 	// Create test help object
-	testHelp, err := db.FindFirst(query.NewQuery(database.HelpCollection).Where(query.Field("map_object.name").Eq("Test help")))
-	if err == nil && testHelp == nil {
-		err = help.CreateHelp(db, help.Help{
-			Id: uuid.NewV4().String(),
-			MapObject: mapobject.MapObject{
-				AccountId:   acc.Id,
-				Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{-73.5673, 45.5017}},
-				Name:        "Test - Utilisez ma maison",
-				Description: "J'ai deux chambres à coucher de libre",
-				Category:    "Hébergement",
-				Tags:        []string{"test", "help"},
-			},
-			ContactInfos: "555 444 3333",
-			NeedHelp:     true,
-			HowToHelp:    "N/A",
-			HowToUseHelp: "Venez chez moi.",
-		})
-	}
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	// testHelp, err := db.FindFirst(query.NewQuery(database.HelpCollection).Where(query.Field("map_object.name").Eq("Test help")))
+	// if err == nil && testHelp == nil {
+	// 	err = help.CreateHelp(db, help.Help{
+	// 		Id: uuid.NewV4().String(),
+	// 		MapObject: mapobject.MapObject{
+	// 			AccountId:   acc.Id,
+	// 			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: []float64{-73.5673, 45.5017}},
+	// 			Name:        "Test - Utilisez ma maison",
+	// 			Description: "J'ai deux chambres à coucher de libre",
+	// 			Category:    "Hébergement",
+	// 			Tags:        []string{"test", "help"},
+	// 		},
+	// 		ContactInfos: "555 444 3333",
+	// 		NeedHelp:     true,
+	// 		HowToHelp:    "N/A",
+	// 		HowToUseHelp: "Venez chez moi.",
+	// 	})
+	// }
+	// if err != nil {
+	// 	log.Fatalf(err.Error())
+	// }
 }
-
-// Temp example of fetching from données Québec
-// var cachedGeoJSON []byte
-
-// func fetchGeoJSON() {
-// 	if cachedGeoJSON == nil {
-// 		resp, err := http.Get("https://donnees.montreal.ca/dataset/6a4cbf2c-c9b7-413a-86b1-e8f7081e2578/resource/35307457-a00f-4912-9941-8095ead51f6e/download/evenements.geojson")
-// 		if err != nil {
-// 			log.Println("Error fetching GeoJSON:", err)
-// 			return
-// 		}
-// 		defer resp.Body.Close()
-
-// 		data, err := io.ReadAll(resp.Body)
-// 		if err != nil {
-// 			log.Println("Error reading GeoJSON:", err)
-// 			return
-// 		}
-// 		cachedGeoJSON = data
-// 	}
-// }

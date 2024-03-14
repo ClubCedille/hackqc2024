@@ -1,12 +1,12 @@
-#form-container *, 
-#form-container *:before, 
-#form-container *:after {
+#form-account *, 
+#form-account *:before, 
+#form-account *:after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-#form-container form {
+#form-account form {
     margin: 10px auto;
     max-width: none !important;
     padding: 10px 20px;
@@ -14,27 +14,27 @@
     border-radius: 8px;
 }
 
-#form-container h1 {
+#form-account h1 {
     margin: 0 0 30px 0;
     text-align: center;
 }
 
-#form-container input[type="text"],
-#form-container input[type="password"],
-#form-container input[type="date"],
-#form-container input[type="datetime"],
-#form-container input[type="email"],
-#form-container input[type="number"],
-#form-container input[type="search"],
-#form-container input[type="tel"],
-#form-container input[type="time"],
-#form-container input[type="url"],
-#form-container textarea,
-#form-container select {
+#form-account input[type="text"],
+#form-account input[type="password"],
+#form-account input[type="date"],
+#form-account input[type="datetime"],
+#form-account input[type="email"],
+#form-account input[type="number"],
+#form-account input[type="search"],
+#form-account input[type="tel"],
+#form-account input[type="time"],
+#form-account input[type="url"],
+#form-account textarea,
+#form-account select {
     background: rgb(0, 0, 0);
     border: none;
     font-size: 16px;
-    height: 60%;
+    height: auto;
     margin: 0;
     outline: 0;
     padding: 15px;
@@ -45,18 +45,18 @@
     margin-bottom: 30px;
 }
 
-#form-container input[type="radio"],
-#form-container input[type="checkbox"] {
+#form-account input[type="radio"],
+#form-account input[type="checkbox"] {
     margin: 0 4px 8px 0;
 }
 
-#form-container select {
+#form-account select {
     padding: 6px;
     height: 32px;
     border-radius: 2px;
 }
 
-#form-container button {
+#form-account button {
     display: block;
     width: 150px;
     margin: 0 auto;
@@ -70,27 +70,27 @@
     margin-bottom: 30px;
   }
 
-#form-container fieldset {
+#form-account fieldset {
     margin: 30px;
     border: none;
 }
 
-#form-container legend {
+#form-account legend {
     font-size: 1.4em;
     margin-bottom: 10px;
 }
 
-#form-container label {
+#form-account label {
     display: block;
     margin-bottom: 8px;
 }
 
-#form-container label.light {
+#form-account label.light {
     font-weight: 300;
     display: inline;
 }
 
-#form-container .number {
+#form-account .number {
     background-color: #5fcf80;
     color: #fff;
     height: 30px;
@@ -105,7 +105,7 @@
 }
 
 @media screen and (min-width: 480px) {
-    #form-container form {
+    #form-account form {
         max-width: none;
     }
 }

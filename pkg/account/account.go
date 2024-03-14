@@ -47,6 +47,18 @@ func GetAccountByUsername(conn *clover.DB, username string) (Account, error) {
 	return account, nil
 }
 
+func GetAccountById(conn *clover.DB, id string) (Account, error) {
+	docs, err := conn.FindFirst(query.NewQuery(database.AccountCollection).Where(query.Field("_id").Eq(id)))
+	if err != nil {
+		return Account{}, err
+	}
+
+	account := Account{}
+	docs.Unmarshal(&account)
+
+	return account, nil
+}
+
 func UpdateAccount(conn *clover.DB, account Account) error {
 	err := conn.UpdateById(database.EventCollection, account.Id, func(doc *document.Document) *document.Document {
 		doc.Set("user_name", account.UserName)
