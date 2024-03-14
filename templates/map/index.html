@@ -422,11 +422,11 @@
     <!-- END OF PAGE -->
 
     <div id="helpModal" class="w3-modal">
-        <div class="w3-modal-content w3-animate-opacity w3-card-8">
-            <header class="w3-container w3-teal">
+        <div class="w3-modal-content w3-animate-opacity w3-card-8 w3-round-xlarge">
+            <header class="w3-container">
                 <span onclick="document.getElementById('helpModal').style.display='none'"
-                    class="w3-button w3-large w3-display-topright">&times;</span>
-                <h2>Soumettre une demande d'aide</h2>
+                    class="w3-button w3-teal w3-large w3-display-topright w3-round-large w3-margin">&times;</span>
+                <h2 class="w3-margin-left">Soumettre une offre d'aide</h2>
             </header>
 
             {{ template "forms/helpForm.html" . }}
@@ -439,10 +439,10 @@
 
     <div id="eventModal" class="w3-modal">
         <div class="w3-modal-content w3-animate-opacity w3-card-8 w3-round-xlarge">
-            <header class="w3-container" style="height: 0;">
+            <header class="w3-container">
                 <span onclick="document.getElementById('eventModal').style.display='none'"
                     class="w3-button w3-teal w3-large w3-display-topright w3-round-large w3-margin">&times;</span>
-                <h2>Soumettre un événement</h2>
+                <h2 class="w3-margin-left">Soumettre un événement</h2>
             </header>
 
             {{ template "forms/eventForm.html" . }}

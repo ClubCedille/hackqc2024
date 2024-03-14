@@ -12,7 +12,7 @@ spec:
       labels:
         app: hackqc2024
       annotations:
-        vault.hashicorp.com/tls-skip-verify: 'true'
+        vault.hashicorp.com/tls-skip-verify: "true"
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/role: "secret-reader"
         vault.hashicorp.com/agent-inject-template-hackqc2024: |
@@ -43,7 +43,7 @@ spec:
               ephemeral-storage: 10Gi
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
             runAsNonRoot: true
             runAsUser: 10001
             runAsGroup: 10001
