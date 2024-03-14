@@ -38,7 +38,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	os.Mkdir("tmp", 0755)
+	os.Mkdir("tmp", 0777)
 	// Initial load
 	err = data_import.UpdateAll(db)
 	if err != nil {

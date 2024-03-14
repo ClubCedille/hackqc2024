@@ -15,7 +15,7 @@ import (
 
 func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 
-	filePath := "/tmp/soumissions-aide.json"
+	filePath := "tmp/soumissions-aide.json"
 	db.ExportCollection("HelpCollection", filePath)
 
 	apiKey := os.Getenv("API_KEY")

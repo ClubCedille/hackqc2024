@@ -9,6 +9,5 @@ RUN go build -v -o app .
 FROM alpine:3.19
 COPY --from=build /go/src/app/app /go/bin/app
 COPY --from=build /go/src/app/templates /go/bin/templates
-COPY --from=build /go/src/app/tmp /go/bin/tmp
 WORKDIR /go/bin
 ENTRYPOINT ["/go/bin/app"]
