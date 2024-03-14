@@ -3,12 +3,12 @@ kind: Kustomization
 
 namespace: hackqc2024
 images:
-  - name: ghcr.io/clubcedille/hackqc2024
-    newTag: commit-9153183a8958689e65021b0d43d1c53948fa4f2c
+- name: ghcr.io/clubcedille/hackqc2024
+  newTag: commit-51a0d29e0de7a5a6ed91f9631fb835337ec16704
 
 resources:
-  - namespace.yaml
-  - pv.yaml
-  - deployment.yaml
-  - service.yaml
-  - ingress.yaml
+- namespace.yaml
+- pv.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
