@@ -86,7 +86,7 @@
                             hx-trigger="click"
                             @click="updateDataPointsWithParams('show=${feature.properties.help.event_id}&event_id=${feature.properties.help.event_id}&type=helps');$store.showAideLieeCard=true"
                             >
-                            Evenement lié
+                            Événement lié
                         </button>
                         `
             }
@@ -221,7 +221,7 @@
                 map.openPopup(`
                     <div>
                         <button class="w3-btn w3-round w3-green" onclick="createEventOnMap(${e.latlng.lat}, ${e.latlng.lng})">
-                            Signaler un evenement ici
+                            Signaler un événement ici
                         </button>
                     </div>`,
                     e.latlng, 
