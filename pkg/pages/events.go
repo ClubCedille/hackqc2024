@@ -42,7 +42,9 @@ func EventTablePage(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "events/table.html", gin.H{
-		"Events": events,
+		"Events":        events,
+		"ActiveSession": session.SessionIsActive(),
+		"UserName":      session.ActiveSession.UserName,
 	})
 }
 
