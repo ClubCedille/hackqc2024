@@ -124,7 +124,9 @@ func HelpTablePage(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "helps/table.html", gin.H{
-		"Helps": helps,
+		"Helps":         helps,
+		"ActiveSession": session.SessionIsActive(),
+		"UserName":      session.ActiveSession.UserName,
 	})
 }
 
