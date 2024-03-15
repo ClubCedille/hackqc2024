@@ -41,7 +41,7 @@
     </div>
     <div class="w3-container w3-margin-bottom">
         <button class="w3-button w3-round-large w3-teal" hx-get="/update-help/{{.Id}}" hx-target="body" hx-swap="beforeend">Modifier</button>
-        <button class="w3-button w3-round-large w3-red" hx-get="/delete-help/{{.Id}}">Supprimer</button>
+        <button class="w3-button w3-round-large w3-red" hx-get="/delete-help/{{.Id}}" hx-target="body" hx-swap="beforeend">Supprimer</button>
     </div>
 </div>
 {{ end }}

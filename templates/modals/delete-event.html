@@ -1,25 +1,34 @@
 {{ define "modals/delete-event.html" }}
 
-<div id="modal" class="w3-modal" style="display: block; z-index: 9999;">
-    <div class="w3-modal-dialog">
-        <div class="w3-modal-content w3-card-8 w3-round-xlarge">
-            <header class="w3-container w3-red">
-                <button hx-trigger="click" class="w3-button w3-large w3-display-topright" onclick="closeModal()">&times;</button>
-                <h2>Voulez-vous vraiment supprimer cet événement ?</h2>
-            </header>
-            <div class="w3-container">
-                <b style="color: black;">Id de l'événement: </b>
-                <p class="w3-container" style="color: black;"> {{.Event.Id}} </p>
-            </div>
-            <div class="w3-container">
-                <b style="color: black;">Nom de l'événement: </b>
-                <p class="w3-container" style="color: black;"> {{.Event.MapObject.Name}} </p>
-            </div>
-            <div class="w3-container w3-margin-top w3-margin-bottom">
-                <button hx-delete="/event/delete/{{.Event.Id}}" class="w3-button w3-red w3-round-large w3-margin" hx-swap="outerHTML" onclick="reloadPage()">Confirmer la suppression</button>
-            </div>
-        </div>
-    </div>
+<div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
+  <div class="modal-underlay" _="on click trigger closeModal"></div>
+  <div class="modal-content">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Supprimer un événement</title>
+      <link rel="icon" href="static/favicon.svg" type="image/x-icon">
+      <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
+      <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="/static/formStyle.css">
+      <link rel="stylesheet" href="/static/modal.css">
+    </head>
+    <form id="form-container" class="w3-card-4" style="padding: 20px; max-height: 1200px; overflow-y: auto;">
+      <h1 class="w3-margin">Voulez-vous vraiment supprimer cet événement ?</h1>
+      <div class="w3-container">
+          <b style="color: black;">Id de l'événement: </b>
+          <p class="w3-container" style="color: black;"> {{.Event.Id}} </p>
+      </div>
+      <div class="w3-container">
+          <b style="color: black;">Nom de l'événement: </b>
+          <p class="w3-container" style="color: black;"> {{.Event.MapObject.Name}} </p>
+      </div>
+      <div class="button-container">
+        <button hx-delete="/event/delete/{{.Event.Id}}" class="w3-button w3-teal w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Supprimer</button>
+        <button _="on click trigger closeModal" class="w3-button w3-red w3-round-large">Annuler</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -43,5 +52,4 @@
         });
     }
 </script>
-
 {{ end }}
