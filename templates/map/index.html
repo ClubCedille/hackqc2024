@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Montreal Map View - Événements publics</title>
+    <title>Montreal Map View - Évènements publics</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -89,7 +89,7 @@
                             hx-trigger="click"
                             @click="updateDataPointsWithParams('show=${feature.properties.help.event_id}&event_id=${feature.properties.help.event_id}&type=helps');$store.showAideLieeCard=true"
                             >
-                            Événement lié
+                            Évènement lié
                         </button>
                         `
             }
@@ -224,7 +224,7 @@
                 map.openPopup(`
                     <div>
                         <button class="w3-btn w3-round w3-green" onclick="createEventOnMap(${e.latlng.lat}, ${e.latlng.lng})">
-                            Signaler un événement ici
+                            Signaler un évènement ici
                         </button>
                     </div>`,
                     e.latlng,
@@ -360,7 +360,7 @@
                         <div class="w3-border-top w3-border-gray">
                             <button onclick="document.getElementById('eventModal').style.display='block'"
                                 class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" {{ if not .ActiveSession
-                                }} disabled title="Veuillez vous connecter" {{ end }}>Créer un événement</button>
+                                }} disabled title="Veuillez vous connecter" {{ end }}>Créer un évènement</button>
                             <a href="/map" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                                 style="margin-left: 10px;">Réinitialiser les filtres</a>
                         </div>
@@ -374,7 +374,7 @@
                         class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                         <div x-data>
                             <div class="w3-border-bottom w3-border-gray">
-                                <h6 class="w3-text-blue">Événements</h6>
+                                <h6 class="w3-text-blue">Évènements</h6>
                                 <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
                                     x-bind:class="isAllSelected($store.filters.eventCategories, 'categories') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
                                     x-text="isAllSelected($store.filters.eventCategories, 'categories') ? 'Tout désélectionner' : 'Tout sélectionner'"
@@ -448,7 +448,7 @@
                 style="width: 90vw;max-width: none;display: none" x-show="$store.showAideLieeCard">
                 <div class="w3-container w3-padding">
                     <!-- Explain this mode-->
-                    <p>Ce mode permet de visualiser les aides liées à un événement.
+                    <p>Ce mode permet de visualiser les aides liées à un évènement.
                         <!-- Button to go back to all  -->
                         <a class="w3-btn w3-blue w3-margin-left w3-round-large" href="/map">Retourner à la carte</a>
                     </p>
@@ -482,7 +482,7 @@
             <header class="w3-container">
                 <span onclick="document.getElementById('eventModal').style.display='none'"
                     class="w3-button w3-teal w3-large w3-display-topright w3-round-large w3-margin">&times;</span>
-                <h2 class="w3-margin-left">Soumettre un événement</h2>
+                <h2 class="w3-margin-left">Soumettre un évènement</h2>
             </header>
 
             {{ template "forms/eventForm.html" . }}
