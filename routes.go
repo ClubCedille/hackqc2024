@@ -150,4 +150,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	r.POST("/event/comment", AuthRequiredMiddleware(), func(c *gin.Context) {
 		pages.PostCreateEventComment(c, db)
 	})
+	r.GET("/a-propos", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "a-propos/index.html", gin.H{})
+	})
 }
