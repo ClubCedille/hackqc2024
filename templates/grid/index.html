@@ -64,7 +64,7 @@
 
 {{ define "components/grid-toolbar" }}
 <div id="tool-bar" class="w3-bar w3-light-grey">
-    <form style="margin-block-end: 0px;" hx-get="/grid/search" hx-boost="true" hx-target="#grid"
+    <form id="filter-form" style="margin-block-end: 0px;" hx-get="/grid/search" hx-boost="true" hx-target="#grid"
         hx-trigger="change from:.filter delay:500ms" hx-swap="outerHTML">
     
     <!-- search box-->
@@ -192,6 +192,7 @@
                         <input type="checkbox" class="w3-check filter" name="map_object.category" value="Coronavirus" checked>
                         Coronavirus
                     </label>
+                    <input type="hidden" class="w3-check filter" name="map_object.category" value="-1">
                 </div>
             </div>
         </div>
@@ -331,4 +332,56 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    // When the inputs are changed:
+    // Check if there are all the checkoxes are un-checked
+    // If so, check the hidden -1 checkbox (per input name)
+    // document.getElementById("filter-form").addEventListener("input", function () {
+    //     // inputs:
+    //     var inputNames = [
+    //         "map_object.category",
+    //         "urgency_type",
+    //         "danger_level",
+    //     ];
+        
+    //     for(const inputName of inputNames){
+    //         let allChecked = true;
+    //         // all checkboxes with this input name:
+    //         let checkboxes = Array.from(document.querySelectorAll(`input:not([type="hidden"])[name="${inputName}"]`));
+    //         for(const checkbox of checkboxes){
+    //             if(!checkbox.hidden)
+    //                 allChecked = allChecked && checkbox.checked;
+    //         }
+    //         if(!allChecked){
+    //             document.querySelector(`input[type="hidden"][name="${inputName}"]`).checked = true;
+    //         }else{
+    //             document.querySelector(`input[type="hidden"][name="${inputName}"]`).checked = false;
+    //         }
+    //     }
+    // });
+    // Gippity:
+//     document.getElementById("filter-form").addEventListener("input", function () {
+//     var inputNames = [
+//         "map_object.category",
+//         "urgency_type",
+//         "danger_level",
+//     ];
+
+//     for (const inputName of inputNames) {
+//         let checkboxes = Array.from(document.querySelectorAll(`input[type="checkbox"][name="${inputName}"]`)); // Changed to specifically select checkboxes
+//         let anyChecked = checkboxes.some(checkbox => checkbox.checked); // Check if any checkbox is checked
+
+//         if (!anyChecked) {
+//             // If no checkboxes are checked, set the hidden input to true
+//             let hiddenCheckbox = document.querySelector(`input[type="hidden"][name="${inputName}"]`);
+//             if (hiddenCheckbox) hiddenCheckbox.checked = true;
+//         } else {
+//             // If any checkbox is checked, ensure the hidden checkbox is not checked
+//             let hiddenCheckbox = document.querySelector(`input[type="hidden"][name="${inputName}"]`);
+//             if (hiddenCheckbox) hiddenCheckbox.checked = false;
+//         }
+//     }
+// });
+</script>
 {{ end }}
