@@ -9,6 +9,44 @@
   <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/static/formStyle.css">
 </head>
+<script text="text/javascript">
+  console.log("what")
+  document.addEventListener("DOMContentLoaded", function () {
+    const geomSelect = document.getElementById("event_map_object_geometry_type")
+    const adresseInput = document.getElementById("event_map_object_geometry_address")
+    const pointInput = document.getElementById("event_map_object_geometry_coordinates")
+    geomSelect.value = "Adresse"
+    pointInput.style.display = "none" 
+
+    geomSelect.addEventListener("change", function () {
+      if (geomSelect.value === "Adresse") {
+        pointInput.style.display = "none"
+        adresseInput.style.display = "block"
+      } else if (geomSelect.value === "Point") {
+        pointInput.style.display = "block"
+        adresseInput.style.display = "none"
+      }
+    })
+
+    adresseInput.addEventListener("change", function() {
+      const adresses = getAdresses(adresseInput.value, (adresses) => {
+        const selectedAddress = adresses[0]
+        console.log(selectedAddress)
+        adresseInput.value = selectedAddress.properties.nom
+        const coords = selectedAddress.geometry.coordinates
+        pointInput.value = coords[1] + ", " + coords[0]
+      })
+    })
+
+    function getAdresses(address, cb) {
+      fetch(`https://geoegl.msp.gouv.qc.ca/apis/icherche/geocode?type=adresses&limit=5&geometry=true&q=${address}`).then(response => {
+        response.json().then(result => {
+          cb(result.features)
+        })
+      })
+    }
+  })
+</script>
 <div class="row">
   <div class="col-md-12">
     <form action="/create-event" method="post" id="form-container" style="padding: 20px;">
@@ -51,11 +89,15 @@
         </select>
 
         <label for="map_object_geometry">Coordonnées:</label>
-        <select id="map_object_geometry_type" name="map_object_geometry_type">
+        <select id="event_map_object_geometry_type">
+          <option selected="selected" value="Adresse">Adresse</option>
           <option value="Point">Point</option>
         </select>
-        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="map_object_geometry_coordinates"
-          name="map_object_geometry_coordinates" required>
+
+        <input type="hidden" value="Point" name="map_object_geometry_type"/>
+        <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="event_map_object_geometry_coordinates" name="map_object_geometry_coordinates" required>
+
+        <input type="text" autocomplete="off" placeholder="Adresse" id="event_map_object_geometry_address">
 
         <label for="map_object_tags">Tags:</label>
         <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." name="map_object_tags">
@@ -67,5 +109,4 @@
     </form>
   </div>
 </div>
-
 {{ end }}
