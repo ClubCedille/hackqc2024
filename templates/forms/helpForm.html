@@ -36,21 +36,22 @@
                     <textarea class="w3-input" name="how_to_use_help" required></textarea>
                 </div>
 
-                <div class="w3-margin-bottom">
-                    <label>D'autres personnes peuvent-elles se joindrent à l'aide ?</label>
+                <div x-data="{helpPossible: false}" class="w3-margin-bottom">
+                    <label>D'autres personnes peuvent-elles se joindre à l'aide ?</label>
                     <div class="w3-padding w3-cell">
-                        <input id="helpPossible" class="w3-radio" type="radio" name="need_help" value="true" required>
+                        <input class="w3-radio" type="radio" name="need_help" value="true" x-model="helpPossible"
+                            required>
                         <label style="display: inline;">Oui</label>
                     </div>
                     <div class="w3-cell">
-                        <input class="w3-radio" type="radio" name="need_help" value="false">
+                        <input class="w3-radio" type="radio" name="need_help" value="false" x-model="helpPossible">
                         <label style="display: inline;">Non</label>
                     </div>
-                </div>
 
-                <div class="w3-margin-bottom">
-                    <label>Comment aider</label>
-                    <textarea class="w3-input" name="how_to_help" required></textarea>
+                    <div class="w3-margin-bottom" x-bind:class="helpPossible=='true' ? '' : 'w3-hide'">
+                        <label>Comment aider</label>
+                        <textarea class="w3-input" name="how_to_help"></textarea>
+                    </div>
                 </div>
             </fieldset>
             <fieldset>
