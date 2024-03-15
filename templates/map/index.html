@@ -81,7 +81,9 @@
                             hx-trigger="click" 
                             hx-get="/event/${feature.properties.help.event_id}" 
                             hx-target="body"hx-swap="beforeend" 
-                            hx-trigger="click">
+                            hx-trigger="click"
+                            @click="updateDataPointsWithParams('show=${feature.properties.help.event_id}&event_id=${feature.properties.help.event_id}&type=helps');$store.showAideLieeCard=true"
+                            >
                             Evenement lié
                         </button>
                         `
