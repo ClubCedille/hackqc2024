@@ -122,9 +122,9 @@ func SearchHelps(conn *clover.DB, filters map[string][]string, requireGeoJson bo
 				sortOrder = -1 // Descending
 			}
 			sortField := filters["_.sort"][0]
-			filterQuery.Sort(query.SortOption{Field: sortField, Direction: sortOrder})
+			filterQuery = filterQuery.Sort(query.SortOption{Field: sortField, Direction: sortOrder})
 		} else {
-			filterQuery.Sort(query.SortOption{Field: "map_object.date", Direction: -1})
+			filterQuery = filterQuery.Sort(query.SortOption{Field: "map_object.date", Direction: -1})
 		}
 
 		finalRes := ((geoRes && filterRes) && (searchRes))
