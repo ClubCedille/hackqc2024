@@ -192,11 +192,41 @@
             document.getElementById('helpModal').style.display = 'block';
         }
 
+        function createEventOnMap(lat, lng) {
+            document.getElementById('eventModal').style.display='block'
+            document.getElementById('event_map_object_geometry_type').value='Point'
+            document.getElementById('event_map_object_geometry_coordinates').style.display='block'
+            document.getElementById('event_map_object_geometry_address').style.display='hidden'
+            
+            document.getElementById('event_map_object_geometry_coordinates').value = lat + ", " + lng
+        }
+
+        function createEventOnMap(lat, lng) {
+            document.getElementById('eventModal').style.display='block'
+            document.getElementById('event_map_object_geometry_type').value='Point'
+            document.getElementById('event_map_object_geometry_coordinates').style.display='block'
+            document.getElementById('event_map_object_geometry_address').style.display='hidden'
+            
+            document.getElementById('event_map_object_geometry_coordinates').value = lat + ", " + lng
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             map = L.map('map').setView([45.5017, -73.5673], 8);
             L.control.locate().addTo(map);
             map.on('popupopen', function (e) {
                 htmx.process(document.body)
+            })
+
+            map.on('click', function (e) {
+                map.openPopup(`
+                    <div>
+                        <button class="w3-btn w3-round w3-green" onclick="createEventOnMap(${e.latlng.lat}, ${e.latlng.lng})">
+                            Signaler un evenement ici
+                        </button>
+                    </div>`,
+                    e.latlng, 
+                    {}
+                )
             })
 
             var layer = protomapsL.leafletLayer({
@@ -394,24 +424,24 @@
                     class="w3-panel w3-padding-32 w3-topbar w3-border-blue" style="display: none;">
                     <div x-data>
                         <button class="w3-btn w3-margin-right w3-margin-bottom w3-round-large"
-                            x-bind:class="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
-                            x-text="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'Tout désélectionner' : 'Tout sélectionner'"
-                            @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
-                        {{ range .DangerLevels }}
-                        <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
-                            x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
-                            @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAll = isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels')"
-                            x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
-                        {{ end }}
-                    </div>
+                        x-bind:class="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'w3-border-light-gray w3-border' : 'w3-light-gray'"
+                        x-text="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'Tout désélectionner' : 'Tout sélectionner'"
+                        @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
+                    {{ range .DangerLevels }}
+                    <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
+                        x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
+                        @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAll = isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels')"
+                        x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
+                    {{ end }}
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div x-data>
-        <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large"
-            style="width: 90vw;max-width: none;display: none" x-show="$store.showAideLieeCard">
+<div x-data>
+    <div id="aideLieeCard" class="w3-card w3-margin-top w3-auto w3-round-large"
+        style="width: 90vw;max-width: none;display: none" x-show="$store.showAideLieeCard">
             <div class="w3-container w3-padding">
                 <!-- Explain this mode-->
                 <p>Ce mode permet de visualiser les aides liées à un événement.
