@@ -14,14 +14,16 @@ import (
 	"github.com/paulmach/orb/geojson"
 )
 
+const (
+	DQC_WEATHER_NAME = "DonnéesQC Weather"
+	DQC_WEATHER_URL  = "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi"
+)
+
 var config = jsoniter.Config{
 	EscapeHTML:              true,
 	SortMapKeys:             false,
 	MarshalFloatWith6Digits: true,
 }.Froze()
-
-const DQC_WEATHER_NAME = "DonnéesQC Weather"
-const DQC_WEATHER_URL = "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi"
 
 type DQCWeatherEventSource struct{}
 

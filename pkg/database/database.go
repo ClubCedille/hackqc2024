@@ -6,13 +6,14 @@ import (
 	"github.com/ostafen/clover/v2"
 )
 
-const HackQcCollection = "HackQcCollection"
-
-const AccountCollection = "AccountCollection"
-const EventCollection = "EventCollection"
-const HelpCollection = "HelpCollection"
-const WatermarkCollection = "WatermarkCollection"
-const CommentCollection = "CommentCollection"
+const (
+	HackQcCollection    = "HackQcCollection"
+	AccountCollection   = "AccountCollection"
+	EventCollection     = "EventCollection"
+	HelpCollection      = "HelpCollection"
+	WatermarkCollection = "WatermarkCollection"
+	CommentCollection   = "CommentCollection"
+)
 
 func createCollectionIfNotExists(collectionName string, db *clover.DB) error {
 	exists, err := db.HasCollection(collectionName)
