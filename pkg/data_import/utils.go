@@ -12,9 +12,11 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 )
 
-const DQC_VERSION = "2.0.0"
-const DQC_TIME_FMT = "2006/01/02 15:04"
-const DQC_DATE_FMT = "2006-01-02"
+const (
+	DQC_VERSION  = "2.0.0"
+	DQC_TIME_FMT = "2006/01/02 15:04"
+	DQC_DATE_FMT = "2006-01-02"
+)
 
 func ToGetParams(params map[string]string) string {
 	queryString := ""

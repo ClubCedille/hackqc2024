@@ -15,9 +15,11 @@ import (
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 )
 
-const HQC_URL = "http://pannes.hydroquebec.com/pannes/donnees/v3_0"
-const HQC_TIME_FMT = "2006-01-02 15:04:05"
-const HQC_OUTAGE_NAME = "Hydro-Québec Outage"
+const (
+	HQC_URL         = "http://pannes.hydroquebec.com/pannes/donnees/v3_0"
+	HQC_TIME_FMT    = "2006-01-02 15:04:05"
+	HQC_OUTAGE_NAME = "Hydro-Québec Outage"
+)
 
 type HQCOutageEventSource struct{}
 

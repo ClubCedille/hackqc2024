@@ -17,6 +17,8 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script src="/static/L.KML.js" defer></script>
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 
     <script>
         var markupLayer
@@ -192,6 +194,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             map = L.map('map').setView([45.5017, -73.5673], 8);
+            L.control.locate().addTo(map);
             map.on('popupopen', function (e) {
                 htmx.process(document.body)
             })

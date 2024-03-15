@@ -1,42 +1,56 @@
-# HackQC 2024
+<p align="center">
+  <img src="img/logo_munis.png" alt="MUNIS Logo" width="200"/>
+</p>
 
-## Dev dependencies
+<h1 align="center">MUNIS - HackQC 2024</h1>
+<p align="center">Votre bouée communautaire au Québec.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License Badge"/>
+  <img src="https://github.com/ClubCedille/hackqc2024/actions/workflows/main.yml/badge.svg" alt="Workflow Badge"/>
+</p>
+
+## Description
+
+MUNIS permet d'extraire les évènements d’urgence de multiples sources de données, permettant une réaction rapide et informée. En parallèle, la plateforme invite les utilisateurs à contribuer, permettant l'ajout de ressources d’aide qui viennent enrichir notre communauté de soutien. L'application comprend différentes sections dédiées à l'aide offerte et aux moyens de contribuer aux initiatives, facilitant ainsi l'engagement des utilisateurs.
+
+## Dépendances
 
 - [Go 1.22](https://go.dev/doc/install)
 - [Air](https://github.com/cosmtrek/air)
 
-## Setup
+## Configuration
 
 ### Nix
 
-You can use nix to setup dependencies: `nix develop`
+Vous pouvez utiliser nix pour configurer les dépendances : `nix develop`
 
-### Using Make (alternative)
+### Utilisation de Make (alternative)
 
-Alternatively, you can manually initialize the project using the Makefile : `make init`
+Alternativement, vous pouvez initialiser manuellement le projet en utilisant le Makefile : `make init`
 
-## How to run
+## Comment exécuter
 
-In project root, run one of the following commands:
+Dans la racine du projet, exécutez l'une des commandes suivantes :
 
-Go run:
+Exécution Go :
 
 `go run .`
 
-Live reload:
+Rechargement en direct :
 
 `air`
 
-### Using Makefile
+### Utilisation du Makefile
 
 ```bash
 make build
 make start
 ```
 
-#### with Docker
+#### Avec Docker
 
- Build the Docker image and run the container on port 8080
+Construisez l'image Docker et exécutez le conteneur sur le port 8080
 
 ```bash
 make docker-build

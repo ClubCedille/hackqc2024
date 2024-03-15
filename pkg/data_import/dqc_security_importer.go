@@ -11,9 +11,11 @@ import (
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 )
 
-const DQC_SECURITY_NAME = "DonnéesQC Security"
-const DQC_SECURITY_URL = "http://geoegl.msp.gouv.qc.ca/apis/wss/historiquesc.fcgi"
-const DQC_START_YEAR = 2024
+const (
+	DQC_SECURITY_NAME = "DonnéesQC Security"
+	DQC_SECURITY_URL  = "http://geoegl.msp.gouv.qc.ca/apis/wss/historiquesc.fcgi"
+	DQC_START_YEAR    = 2024
+)
 
 type DQCSecurityEventSource struct{}
 
