@@ -157,7 +157,7 @@ func SearchEvents(conn *clover.DB, filters map[string][]string, requireGeoJson b
 				continue
 			}
 			for k := range doc.AsMap() {
-				searchRes = searchRes || (strings.Contains(fmt.Sprint(doc.Get(k)), search))
+				searchRes = searchRes || (strings.Contains(strings.ToLower(fmt.Sprint(doc.Get(k))), strings.ToLower(search)))
 			}
 		}
 
