@@ -1,0 +1,98 @@
+{{ define "a-propos/index.html" }}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/static/mapStyle.css">
+    <title>MUNIS - À Propos</title>
+
+    <style>
+        .hero-image {
+            background-image: url('/static/about-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: justify;
+        }
+    </style>
+</head>
+
+<body>
+
+    {{ template "components/navbar" . }}
+
+    <div class="hero-image w3-display-container w3-text-white">
+        <div class="w3-display-middle w3-padding" style="height:35vh">
+            <img src="/static/logo_munis.png" class="w3-round" alt="À propos de MUNIS" style="display: inline-block; max-width: 100%; height: 100%;">
+        </div>
+    </div>
+    
+
+    <div class="content w3-container">
+        <p>
+            MUNIS se veut être un carrefour dynamique pour les alertes d'urgence et l'entraide communautaire, agissant comme un signal de secours en temps réel à travers le Québec. Plus qu'une application, c'est une ligne de vie communautaire qui permet aux citoyens et aux instances gouvernementales de réunir les ressources, d'alerter sur les urgences et de lancer des actions d'aide rapidement. Qu'il s'agisse d'une catastrophe naturelle ou d'un incident urbain, MUNIS est là pour éclairer le chemin. L'application offre une carte interactive pour localiser l'aide et les besoins, favorisant les initiatives de solidarité et simplifiant l'acte de soutien communautaire.
+        </p>
+
+        <p>
+            MUNIS permet d'extraire les évènements d’urgence de multiples sources de données, permettant une réaction rapide et informée. En parallèle, la plateforme invite les utilisateurs à contribuer, permettant l'ajout de ressources d’aide qui viennent enrichir notre communauté de soutien. L'application comprend différentes sections dédiées à l'aide offerte et aux moyens de contribuer aux initiatives, facilitant ainsi l'engagement des utilisateurs.
+        </p>
+
+        <div class="w3-row-padding" style="margin-top: 30px;margin-bottom: 30px;">
+            <div class="w3-third">
+                <div class="w3-card">
+                    <header class="w3-container w3-light-grey">
+                        <h3>Carte interactive</h3>
+                    </header>
+                    <div class="w3-container">
+                        <p>Permet de localiser les aides et les besoins en temps réel, en utilisant des coordonnées GPS.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w3-third">
+                <div class="w3-card">
+                    <header class="w3-container w3-light-grey">
+                        <h3>Contribution (aussi sur la carte)</h3>
+                    </header>
+                    <div class="w3-container">
+                        <p>Les utilisateurs peuvent soumettre des évènements d'urgence et proposer de l'aide.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w3-third">
+                <div class="w3-card">
+                    <header class="w3-container w3-light-grey">
+                        <h3>Grille des évènements d'urgence et de l'aide</h3>
+                    </header>
+                    <div class="w3-container">
+                        <p>Filtrage des données en fonction de critères variés, affichage sous forme de cartes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Provenance des données</h2>
+        <p>
+            Les données sont extraites et mises à jour régulièrement pour garantir leur fiabilité et leur pertinence, provenant de sources externes et contributions communautaires.
+            <ul>
+                <li><a href="https://www.donneesquebec.ca/recherche/dataset/evenements-de-securite-civile">Données de la sécurité civile</a></li>
+                <li><a href="https://www.donneesquebec.ca/recherche/dataset/carte-vigilance-multirisque-fil">Carte de vigilance multirisque</a></li>
+                <li><a href="https://www.hydroquebec.com/documents-data/open-data/data-outages-interruptions.html">Données de pannes et interruptions Hydro-Québec</a></li>
+            </ul>
+        </p>
+    </div>
+</body>
+
+</html>
+{{ end }}

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -149,5 +150,11 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 
 	r.POST("/event/comment", AuthRequiredMiddleware(), func(c *gin.Context) {
 		pages.PostCreateEventComment(c, db)
+	})
+	r.GET("/a-propos", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "a-propos/index.html", gin.H{
+			"ActiveSession": session.SessionIsActive(),
+			"UserName":      session.ActiveSession.UserName,
+		})
 	})
 }

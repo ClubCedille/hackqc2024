@@ -7,6 +7,7 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
+	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/query"
@@ -22,8 +23,10 @@ func GridPage(c *gin.Context, db *clover.DB) {
 	helps, _ := help.GetHelpFromDocuments(docs)
 
 	c.HTML(http.StatusOK, "grid/index.html", gin.H{
-		"Events": events,
-		"Helps":  helps,
+		"Events":        events,
+		"Helps":         helps,
+		"ActiveSession": session.SessionIsActive(),
+		"UserName":      session.ActiveSession.UserName,
 	})
 }
 

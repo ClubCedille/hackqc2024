@@ -3,14 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Créer un événement</title>
+  <title>Créer un évènement</title>
   <link rel="icon" href="static/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0">
   <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/static/formStyle.css">
 </head>
 <script text="text/javascript">
-  console.log("what")
   document.addEventListener("DOMContentLoaded", function () {
     const geomSelect = document.getElementById("event_map_object_geometry_type")
     const adresseInput = document.getElementById("event_map_object_geometry_address")
@@ -51,7 +50,7 @@
   <div class="col-md-12">
     <form action="/create-event" method="post" id="form-container" style="padding: 20px;">
       <fieldset>
-        <legend><span class="number">1</span>Événement</legend>
+        <legend><span class="number">1</span>Évènement</legend>
 
         <label for="map_object_name">Nom:</label>
         <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" required>

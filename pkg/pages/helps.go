@@ -81,6 +81,8 @@ func UpdateHelp(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	SubmitHelpsToDC(c, db)
+
 	log.Println("Help updated successfully")
 }
 
@@ -93,6 +95,8 @@ func DeleteHelp(c *gin.Context, db *clover.DB) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	SubmitHelpsToDC(c, db)
 
 	log.Println("Help deleted successfully")
 }
@@ -124,7 +128,9 @@ func HelpTablePage(c *gin.Context, db *clover.DB) {
 	}
 
 	c.HTML(http.StatusOK, "helps/table.html", gin.H{
-		"Helps": helps,
+		"Helps":         helps,
+		"ActiveSession": session.SessionIsActive(),
+		"UserName":      session.ActiveSession.UserName,
 	})
 }
 
