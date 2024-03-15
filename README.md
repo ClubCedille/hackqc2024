@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="template/static/logo_munis.png" alt="MUNIS Logo" width="200"/>
+  <img src="templates/static/logo_munis.png" alt="MUNIS Logo" width="200"/>
 </p>
 
 <h1 align="center">MUNIS - HackQC 2024</h1>

@@ -1,31 +1,55 @@
 {{ define "components/navbar" }}
 
-<div class="w3-bar w3-dark-grey">
-    <a href="/map" class="w3-bar-item w3-button w3-mobile">Carte</a>
-    <a href="/grid" class="w3-bar-item w3-button w3-mobile">Grille Evenement/Aide</a>
-    <div class="w3-dropdown-hover w3-mobile">
-        <button class="w3-button">Tableaux des données<i class="fa fa-caret-down"></i></button>
-        <div class="w3-dropdown-content w3-bar-block w3-dark-grey">
-            <a href="/events/table" class="w3-bar-item w3-button w3-mobile">Tableau d'evenements</a>
-            <a href="/helps/table" class="w3-bar-item w3-button w3-mobile">Tableau d'aide</a>
+<style>
+    .w3-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+    }
+    .w3-bar .w3-bar-item:hover, .w3-bar .w3-button:hover {
+        border-radius: 10px;
+    }
+    .w3-bar .navbar-right {
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<div class="w3-bar w3-dark-grey" style="align-items: center;">
+    <div style="display: flex; align-items: center;">
+        <a href="/" class="w3-bar-item" style="display: flex; align-items: center;">
+            <img src="static/logo-white.png" alt="Logo" style="height:40px;">
+            <span style="margin-left: 10px; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: 700;">Munis</span>
+        </a>
+        <a href="/grid" class="w3-bar-item w3-button w3-mobile">Grille Evenement/Aide</a>
+        <div class="w3-dropdown-hover w3-mobile">
+            <button class="w3-button">Tableaux des données<i class="fa fa-caret-down"></i></button>
+            <div class="w3-dropdown-content w3-bar-block w3-dark-grey">
+                <a href="/events/table" class="w3-bar-item w3-button w3-mobile">Tableau d'evenements</a>
+                <a href="/helps/table" class="w3-bar-item w3-button w3-mobile">Tableau d'aide</a>
+            </div>
         </div>
+        <a href="/a-propos" class="w3-bar-item w3-button w3-mobile">À propos</a>
     </div>
-    <a href="/a-propos" class="w3-bar-item w3-button w3-mobile">À propos</a>
-    {{ if .ActiveSession }}
-    <form action="/logout" method="post" style="display: inline;">
-        <button type="submit" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Se déconnecter</button>
-    </form>
-    <a href="/manage-post" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Bonjour, {{ .UserName }} !</a>
-    {{ else if .SigningUp }}
-    <a href="/login" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Se connecter</a>
-    <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Déjà inscrit ?</span>
-    {{ else if .LoggingIn }}
-    <a href="/create-account" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Créer un compte</a>
-    <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Pas encore de compte ?</span>
-    {{ else }}
-    <a href="/login" class="w3-bar-item w3-button w3-right w3-margin-right w3-mobile">Se connecter</a>
-    <a href="/create-account" class="w3-bar-item w3-button w3-right w3-mobile">Créer un compte</a>
-    {{ end }}
+
+    <div class="topnav-right">
+        {{ if .ActiveSession }}
+        <form action="/logout" method="post" style="display: inline;">
+            <button type="submit" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Se déconnecter</button>
+        </form>
+        <a href="/manage-post" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Bonjour, {{ .UserName }} !</a>
+        {{ else if .SigningUp }}
+        <a href="/login" class="w3-bar-item w3-button w3-margin-right w3-right w3-mobile">Se connecter</a>
+        <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Déjà inscrit ?</span>
+        {{ else if .LoggingIn }}
+        <a href="/create-account" class="w3-bar-item w3-button w3-right w3-mobile">Créer un compte</a>
+        <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Pas encore de compte ?</span>
+        {{ else }}
+        <a href="/login" class="w3-bar-item w3-button w3-right w3-mobile">Se connecter</a>
+        <a href="/create-account" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Créer un compte</a>
+        {{ end }}
+    </div>
 </div>
 
 {{ end }}
