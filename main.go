@@ -22,14 +22,13 @@ import (
 const (
 	GIN_SESSION_NAME   = "gin-session"
 	GIN_SESSION_SECRET = "gin-session-secret"
+	TMP_DIR            = "tmp"
 )
 
 type Request struct {
 	IP       string
 	DateTime string
 }
-
-const TMP_DIR = "tmp"
 
 func main() {
 	// Init database
