@@ -20,7 +20,7 @@ type GeoJSONFeature struct {
 
 type Geometry struct {
 	Type        string      `json:"type"`
-	Coordinates interface{} `json:"coordinates"` 
+    Coordinates [][][]float64 `json:"coordinates"` // Polygon
 }
 
 func ConvertMapDocsToGeoJSON(docs []map[string]interface{}) ([]byte, error) {
@@ -29,7 +29,6 @@ func ConvertMapDocsToGeoJSON(docs []map[string]interface{}) ([]byte, error) {
     for _, doc := range docs {
         properties := make(map[string]interface{})
 
-        // Extract and assign values from doc. You'll need to assert the type of each value.
         if id, ok := doc["_id"].(string); ok {
             properties["_id"] = id
         }
@@ -70,10 +69,27 @@ func ConvertMapDocsToGeoJSON(docs []map[string]interface{}) ([]byte, error) {
 			}
 
             if geomMap, ok := mapObject["geometry"].(map[string]interface{}); ok {
-				geometry := Geometry{
-                    Type:        geomMap["type"].(string),
-                    Coordinates: geomMap["coordinates"],
+				geomType, _ := geomMap["type"].(string)
+
+				coordsInterface, _ := geomMap["coordinates"].([]interface{})
+                coords := make([][][]float64, len(coordsInterface))
+
+                for i, ringInterface := range coordsInterface {
+                    ring, _ := ringInterface.([]interface{})
+                    coords[i] = make([][]float64, len(ring))
+                    for j, coordPairInterface := range ring {
+                        coordPair, _ := coordPairInterface.([]interface{})
+                        coords[i][j] = make([]float64, len(coordPair))
+                        for k, coord := range coordPair {
+                            coords[i][j][k], _ = coord.(float64)
+                        }
+                    }
                 }
+				geometry := Geometry{
+                    Type:        geomType,
+                    Coordinates: coords,
+                }
+
                 feature := GeoJSONFeature{
                     Type:       "Feature",
                     Geometry:   geometry,

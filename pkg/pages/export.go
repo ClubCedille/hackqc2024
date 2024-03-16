@@ -9,6 +9,7 @@ import (
 
 	data_export "github.com/ClubCedille/hackqc2024/pkg/data_export"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	circletopolygon "github.com/chrusty/go-circle-to-polygon"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
 )
@@ -97,9 +98,30 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]m
         if mapObject, ok := doc["map_object"].(map[string]interface{}); ok {
             delete(mapObject, "account_id")
             delete(mapObject, "Id")
+
+			if geometry, ok := mapObject["geometry"].(map[string]interface{}); ok {
+				if coordinates, ok := geometry["coordinates"].([]interface{}); ok && len(coordinates) == 2 {
+					latitude, latOk := coordinates[1].(float64)
+					longitude, longOk := coordinates[0].(float64)
+		
+					if latOk && longOk {
+						radius := 1000
+						edges := 10
+		
+						geoJSON := convertToCirclePolygon(&latitude, &longitude, &radius, &edges)
+
+						var geoJSONObject map[string]interface{}
+						if err := json.Unmarshal([]byte(geoJSON), &geoJSONObject); err != nil {
+							log.Printf("Error parsing the GeoJSON string: %v", err)
+							return nil, err
+						} else {
+							mapObject["geometry"] = geoJSONObject
+						}
+					}
+				}
+			}
         }
     }
-
     updatedData, err := json.Marshal(docs)
     if err != nil {
         return nil, fmt.Errorf("failed to marshal the updated JSON data: %w", err)
@@ -110,4 +132,35 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]m
     }
 
     return docs, nil
+}
+
+
+func convertToCirclePolygon(latitude *float64, longitude *float64, radius *int, edges *int) []byte {
+	// Make a circle:
+	circle := &circletopolygon.Circle{
+		Centre: &circletopolygon.Point{
+			Latitude:  float32(*latitude),
+			Longitude: float32(*longitude),
+		},
+		Radius: int32(*radius),
+	}
+
+	// Validate the circle:
+	if err := circle.Validate(); err != nil {
+		panic(err)
+	}
+
+	// Convert it to a Polygon with 10 edges:
+	polygon, err := circle.ToPolygon(int(*edges))
+	if err != nil {
+		panic(err)
+	}
+
+	// Render as GeoJSON:
+	geoJSON, err := polygon.GeoJSON()
+	if err != nil {
+		panic(err)
+	}
+
+	return geoJSON
 }
