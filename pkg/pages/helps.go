@@ -87,6 +87,7 @@ func GetHelpDetailAboutToBeModified(c *gin.Context, db *clover.DB) {
 func UpdateHelp(c *gin.Context, db *clover.DB) {
 	data := GetHelpFromContext(c, db)
 	data.Id = c.Param("id")
+	data.Exported = false
 
 	err := help.UpdateHelp(db, data)
 	if err != nil {
