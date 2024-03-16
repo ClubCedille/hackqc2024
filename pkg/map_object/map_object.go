@@ -2,6 +2,9 @@ package mapobject
 
 import (
 	"time"
+
+	"github.com/JamesLMilner/pip-go"
+	"github.com/twpayne/go-geom"
 )
 
 type MapObject struct {
@@ -79,4 +82,24 @@ func (mapObject *MapObject) GetCategoryEmoji() string {
 	default:
 		return ""
 	}
+}
+
+func (geometry *Geometry) AsGeomCoord() geom.Coord {
+	if geometry.GeomType == "Point" {
+		return geom.Coord(geometry.Coordinates[0:2])
+	}
+	return nil
+}
+
+func (geometry *Geometry) AsPipPolygon() *pip.Polygon {
+	if geometry.GeomType == "Polygon" {
+		points := []pip.Point{}
+		for i := 0; i < len(geometry.Coordinates); i += 2 {
+			x := geometry.Coordinates[i]
+			y := geometry.Coordinates[i+1]
+			points = append(points, pip.Point{X: x, Y: y})
+		}
+		return &pip.Polygon{Points: points}
+	}
+	return nil
 }

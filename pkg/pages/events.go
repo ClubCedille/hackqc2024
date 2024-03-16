@@ -10,6 +10,7 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/geometry"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
@@ -261,18 +262,11 @@ func GetEventDataFromContext(c *gin.Context, db *clover.DB) event.Event {
 		tagsArrayString = append(tagsArrayString, tag)
 	}
 
-	coordinates := c.PostForm("map_object_geometry_coordinates")
-	coordinatesArray := strings.Split(coordinates, ",")
-
-	var coordinatesArrayFloat []float64
-	for i := len(coordinatesArray) - 1; i >= 0; i-- {
-		coords, err := strconv.ParseFloat(strings.TrimSpace(coordinatesArray[i]), 64)
-		if err != nil {
-			log.Println("Error parsing coordinates:", err)
-			c.Status(http.StatusInternalServerError)
-			return event.Event{}
-		}
-		coordinatesArrayFloat = append(coordinatesArrayFloat, coords)
+	coordinates, err := geometry.ParseCoordinatesString(c.PostForm("coordinates"))
+	if err != nil {
+		log.Println("Error parsing coordinates:", err)
+		c.Status(http.StatusInternalServerError)
+		return event.Event{}
 	}
 
 	return event.Event{
@@ -287,7 +281,7 @@ func GetEventDataFromContext(c *gin.Context, db *clover.DB) event.Event {
 			Date:        time.Now(),
 			Geometry: mapobject.Geometry{
 				GeomType:    c.PostForm("map_object_geometry_type"),
-				Coordinates: coordinatesArrayFloat,
+				Coordinates: coordinates,
 			},
 		},
 	}

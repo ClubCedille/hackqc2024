@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
+	"github.com/ClubCedille/hackqc2024/pkg/geometry"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -24,10 +25,16 @@ func GetLogin(c *gin.Context) {
 
 func CreateAccount(c *gin.Context, db *clover.DB) {
 	var data account.Account
+	var err error
 	data.UserName = c.PostForm("user_name")
 	data.FirstName = c.PostForm("first_name")
 	data.LastName = c.PostForm("last_name")
 	data.Email = c.PostForm("email")
+	data.Coordinates, err = geometry.ParseCoordinatesString(c.PostForm("email"))
+	if err != nil {
+		data.Coordinates = []float64{}
+		err = nil
+	}
 
 	exist, err := account.AccountExistByEmailAndUsername(db, c.PostForm("email"), c.PostForm("user_name"))
 	if err != nil {
@@ -77,7 +84,7 @@ func Login(c *gin.Context, db *clover.DB) {
 		if err != nil || redirectURL == "" {
 			redirectURL = "/map"
 		}
-	
+
 		c.SetCookie("redirect_url", "", -1, "/", "", false, true)
 		c.Redirect(http.StatusSeeOther, redirectURL)
 	}
