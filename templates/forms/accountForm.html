@@ -27,7 +27,10 @@
           <input type="text" placeholder="Nom" id="last_name" name="last_name" required>
 
           <label for="email">Courriel:</label>
-          <input type="text" placeholder="Courriel" id="email" name="email" required>
+          <input type="email" placeholder="Courriel" id="email" name="email" required>
+
+          <label for="phone_number">Téléphone (optionnel):</label>
+          <input type="tel" x-mask="(999) 999-9999" placeholder="(999) 999-9999" id="phone_number" name="phone_number">
 
           <label for="coordinates">Coordonnées: (Pour vous rejoindre quand un évènement est signalé près de vous)</label>
           <input type="text" placeholder="Coordonées (format: 1.0, 2.0)" id="coordinates" name="coordinates">

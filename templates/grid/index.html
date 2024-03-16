@@ -4,9 +4,9 @@
 <html lang="en">
 
 <head>
-   
+
     {{ template "components/head.html" . }}
-    
+
     <title>MUNIS - Liste</title>
 
     <style>
@@ -33,11 +33,26 @@
 
     {{ template "components/navbar" . }}
 
-    <h1>Liste des évènements d'urgence et des offres d'aide</h1>
+    <div class="w3-container">
+        <h1>Liste des évènements d'urgence et des offres d'aide</h1>
+    </div>
 
     {{ template "components/grid-toolbar" . }}
 
     {{ template "components/grid" . }}
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            window.addEventListener('keydown', function (event) {
+                if (event.keyCode === 13) {
+                    htmx.trigger(".filter", "change")
+                    console.log("keydown")
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
 
 </body>
 
@@ -58,17 +73,18 @@
 <div id="tool-bar" class="w3-bar w3-light-grey">
     <form id="filter-form" style="margin-block-end: 0px;" hx-get="/grid/search" hx-boost="true" hx-target="#grid"
         hx-trigger="change from:.filter delay:500ms" hx-swap="outerHTML">
-    
-    <!-- search box-->
-    <div class="w3-bar-item w3-left">
-        <!-- search with HTMX, will return event_list_table.html -->
-        <input class="w3-input w3-border filter" name="search" type="search" placeholder="Recherche..." id="search-box">
-    </div>
 
-    <div class="w3-bar-item w3-left">Afficher seulement:</div>
+        <!-- search box-->
+        <div class="w3-bar-item w3-left">
+            <!-- search with HTMX, will return event_list_table.html -->
+            <input class="w3-input w3-border filter" name="search" type="search" placeholder="Recherche..."
+                id="search-box">
+        </div>
 
-    <!-- Type : Event, Help, Both : Toutes , Evenements, Aides -->
-    
+        <div class="w3-bar-item w3-left">Afficher seulement:</div>
+
+        <!-- Type : Event, Help, Both : Toutes , Evenements, Aides -->
+
 
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
@@ -114,7 +130,7 @@
         <!-- Category -->
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <div _="" class="w3-button">Catégorie<i class="fa fa-caret-down"></i></div>
+                <div _="" class="w3-button">Catégorie d'évènement<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <div class="w3-bar-item w3-button" _="
                     on click
@@ -137,8 +153,10 @@
                     </div>
                     {{ range $key, $value := .CategoryStyles }}
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="{{ $key }}" checked>
-                        <div class="w3-text-{{ $value.Color }} w3-xlarge material-symbols-rounded">{{ $value.Icon }}</div>
+                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="{{ $key }}"
+                            checked>
+                        <div class="w3-text-{{ $value.Color }} w3-xlarge material-symbols-rounded">{{ $value.Icon }}
+                        </div>
                         {{ $key }}
                     </label>
                     {{ end }}

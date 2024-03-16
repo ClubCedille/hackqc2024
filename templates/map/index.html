@@ -235,9 +235,8 @@
 
         function displayEventModal() {
             document.getElementById('eventModal').style.display = 'block'
-            document.getElementById('event_map_object_geometry_type').value = 'Adresse'
-            document.getElementById('event_map_object_geometry_coordinates').style.display = 'none'
-            document.getElementById('event_map_object_geometry_address').style.display = 'block'
+            // document.getElementById('event_map_object_geometry_coordinates').style.display = 'none'
+            // document.getElementById('event_map_object_geometry_address').style.display = 'block'
         }
 
         function closeEventModal() {
@@ -246,9 +245,8 @@
 
         function createEventOnMap(lat, lng) {
             document.getElementById('eventModal').style.display = 'block'
-            document.getElementById('event_map_object_geometry_type').value = 'Point'
-            document.getElementById('event_map_object_geometry_coordinates').style.display = 'block'
-            document.getElementById('event_map_object_geometry_address').style.display = 'none'
+            // document.getElementById('event_map_object_geometry_coordinates').style.display = 'block'
+            // document.getElementById('event_map_object_geometry_address').style.display = 'none'
             console.log(document.getElementById('event_map_object_geometry_address'))
 
             document.getElementById('event_map_object_geometry_coordinates').value = lat + ", " + lng
@@ -364,7 +362,7 @@
 
     {{ template "components/navbar" . }}
 
-    <div style="position: absolute; width: 100vw;height: 95vh;max-width: none;"
+    <div style="position: absolute; width: 100vw;height: 96vh;max-width: none;"
         x-data="{mobile: mobileCheck(), showFiltresMobile: false}">
 
         <div class="w3-container w3-center" x-cloak x-show="mobile">
