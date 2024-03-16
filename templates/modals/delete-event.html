@@ -24,7 +24,7 @@
           <p class="w3-container" style="color: black;"> {{.Event.MapObject.Name}} </p>
       </div>
       <div class="button-container">
-        <button hx-delete="/event/delete/{{.Event.Id}}" class="w3-button w3-teal w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Supprimer</button>
+        <button hx-delete="/event/delete/{{.Event.Id}}" class="w3-button w3-teal w3-round-large" hx-swap="outerHTML" onclick="reloadPageWithDelay()">Supprimer</button>
         <button _="on click trigger closeModal" class="w3-button w3-red w3-round-large">Annuler</button>
       </div>
     </form>
@@ -35,6 +35,10 @@
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
         location.reload(); 
+    }
+
+    function reloadPageWithDelay() {
+        setTimeout(reloadPage, 300); 
     }
 
     function reloadPage() {

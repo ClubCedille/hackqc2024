@@ -7,15 +7,15 @@
     {{ template "components/head.html" . }}
 
     <title>MUNIS - Carte</title>
-    
+
     <link rel="stylesheet" href="/static/mapStyle.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/protomaps-leaflet@latest/dist/protomaps-leaflet.min.js"></script>
     <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"
-    charset="utf-8"></script>
+        href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"
+        charset="utf-8"></script>
     <script src="/static/L.KML.js" defer></script>
 
     <style>
@@ -35,7 +35,7 @@
                 <div id="popup-content" class="popup-content">
                     <h3>${feature.properties.map_object.name}</h3>
                 `
-                   
+
 
             if (feature.properties.map_object.name != feature.properties.map_object.category) {
                 popupContent += `
@@ -107,12 +107,24 @@
         function addDataPoints(dataPairs, map) {
             dataPairs.forEach(geoJsonPair => {
                 let myIcon = L.divIcon({
-                    className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-symbols-rounded`,
-                    html: geoJsonPair.style.icon,
-                    popupAnchor: [geoJsonPair.style.iconSize * 4 + 4, -6]
+                    className: `w3-center w3-text-${geoJsonPair.style.color} w3-${"x".repeat(geoJsonPair.style.iconSize)}large material-symbols-rounded w3-display-container`,
+                    html: '<div class="w3-display-middle">' + geoJsonPair.style.icon + '</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15],
+                    popupAnchor: [0, 0]
                 });
                 if (geoJsonPair.geoJson.geometry.type === "Polygon") {
                     geoJsonPair.geoJson.geometry.coordinates = [array_chunks(geoJsonPair.geoJson.geometry.coordinates, 2)];
+                }
+                if (geoJsonPair.geoJson.properties.event.municipality_polygon != null) {
+                    for (let i = 0; i < geoJsonPair.geoJson.properties.event.municipality_polygon.length; i++) {
+                        L.polygon(geoJsonPair.geoJson.properties.event.municipality_polygon[i], {
+                            color: geoJsonPair.style.color,
+                            fillColor: geoJsonPair.style.fillColor,
+                            fillOpacity: 0.15,
+                            opacity: 0.1
+                        }).addTo(map);
+                    }
                 }
                 L.geoJSON(geoJsonPair.geoJson, {
                     pointToLayer: function (feature, latlng) {
@@ -344,14 +356,17 @@
 
     {{ template "components/navbar" . }}
 
-    <div style="position: absolute; width: 100vw;height: 95vh;max-width: none;" x-data="{mobile: mobileCheck(), showFiltresMobile: false}">
-        
+    <div style="position: absolute; width: 100vw;height: 95vh;max-width: none;"
+        x-data="{mobile: mobileCheck(), showFiltresMobile: false}">
+
         <div class="w3-container w3-center" x-cloak x-show="mobile">
-            <button @click="showFiltresMobile = !showFiltresMobile" style="z-index: 6969;position:relative;width: 70vw" class="w3-btn w3-round-large w3-margin-bottom w3-margin-top w3-white">Filtres</button>
+            <button @click="showFiltresMobile = !showFiltresMobile" style="z-index: 6969;position:relative;width: 70vw"
+                class="w3-btn w3-round-large w3-margin-bottom w3-margin-top w3-white">Filtres</button>
         </div>
 
         <div class="w3-container" x-cloak x-show="!mobile || showFiltresMobile">
-            <div style="z-index: 6969; position:relative; margin-top: 10px; background-color: white;max-width:70vw" class="w3-card w3-auto w3-round-large">
+            <div style="z-index: 6969; position:relative; margin-top: 10px; background-color: white;max-width:70vw"
+                class="w3-card w3-auto w3-round-large">
                 <div x-data="{ active: '' }" class="w3-center">
                     <div style="display:inline-block;padding: 16px;">
                         <div class="w3-center w3-text-gray">Filtres</div>
@@ -364,7 +379,7 @@
                                     x-bind:class="isAllSelected(Object.keys($store.filters.categories), 'categories') ? 'w3-hide' : ''"
                                     class="w3-badge w3-gray">1</span>
                             </button>
-    
+
                             <button @click="active = active == 'urgency' ? '' : 'urgency'"
                                 class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                                 x-bind:class="active == 'urgency' ? 'w3-blue' : 'w3-white'">
@@ -373,7 +388,7 @@
                                     x-bind:class="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'w3-hide' : ''"
                                     class="w3-badge w3-gray">1</span>
                             </button>
-    
+
                             <button @click="active = active == 'dangerLevel' ? '' : 'dangerLevel'"
                                 class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                                 x-bind:class="active == 'dangerLevel' ? 'w3-blue' : 'w3-white'">
@@ -384,28 +399,30 @@
                             </button>
                         </div>
                     </div>
-    
+
                     <div style="display:inline-block;padding: 16px;">
                         <div class="w3-center w3-text-gray">Actions</div>
                         <div class="w3-border-top w3-border-gray">
                             <button onclick="displayEventModal()"
-                                class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" {{ if not .ActiveSession
-                                }} disabled title="Veuillez vous connecter" {{ end }}>Créer un évènement</button>
+                                class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" {{ if not
+                                .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}>Créer un
+                                évènement</button>
                             <a href="/map" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
                                 style="margin-left: 10px;">Réinitialiser les filtres</a>
                         </div>
                     </div>
 
                     <div style="display:inline-block;padding: 16px;">
-                        <div class="w3-center w3-text-gray w3-border-gray w3-border-bottom">Centrer sur une adresse</div>
+                        <div class="w3-center w3-text-gray w3-border-gray w3-border-bottom">Centrer sur une adresse
+                        </div>
                         <div class="w3-margin">
                             <div class="w3-round-large">
                                 <div id="autocomplete"></div>
                             </div>
                         </div>
                     </div>
-    
-    
+
+
                     <!-- Categories -->
                     <div x-show="active == 'categories'"
                         x-data="{ showAllEvents: isAllSelected($store.filters.eventCategories, 'categories'),    toggleEvents() { this.showAllEvents = !this.showAllEvents ; $store.filters.eventCategories.forEach(v => $store.filters.categories[v] = this.showAllEvents) },
@@ -442,7 +459,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <!-- Urgency -->
                     <div x-show="active == 'urgency'"
                         x-data="{ showAll: isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels'), toggle() { this.showAll = !this.showAll ; Object.keys($store.filters.urgencyLevels).forEach(v => $store.filters.urgencyLevels[v] = this.showAll) } }"
@@ -453,14 +470,15 @@
                                 x-text="isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels') ? 'Tout désélectionner' : 'Tout sélectionner'"
                                 @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
                             {{ range .UrgencyLevels }}
-                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
+                            <button
+                                class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
                                 @click="$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.urgencyLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAll = isAllSelected(Object.keys($store.filters.urgencyLevels), 'urgencyLevels')"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
                     </div>
-    
+
                     <!-- Danger Level -->
                     <div x-show="active == 'dangerLevel'"
                         x-data="{ showAll: isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels'), toggle() { this.showAll = !this.showAll ; Object.keys($store.filters.dangerLevels).forEach(v => $store.filters.dangerLevels[v] = this.showAll) } }"
@@ -471,7 +489,8 @@
                                 x-text="isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels') ? 'Tout désélectionner' : 'Tout sélectionner'"
                                 @click="toggle(); updateDataPointsWithFilter()">Tout sélectionner</button>
                             {{ range .DangerLevels }}
-                            <button class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
+                            <button
+                                class="w3-btn w3-border w3-border-blue w3-margin-right w3-margin-bottom w3-round-large"
                                 x-bind:class="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes}}'] ? 'w3-blue' : 'w3-white'"
                                 @click="$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}'] = !$store.filters.dangerLevels['{{ .Value |  escapeSingleQuotes }}']; updateDataPointsWithFilter(), showAll = isAllSelected(Object.keys($store.filters.dangerLevels), 'dangerLevels')"
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
@@ -486,18 +505,20 @@
                             <!-- Explain this mode-->
                             <p>Ce mode permet de visualiser les aides liées à un évènement.
                                 <!-- Button to go back to all  -->
-                                <a class="w3-btn w3-blue w3-margin-left w3-round-large" href="/map">Retourner à la carte</a>
+                                <a class="w3-btn w3-blue w3-margin-left w3-round-large" href="/map">Retourner à la
+                                    carte</a>
                             </p>
                         </div>
-                    </div>   
+                    </div>
                 </div>
             </div>
         </div>
-    
-        <div id="map" style="width:100%;height:100%;max-width: none;margin-top: 0 !important; position: absolute;top:0;" class="w3-card w3-margin-top w3-auto w3-round-large"></div>
-    
+
+        <div id="map" style="width:100%;height:100%;max-width: none;margin-top: 0 !important; position: absolute;top:0;"
+            class="w3-card w3-margin-top w3-auto w3-round-large"></div>
+
         <!-- END OF PAGE -->
-    
+
         <div id="helpModal" class="w3-modal">
             <div class="w3-modal-content w3-animate-opacity w3-card-8 w3-round-xlarge">
                 <header class="w3-container">
@@ -505,9 +526,9 @@
                         class="w3-button w3-teal w3-large w3-display-topright w3-round-large w3-margin">&times;</span>
                     <h2 class="w3-margin-left">Soumettre une offre d'aide</h2>
                 </header>
-    
+
                 {{ template "forms/helpForm.html" . }}
-    
+
                 <footer class="w3-container w3-teal">
                     <p>Merci pour votre contribution!</p>
                 </footer>
