@@ -43,6 +43,9 @@ function flyToItem(geojson) {
 
 function addTemporaryMarker(geojson) {
     let title = geojson.getLayers()[0].feature.properties.nom;
+    if(temporaryMarker){
+        map.removeLayer(temporaryMarker);
+    }
     temporaryMarker = L.marker(geojson.getBounds().getCenter() , 
     {
         draggable: false,
