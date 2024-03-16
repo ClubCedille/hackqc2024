@@ -37,7 +37,7 @@
 
 {{ define "components/help-toolbar" }}
     <div id="tool-bar" class="w3-bar w3-light-grey">
-        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps/ids" hx-vals="js:{ids: getSelectedIds()}">Exporter sélection</button>
+        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}">Exporter sélection</button>
     </div>
 {{ end }}
 
@@ -76,11 +76,14 @@
 
 <script>
     function getSelectedIds() {
-      let selectedIds = [];
-      document.querySelectorAll('.select-item:checked').forEach(item => {
-        selectedIds.push(item.value);
-      });
-      return selectedIds;
+        let selectedIds = "";
+        document.querySelectorAll('.select-item:checked').forEach((item, index, array) => {
+            selectedIds += item.value;
+            if (index < array.length - 1) {
+                selectedIds += ",";
+            }
+        });
+        return selectedIds;
     }
 
     document.getElementById('select-all').addEventListener('change', function(e) {
