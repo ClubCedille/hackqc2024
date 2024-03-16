@@ -88,7 +88,7 @@
       </fieldset>
 
       <div class="button-container">
-        <button hx-post="/help/update/{{.Help.Id}}" class="w3-button w3-teal w3-round-large" hx-swap="outerHTML" onclick="reloadPage()">Modifier</button>
+        <button hx-post="/help/update/{{.Help.Id}}" class="w3-button w3-teal w3-round-large" hx-swap="outerHTML" onclick="reloadPageWithDelay()">Modifier</button>
         <button _="on click trigger closeModal" class="w3-button w3-red w3-round-large">Annuler</button>
       </div>
 
@@ -97,6 +97,10 @@
 </div>
 
 <script>
+    function reloadPageWithDelay() {
+        setTimeout(reloadPage, 300); 
+    }
+
     function reloadPage() {
         fetch('/manage-post')
         .then(response => {

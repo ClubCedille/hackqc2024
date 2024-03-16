@@ -37,7 +37,7 @@
 
 {{ define "components/help-toolbar" }}
     <div id="tool-bar" class="w3-bar w3-light-grey">
-        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}" onclick="reloadPage()">Exporter sélection</button>
+        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}" onclick="reloadPageWithDelay()">Exporter sélection</button>
     </div>
 {{ end }}
 
@@ -87,6 +87,11 @@
         });
         return selectedIds;
     }
+
+    function reloadPageWithDelay() {
+        setTimeout(reloadPage, 300); 
+    }
+
 
     function reloadPage() {
         fetch('/helps/table')
