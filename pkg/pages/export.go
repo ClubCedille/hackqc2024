@@ -79,7 +79,7 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event, help
 
 	filteredDocs := []map[string]interface{}{}
     for _, doc := range docs {
-        if id, ok := doc["Id"].(string); ok {
+        if id, ok := doc["_id"].(string); ok {
             if contains(helpIds, id) {
                 filteredDocs = append(filteredDocs, doc)
             }
