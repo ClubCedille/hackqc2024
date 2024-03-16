@@ -17,7 +17,7 @@
 </style>
 
 <base href="/">
-<div x-data="{ mobile: navigator.userAgentData.mobile, sidebar: false }">
+<div x-data="{ mobile: mobileCheck(), sidebar: false }">
 <nav class="w3-bar w3-dark-grey" style="align-items: center;" x-show="!mobile" x-cloak>
     <div style="display: flex; align-items: center;" class="w3-mobile">
         <div href="/" class="w3-bar-item w3-mobile" style="display: flex; align-items: center;">
