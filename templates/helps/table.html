@@ -45,9 +45,9 @@
 <table class="w3-table w3-striped w3-border" id="help-list">
     <tr>
         <th><input type="checkbox" id="select-all"></th>
-        <th>ID</th>
         <th>Nom</th>
         <th>Description</th>
+        <th>Date création</th>
         <th>Categorie</th>
         <th>Coordonnées</th>
         <th>Contact Infos</th>
@@ -61,9 +61,9 @@
     {{ range .Helps }}
     <tr>
         <td><input type="checkbox" class="select-item" value="{{.Id}}"></td>
-        <td>{{ .Id }}</td>
         <td>{{ .MapObject.Name }}</td>
         <td>{{ .MapObject.Description }}</td>
+        <td>{{ .MapObject.Date }}</td>
         <td>{{ .MapObject.Category }}</td>
         <td>{{ .MapObject.Geometry.Coordinates }}</td>
         <td>{{ .ContactInfos }}</td>
