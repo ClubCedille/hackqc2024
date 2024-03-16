@@ -16,12 +16,14 @@
     }
 </style>
 
-<div class="w3-bar w3-dark-grey" style="align-items: center;">
-    <div style="display: flex; align-items: center;">
-        <a href="/" class="w3-bar-item" style="display: flex; align-items: center;">
+<div x-data="{ mobile: navigator.userAgentData.mobile, sidebar: false }">
+<nav class="w3-bar w3-dark-grey" style="align-items: center;" x-show="!mobile" x-cloak>
+    <div style="display: flex; align-items: center;" class="w3-mobile">
+        <div href="/" class="w3-bar-item w3-mobile" style="display: flex; align-items: center;">
             <img src="static/logo-white.png" alt="Logo" style="height:40px;">
             <span style="margin-left: 10px; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: 700;">Munis</span>
-        </a>
+        </div>
+        <a href="/map" class="w3-bar-item w3-button w3-mobile">Carte</a>
         <a href="/grid" class="w3-bar-item w3-button w3-mobile">Grille évènement/aide</a>
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button">Tableaux des données<i class="fa fa-caret-down"></i></button>
@@ -50,6 +52,46 @@
         <a href="/create-account" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Créer un compte</a>
         {{ end }}
     </div>
+</nav>
+
+<nav class="w3-bar w3-dark-grey" style="align-items: center;" x-show="mobile" x-cloak>
+    <div style="display: flex;" class="w3-mobile">
+        <button class="w3-button w3-large" @click="sidebar = !sidebar">&#9776;</button>
+        <div class="w3-bar-item w3-mobile" style="display: flex; align-items: center;">
+            <img src="static/logo-white.png" alt="Logo" style="height:40px;">
+            <span style="margin-left: 10px; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: 700;">Munis</span>
+        </div>
+    </div>
+</nav>
+<div class="w3-sidebar w3-bar-block" style="width:70%;z-index: 99999;" x-show="mobile && sidebar">
+    <a href="/map" class="w3-bar-item w3-button w3-mobile">Carte</a>
+    <a href="/grid" class="w3-bar-item w3-button w3-mobile">Grille évènement/aide</a>
+    <a href="/a-propos" class="w3-bar-item w3-button w3-mobile">À propos</a>
+    <div class="w3-bar-item w3-button w3-mobile" x-data="{dropdown: false}">
+        <button class="w3-button w3-mobile w3-bar-item" @click="dropdown = !dropdown">Modération</button>
+        <div x-show="dropdown">
+            <a href="/events/table" class="w3-bar-item w3-button w3-mobile">Tableau d'évènements</a>
+            <a href="/helps/table" class="w3-bar-item w3-button w3-mobile">Tableau d'aide</a>
+        </div>
+      </div>
+    <div class="topnav-right">
+        {{ if .ActiveSession }}
+        <form action="/logout" method="post" style="display: inline;">
+            <button type="submit" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Se déconnecter</button>
+        </form>
+        <a href="/manage-post" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Bonjour, {{ .UserName }} !</a>
+        {{ else if .SigningUp }}
+        <a href="/login" class="w3-bar-item w3-button w3-margin-right w3-right w3-mobile">Se connecter</a>
+        <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Déjà inscrit ?</span>
+        {{ else if .LoggingIn }}
+        <a href="/create-account" class="w3-bar-item w3-button w3-right w3-mobile">Créer un compte</a>
+        <span class="w3-bar-item w3-right w3-margin-right w3-mobile">Pas encore de compte ?</span>
+        {{ else }}
+        <a href="/login" class="w3-bar-item w3-button w3-right w3-mobile">Se connecter</a>
+        <a href="/create-account" class="w3-bar-item w3-margin-right w3-button w3-right w3-mobile">Créer un compte</a>
+        {{ end }}
+    </div>
+</div>
 </div>
 
 {{ end }}
