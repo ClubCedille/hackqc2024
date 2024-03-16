@@ -105,10 +105,6 @@
             <div class="w3-dropdown-hover w3-mobile">
                 <div _="" class="w3-button">Catégorie<i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                    <!-- <label class="w3-bar-item w3-button">
-                            <input type="checkbox" class="w3-check" name="map_object.category" value="all" checked>
-                            Tous
-                        </label> -->
                     <div class="w3-bar-item w3-button" _="
                         on click
                         set value to ((<input[name='map_object.category']:not(:checked)/>).length == 0)
@@ -118,72 +114,13 @@
                         end">
                         Tout (dé)selectionner
                     </div>
+                    {{ range $key, $value := .CategoryStyles }}
                     <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Vent" checked>
-                        Vent
+                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="{{ $key }}" checked>
+                        <div class="w3-text-{{ $value.Color }} w3-xlarge material-symbols-rounded">{{ $value.Icon }}</div>
+                        {{ $key }}
                     </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Pluie" checked>
-                        Pluie
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Neige" checked>
-                        Neige
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Tempête hivernale" checked>
-                        Tempête hivernale
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Onde de tempête" checked>
-                        Onde de tempête
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Inondation" checked>
-                        Inondation
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Panne de télécommunication"
-                            checked>
-                        Panne de télécommunication
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Effondrement de structure"
-                            checked>
-                        Effondrement de structure
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Tornade" checked>
-                        Tornade
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Crise civile" checked>
-                        Crise civile
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Risque de gaz toxiques" checked>
-                        Risque de gaz toxiques
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Accès à la chaleur" checked>
-                        Accès à la chaleur
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Accès à l'eau" checked>
-                        Accès à l'eau
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Avalanche" checked>
-                        Avalanche
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Maladie infectieuse" checked>
-                        Maladie infectieuse
-                    </label>
-                    <label class="w3-bar-item w3-button">
-                        <input type="checkbox" class="w3-check filter" name="map_object.category" value="Coronavirus" checked>
-                        Coronavirus
-                    </label>
+                    {{ end }}
                     <input type="hidden" class="w3-check filter" name="map_object.category" value="-1">
                 </div>
             </div>
