@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -8,8 +9,10 @@ import (
 
 	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
+	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/notifications"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -40,7 +43,18 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 
 	log.Println("Help created successfully")
 
-	SubmitHelpsToDC(c, db)
+	defer func(db *clover.DB, helpRequest help.Help) {
+		ev, err := event.GetEventById(db, helpRequest.EventId)
+		if err != nil {
+			log.Println("Error getting event:", err)
+			return
+		}
+
+		notifications.SendNotification(
+			fmt.Sprintf("Une offre d'aide en %s a été soumise pour l'évènement %s.", helpRequest.MapObject.Type, ev.MapObject.Name),
+			[]string{ev.MapObject.AccountId},
+		)
+	}(db, helpRequest)
 
 	c.Redirect(http.StatusSeeOther, "/map")
 }
@@ -81,8 +95,6 @@ func UpdateHelp(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	SubmitHelpsToDC(c, db)
-
 	log.Println("Help updated successfully")
 }
 
@@ -95,8 +107,6 @@ func DeleteHelp(c *gin.Context, db *clover.DB) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	SubmitHelpsToDC(c, db)
 
 	log.Println("Help deleted successfully")
 }
@@ -243,4 +253,27 @@ func PostCreateHelpComment(c *gin.Context, db *clover.DB) {
 		"Comments":   comments,
 		"IsLoggedIn": true,
 	})
+}
+
+func ExportHelps(c *gin.Context, db *clover.DB) {
+	idsStr := c.PostForm("ids")
+	idsArray := strings.Split(idsStr, ",")
+
+	var validIds []string
+	for _, id := range idsArray {
+		trimmedID := strings.TrimSpace(id)
+		if trimmedID != "" {
+			validIds = append(validIds, trimmedID)
+		}
+	}
+
+	if len(validIds) == 0 {
+		log.Println("No valid IDs provided for export")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No valid IDs provided for export"})
+		return
+	}
+
+	SubmitHelpsToDC(c, db, validIds)
+
+	log.Println("Helps exported successfully")
 }

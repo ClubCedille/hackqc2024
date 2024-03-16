@@ -11,11 +11,11 @@
 
 ### Champ `map_object`
 
+- `name` : Le titre de l'aide proposé sur la carte.
+- `description` : Une description de l'aide proposé.
 - `Type` : Le type de l'objet cartographique.
 - `category` : La catégorie de l'aide ou du support proposé (par exemple, "Hébergement").
 - `date` : La date associée à l'objet de la carte, au format ISO 8601 (par exemple, "0001-01-01T00:00:00Z").
-- `description` : Une description de l'aide ou du support proposé.
-- `name` : Le nom ou le titre de l'objet de la carte.
 
 #### Champs `geometry`
 
