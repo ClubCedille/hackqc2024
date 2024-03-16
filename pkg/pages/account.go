@@ -30,6 +30,7 @@ func CreateAccount(c *gin.Context, db *clover.DB) {
 	data.FirstName = c.PostForm("first_name")
 	data.LastName = c.PostForm("last_name")
 	data.Email = c.PostForm("email")
+	data.PhoneNumber = c.PostForm("phone_number")
 	data.Coordinates, err = geometry.ParseCoordinatesString(c.PostForm("coordinates"))
 	if err != nil {
 		data.Coordinates = []float64{}

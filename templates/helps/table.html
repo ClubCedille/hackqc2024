@@ -37,7 +37,7 @@
 
 {{ define "components/help-toolbar" }}
     <div id="tool-bar" class="w3-bar w3-light-grey">
-        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}" onclick="reloadPage()">Exporter sélection</button>
+        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}" onclick="reloadPageWithDelay()">Exporter sélection</button>
     </div>
 {{ end }}
 
@@ -45,9 +45,9 @@
 <table class="w3-table w3-striped w3-border" id="help-list">
     <tr>
         <th><input type="checkbox" id="select-all"></th>
-        <th>ID</th>
         <th>Nom</th>
         <th>Description</th>
+        <th>Date création</th>
         <th>Categorie</th>
         <th>Coordonnées</th>
         <th>Contact Infos</th>
@@ -61,9 +61,9 @@
     {{ range .Helps }}
     <tr>
         <td><input type="checkbox" class="select-item" value="{{.Id}}"></td>
-        <td>{{ .Id }}</td>
         <td>{{ .MapObject.Name }}</td>
         <td>{{ .MapObject.Description }}</td>
+        <td>{{ .MapObject.Date }}</td>
         <td>{{ .MapObject.Category }}</td>
         <td>{{ .MapObject.Geometry.Coordinates }}</td>
         <td>{{ .ContactInfos }}</td>
@@ -87,6 +87,11 @@
         });
         return selectedIds;
     }
+
+    function reloadPageWithDelay() {
+        setTimeout(reloadPage, 300); 
+    }
+
 
     function reloadPage() {
         fetch('/helps/table')

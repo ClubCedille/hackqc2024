@@ -23,9 +23,26 @@ type Notification struct {
 	Did         string `json:"did"`
 }
 
-// Send notification to all phone numbers
-func SendNotification(message string, recipients []string) {
-	// TODO: Implement notification sending
+func SendNotificationToAccounts(conn *clover.DB, message string, recipients []string) {
+	fmt.Println("Sending Notification, message: ", message, " recipients: ", recipients)
+
+	accounts, err := account.GetAccountsByIds(conn, recipients)
+	if err != nil {
+		fmt.Println("Error getting accounts:", err)
+		return
+	}
+
+	for _, account := range accounts {
+		if account.PhoneNumber != "" {
+			fmt.Println("Sending notification to phone number: ", account.PhoneNumber)
+			go SendNotificationToPhoneNumber(message, account.PhoneNumber)
+		} else {
+			fmt.Println("Account does not have a phone number")
+		}
+	}
+}
+
+func SendNotificationToPhoneNumbersList(message string, recipients []string) {
 	fmt.Println("Sending Notification, message: ", message, " recipients: ", recipients)
 
 	for _, recipient := range recipients {
@@ -36,6 +53,10 @@ func SendNotification(message string, recipients []string) {
 }
 
 func SendNotificationToPhoneNumber(message string, recipient string) {
+
+	if recipient == "" {
+		return
+	}
 
 	api_username := os.Getenv("VOIPMS_API_USERNAME")
 	api_password := os.Getenv("VOIPMS_API_PASSWORD")
@@ -78,24 +99,19 @@ func SendNotificationToPhoneNumber(message string, recipient string) {
 }
 
 func NotifyNearby(db *clover.DB, message string, geom mapobject.Geometry) error {
-	accounts, err := account.GetAllAccounts(db)
+	accounts, err := account.GetAllAccountsWithCoords(db)
 	if err != nil {
 		log.Println("Error getting accounts:", err)
 		return err
 	}
 
-	accountIds := []string{}
 	for _, account := range accounts {
 		if geometry.IsInGeom(account.Coordinates, geom) {
-			accountIds = append(accountIds, account.Id)
+			if account.PhoneNumber != "" {
+				fmt.Println("Sending notification to phone number: ", account.PhoneNumber)
+				go SendNotificationToPhoneNumber(message, account.PhoneNumber)
+			}
 		}
-	}
-
-	if len(accountIds) > 0 {
-		SendNotification(
-			message,
-			accountIds,
-		)
 	}
 
 	return nil
@@ -103,7 +119,8 @@ func NotifyNearby(db *clover.DB, message string, geom mapobject.Geometry) error 
 
 // what am I even doing here?
 func NotifyEventSubscribers(db *clover.DB, message string, subscribers []string) {
-	SendNotification(
+	SendNotificationToAccounts(
+		db,
 		message,
 		subscribers,
 	)

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
@@ -88,6 +89,7 @@ func GetHelpDetailAboutToBeModified(c *gin.Context, db *clover.DB) {
 func UpdateHelp(c *gin.Context, db *clover.DB) {
 	data := GetHelpFromContext(c, db)
 	data.Id = c.Param("id")
+	data.Exported = false
 
 	err := help.UpdateHelp(db, data)
 	if err != nil {
@@ -214,6 +216,7 @@ func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
 				GeomType:    "Point",
 				Coordinates: coordinates,
 			},
+			Date: time.Now(),
 		},
 	}
 }
