@@ -55,6 +55,7 @@
         <th>Comment aider</th>
         <th>Utilisation de l'aide</th>
         <th>ID Évènement</th>
+        <th>Exporté</th>
     </tr>
 
     {{ range .Helps }}
@@ -70,6 +71,7 @@
         <td>{{ .HowToHelp }}</td>
         <td>{{ .HowToUseHelp }}</td>
         <td><a href="/map?show={{ .EventId }}&event_id={{ .EventId }}&type=helps">{{ .EventId }}</a></td>
+        <td>{{ if .Exported }}Oui{{ else }}Non{{ end }}</td>
     </tr>
     {{ end }}
 </table>
