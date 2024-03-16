@@ -14,7 +14,7 @@
 {{ define "cards/crudSingleHelpCard" }}
 <div class="w3-card-4 w3-light-gray w3-container w3-margin w3-round-xlarge" style="max-width: 500px">
     <div class="w3-container w3-margin w3-border-bottom w3-border-gray">
-        <span class="category w3-round-large w3-red w3-padding-small">
+        <span class="category w3-round-large w3-blue w3-padding-small">
             {{.MapObject.Category}}
         </span>
         <h2 class="name" style="margin-top: 0;">{{.MapObject.Name}}</h2>
@@ -23,7 +23,11 @@
         <span class="date">Ajouté le: {{.MapObject.GetDateString}}</span>
     </div>
     <div class="w3-container w3-margin-bottom">
-        <b class="status">Status: </b><span class="w3-round-large w3-green w3-padding-small">{{.NeedHelp}}</span>
+        {{ if .NeedHelp }}
+        <b class="status">Besoin d'aide: </b><span class="w3-round-large w3-green w3-padding-small">Oui</span>
+        {{ else }}
+        <b class="status">Besoin d'aide: </b><span class="w3-round-large w3-red w3-padding-small">Non</span>
+        {{ end }}
     </div>
     <div class="description w3-container">
         <b>Description:</b>
