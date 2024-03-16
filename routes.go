@@ -168,7 +168,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	})
 
 	r.POST("/test-notifications", func(c *gin.Context) {
-		notifications.SendNotification("Test notification", []string{c.Query("dst")})
+		notifications.SendNotificationToAccounts(db, "Test notification", []string{c.Query("dst")})
 		c.JSON(http.StatusOK, gin.H{"message": "Notifications sent"})
 	})
 }
