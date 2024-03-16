@@ -237,7 +237,11 @@
                     </div>`,
                     e.latlng,
                     {}
-                )
+                );
+                if (temporaryMarker) {
+                    map.removeLayer(temporaryMarker);
+                    temporaryMarker = null;
+                }
             })
 
             var layer = protomapsL.leafletLayer({
@@ -509,109 +513,8 @@
         </div>
     </div>
 
-    <script>
-            const { autocomplete } = window['@algolia/autocomplete-js'];
-    
-            /**
-             * @param {string} address partial address
-             * @returns {Array<string>} List of addresses
-             */
-            async function getAdresses(address) {
-                const res = await fetch(`https://geoegl.msp.gouv.qc.ca/apis/icherche/geocode?type=adresses&limit=5&geometry=true&q=${address}`);
-                const json = await res.json();
-                // json.features[0].properties.nom;
-                return json.features.map(feature => {
-                    let coords = feature.geometry.coordinates;
-                    while (coords.length != 2) {
-                        coords = coords[0];
-                    }
-                    return {
-                        name: feature.properties.nom,
-                        lat: coords[1],
-                        lng: coords[0]
-                    }
-                });
-            }
-    
-            async function getMuninipalites(address) {
-                const res = await fetch(`https://geoegl.msp.gouv.qc.ca/apis/icherche/geocode?type=municipalites&limit=5&geometry=true&q=${address}`);
-                const json = await res.json();
-                // json.features[0].properties.nom;
-                return json.features.map(feature => {
-                    let coords = feature.geometry.coordinates;
-                    while (coords.length != 2) {
-                        coords = coords[0];
-                    }
-                    return {
-                        name: feature.properties.nom,
-                        lat: coords[1],
-                        lng: coords[0]
-                    }
-                });
-            }
-    
-            function debouncePromise(fn, time) {
-                let timerId = undefined;
-    
-                return function debounced(...args) {
-                    if (timerId) {
-                        clearTimeout(timerId);
-                    }
-    
-                    return new Promise((resolve) => {
-                        timerId = setTimeout(() => resolve(fn(...args)), time);
-                    });
-                };
-            }
-    
-            autocomplete({
-                container: '#autocomplete',
-                placeholder: 'Adresse...',
-                getSources({ query }) {
-                    return [
-                        {
-                            sourceId: 'addresse',
-                            async getItems() {
-                                let addresses = await getAdresses(query);
-                                return addresses;
-                            },
-                            templates: {
-                                item({ item }) {
-                                    return `${item.name}`;
-                                },
-                            },
-                            onSelect: function (event) {
-                                map.setZoom(15)
-                                map.flyTo({
-                                    lat: event.item.lat,
-                                    lng: event.item.lng,
-                                })
-                            },
-                        },
-                        {
-                            sourceId: 'municipalite',
-                            async getItems() {
-                                let muninipalites = await getMuninipalites(query);
-                                return muninipalites;
-                            },
-                            templates: {
-                                item({ item }) {
-                                    return `${item.name}`;
-                                },
-                            },
-                            onSelect: function (event) {
-                                map.setZoom(15)
-                                map.flyTo({
-                                    lat: event.item.lat,
-                                    lng: event.item.lng,
-                                })
-                            },
-                        }
-                    ];
-                },
-            });
-    
-        </script>
+    <script src="/static/map_search.js"></script>
+
 </body>
 
 </html>
