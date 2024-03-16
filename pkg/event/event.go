@@ -33,6 +33,7 @@ type Event struct {
 	ExternalId  string              `json:"external_id" clover:"external_id"`
 	DangerLevel DangerLevel         `json:"danger_level" clover:"danger_level"`
 	UrgencyType UrgencyType         `json:"urgency_type" clover:"urgency_type"`
+	Subscribers []string            `json:"subscribers" clover:"subscribers"`
 	MapObject   mapobject.MapObject `json:"map_object" clover:"map_object"`
 }
 
@@ -246,6 +247,7 @@ func UpdateEvent(conn *clover.DB, event Event) error {
 	err := conn.UpdateById(database.EventCollection, event.Id, func(doc *document.Document) *document.Document {
 		doc.Set("danger_level", event.DangerLevel)
 		doc.Set("urgency_type", event.UrgencyType)
+		doc.Set("subscribers", event.Subscribers)
 		doc.Set("map_object", event.MapObject)
 		return doc
 	})

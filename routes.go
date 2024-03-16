@@ -88,6 +88,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 	// 	pages.SubmitHelpsToDC(c, db)
 	// })
 
+	r.POST("/events/subscribe/:id", func(c *gin.Context) {
+		pages.EventSubscribe(c, db)
+	})
+
 	r.GET("/event/:id", func(c *gin.Context) {
 		pages.EventDetails(c, db)
 	})

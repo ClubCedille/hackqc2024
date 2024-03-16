@@ -50,20 +50,14 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 
 	err = data_export.PostJsonHelpsToDQ(apiKey, jeuDeDonnees, filePath)
 	if err != nil {
-		log.Printf("Error posting help events to Données Québec: %s", err)
+		log.Printf("Error posting json help events to Données Québec: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to post help data"})
-		return
-	}
-
-	if err != nil {
-		log.Println("Error converting help doc to helps:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
 		return
 	}
 
 	err = data_export.PostGeoJsonHelpsToDQ(apiKey, jeuDeDonnees, updatedHelp)
 	if err != nil {
-		log.Printf("Error posting help events to Données Québec: %s", err)
+		log.Printf("Error posting geojson help events to Données Québec: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to post help data"})
 		return
 	}
