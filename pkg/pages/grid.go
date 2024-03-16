@@ -23,10 +23,12 @@ func GridPage(c *gin.Context, db *clover.DB) {
 	helps, _ := help.GetHelpFromDocuments(docs)
 
 	c.HTML(http.StatusOK, "grid/index.html", gin.H{
-		"Events":        events,
-		"Helps":         helps,
-		"ActiveSession": session.SessionIsActive(),
-		"UserName":      session.ActiveSession.UserName,
+		"Events":             events,
+		"Helps":              helps,
+		"ActiveSession":      session.SessionIsActive(),
+		"UserName":           session.ActiveSession.UserName,
+		"CategoryStyles":     CategoryStyles,
+		"HelpCategoryStyles": HelpCategoryStyles,
 	})
 }
 
