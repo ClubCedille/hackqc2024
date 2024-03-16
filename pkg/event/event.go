@@ -29,12 +29,13 @@ const (
 )
 
 type Event struct {
-	Id          string              `json:"_id" clover:"_id"`
-	ExternalId  string              `json:"external_id" clover:"external_id"`
-	DangerLevel DangerLevel         `json:"danger_level" clover:"danger_level"`
-	UrgencyType UrgencyType         `json:"urgency_type" clover:"urgency_type"`
-	Subscribers []string            `json:"subscribers" clover:"subscribers"`
-	MapObject   mapobject.MapObject `json:"map_object" clover:"map_object"`
+	Id                  string              `json:"_id" clover:"_id"`
+	ExternalId          string              `json:"external_id" clover:"external_id"`
+	DangerLevel         DangerLevel         `json:"danger_level" clover:"danger_level"`
+	UrgencyType         UrgencyType         `json:"urgency_type" clover:"urgency_type"`
+	Subscribers         []string            `json:"subscribers" clover:"subscribers"`
+	MapObject           mapobject.MapObject `json:"map_object" clover:"map_object"`
+	MunicipalityPolygon [][][]float64       `json:"municipality_polygon" clover:"municipality_polygon"`
 }
 
 func (event *Event) GetUrgencyTypeString() string {
