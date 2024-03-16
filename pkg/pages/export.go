@@ -9,6 +9,7 @@ import (
 
 	data_export "github.com/ClubCedille/hackqc2024/pkg/data_export"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/help"
 	circletopolygon "github.com/chrusty/go-circle-to-polygon"
 	"github.com/gin-gonic/gin"
 	"github.com/ostafen/clover/v2"
@@ -46,6 +47,24 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB, helpIds []string) {
 		log.Printf("Error updating external source linked to help: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
 		return
+	}
+
+	for _, id := range helpIds {
+		data, err := help.GetHelpById(db, id)
+		if err != nil {
+			log.Printf("Error fetching help with id %s: %s", id, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch help data"})
+			return
+		}
+
+		data.Exported = true
+		err = help.UpdateHelp(db, data)
+		if err != nil {
+			log.Printf("Error updating help with id %s: %s", id, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
+			return
+		}
+
 	}
 
 	err = data_export.PostJsonHelpsToDQ(apiKey, jeuDeDonnees, filePath)
@@ -96,6 +115,7 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event, help
                 }
             }
             delete(doc, "event_id")
+			delete(doc, "exported")
             delete(doc, "contact_infos")
         }
         if mapObject, ok := doc["map_object"].(map[string]interface{}); ok {
