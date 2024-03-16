@@ -2,10 +2,17 @@ package notifications
 
 import (
 	"fmt"
+	"log"
+
 	"io"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/ClubCedille/hackqc2024/pkg/account"
+	"github.com/ClubCedille/hackqc2024/pkg/geometry"
+	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ostafen/clover/v2"
 )
 
 type Notification struct {
@@ -24,7 +31,7 @@ func SendNotification(message string, recipients []string) {
 	for _, recipient := range recipients {
 		fmt.Println("Sending notification to: ", recipient)
 
-		go SendNotificationToPhoneNumber(message, recipient)
+		// go SendNotificationToPhoneNumber(message, recipient)
 	}
 }
 
@@ -68,4 +75,36 @@ func SendNotificationToPhoneNumber(message string, recipient string) {
 	}
 
 	fmt.Println("Result sending notification to phone number: ", string(body))
+}
+
+func NotifyNearby(db *clover.DB, message string, geom mapobject.Geometry) error {
+	accounts, err := account.GetAllAccounts(db)
+	if err != nil {
+		log.Println("Error getting accounts:", err)
+		return err
+	}
+
+	accountIds := []string{}
+	for _, account := range accounts {
+		if geometry.IsInGeom(account.Coordinates, geom) {
+			accountIds = append(accountIds, account.Id)
+		}
+	}
+
+	if len(accountIds) > 0 {
+		SendNotification(
+			message,
+			accountIds,
+		)
+	}
+
+	return nil
+}
+
+// what am I even doing here?
+func NotifyEventSubscribers(db *clover.DB, message string, subscribers []string) {
+	SendNotification(
+		message,
+		subscribers,
+	)
 }

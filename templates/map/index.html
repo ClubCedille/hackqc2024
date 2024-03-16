@@ -215,20 +215,23 @@
             })
         }
 
-        function createEventOnMap(lat, lng) {
+        function displayEventModal() {
             document.getElementById('eventModal').style.display = 'block'
-            document.getElementById('event_map_object_geometry_type').value = 'Point'
-            document.getElementById('event_map_object_geometry_coordinates').style.display = 'block'
-            document.getElementById('event_map_object_geometry_address').style.display = 'hidden'
+            document.getElementById('event_map_object_geometry_type').value = 'Adresse'
+            document.getElementById('event_map_object_geometry_coordinates').style.display = 'none'
+            document.getElementById('event_map_object_geometry_address').style.display = 'block'
+        }
 
-            document.getElementById('event_map_object_geometry_coordinates').value = lat + ", " + lng
+        function closeEventModal() {
+            document.getElementById('eventModal').style.display = 'none'
         }
 
         function createEventOnMap(lat, lng) {
             document.getElementById('eventModal').style.display = 'block'
             document.getElementById('event_map_object_geometry_type').value = 'Point'
             document.getElementById('event_map_object_geometry_coordinates').style.display = 'block'
-            document.getElementById('event_map_object_geometry_address').style.display = 'hidden'
+            document.getElementById('event_map_object_geometry_address').style.display = 'none'
+            console.log(document.getElementById('event_map_object_geometry_address'))
 
             document.getElementById('event_map_object_geometry_coordinates').value = lat + ", " + lng
         }
@@ -387,7 +390,7 @@
                     <div style="display:inline-block;padding: 16px;">
                         <div class="w3-center w3-text-gray">Actions</div>
                         <div class="w3-border-top w3-border-gray">
-                            <button onclick="document.getElementById('eventModal').style.display='block'"
+                            <button onclick="displayEventModal()"
                                 class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin" {{ if not .ActiveSession
                                 }} disabled title="Veuillez vous connecter" {{ end }}>Créer un évènement</button>
                             <a href="/map" class="w3-btn w3-border w3-border-gray w3-round-xlarge w3-margin"
@@ -517,7 +520,7 @@
     <div id="eventModal" class="w3-modal">
         <div class="w3-modal-content w3-animate-opacity w3-card-8 w3-round-xlarge">
             <header class="w3-container">
-                <span onclick="document.getElementById('eventModal').style.display='none'"
+                <span onclick="closeEventModal()"
                     class="w3-button w3-teal w3-large w3-display-topright w3-round-large w3-margin">&times;</span>
                 <h2 class="w3-margin-left">Soumettre un évènement</h2>
             </header>
