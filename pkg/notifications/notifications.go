@@ -31,7 +31,7 @@ func SendNotification(message string, recipients []string) {
 	for _, recipient := range recipients {
 		fmt.Println("Sending notification to: ", recipient)
 
-		go SendNotificationToPhoneNumber(message, recipient)
+		// go SendNotificationToPhoneNumber(message, recipient)
 	}
 }
 
@@ -91,10 +91,12 @@ func NotifyNearby(db *clover.DB, message string, geom mapobject.Geometry) error 
 		}
 	}
 
-	SendNotification(
-		message,
-		accountIds,
-	)
+	if len(accountIds) > 0 {
+		SendNotification(
+			message,
+			accountIds,
+		)
+	}
 
 	return nil
 }

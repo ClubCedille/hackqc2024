@@ -262,7 +262,7 @@ func GetEventDataFromContext(c *gin.Context, db *clover.DB) event.Event {
 		tagsArrayString = append(tagsArrayString, tag)
 	}
 
-	coordinates, err := geometry.ParseCoordinatesString(c.PostForm("coordinates"))
+	coordinates, err := geometry.ParseCoordinatesString(c.PostForm("map_object_geometry_coordinates"))
 	if err != nil {
 		log.Println("Error parsing coordinates:", err)
 		c.Status(http.StatusInternalServerError)
