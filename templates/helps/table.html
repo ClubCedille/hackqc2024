@@ -37,7 +37,7 @@
 
 {{ define "components/help-toolbar" }}
     <div id="tool-bar" class="w3-bar w3-light-grey">
-        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}">Exporter sélection</button>
+        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-swap="outerHTML" hx-post="/export-helps"  hx-vals="js:{ids: getSelectedIds()}" onclick="reloadPage()">Exporter sélection</button>
     </div>
 {{ end }}
 
@@ -84,6 +84,21 @@
             }
         });
         return selectedIds;
+    }
+
+    function reloadPage() {
+        fetch('/helps/table')
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+                console.log('Reloaded');
+            } else {
+                console.error('Erreur lors de la requête:', response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la requête:', error);
+        });
     }
 
     document.getElementById('select-all').addEventListener('change', function(e) {
