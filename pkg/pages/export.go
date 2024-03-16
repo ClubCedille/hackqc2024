@@ -101,7 +101,9 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event, help
         if id, ok := doc["_id"].(string); ok {
             if contains(helpIds, id) {
                 filteredDocs = append(filteredDocs, doc)
-            }
+            } else if exported, ok := doc["exported"].(bool); ok && exported {
+				filteredDocs = append(filteredDocs, doc)
+			}
         }
     }
 
