@@ -40,9 +40,7 @@
         <input type="text" placeholder="Nom" id="map_object_name" name="map_object_name" value="{{ .Event.MapObject.Name }}" required>
 
         <label for="map_object_description">Description:</label>
-        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." tabindex="5" required>
-          {{ .Event.MapObject.Description }}
-        </textarea>
+        <textarea id="map_object_description" name="map_object_description" placeholder="Description...." required>{{ .Event.MapObject.Description }}</textarea>
 
         <label for="map_object_category">Catégories:</label>
         <select id="map_object_category" name="map_object_category" required>
