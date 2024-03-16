@@ -17,15 +17,17 @@
 </style>
 
 <div class="w3-bar w3-dark-grey" style="align-items: center;">
+    <base href="/">
     <div style="display: flex; align-items: center;">
         <a href="/" class="w3-bar-item" style="display: flex; align-items: center;">
             <img src="static/logo-white.png" alt="Logo" style="height:40px;">
             <span style="margin-left: 10px; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: 700;">Munis</span>
         </a>
+        <a href="/map" class="w3-bar-item w3-button w3-mobile">Carte</a>
         <a href="/grid" class="w3-bar-item w3-button w3-mobile">Grille évènement/aide</a>
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button">Tableaux des données<i class="fa fa-caret-down"></i></button>
-            <div class="w3-dropdown-content w3-bar-block w3-dark-grey">
+            <div class="w3-dropdown-content w3-bar-block w3-dark-grey" style="z-index:999999999999">
                 <a href="/events/table" class="w3-bar-item w3-button w3-mobile">Tableau d'évènements</a>
                 <a href="/helps/table" class="w3-bar-item w3-button w3-mobile">Tableau d'aide</a>
             </div>
