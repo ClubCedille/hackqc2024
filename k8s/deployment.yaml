@@ -19,6 +19,9 @@ spec:
           {{- with secret "kv/hackqc2024/default/secrets" -}}
           export API_KEY="{{ .Data.data.api_key }}"
           export JEU_DE_DONNEES="{{ .Data.data.jeu_de_donnees }}"
+          export VOIPMS_API_USERNAME="{{ .Data.data.voipms_api_username }}"
+          export VOIPMS_API_PASSWORD="{{ .Data.data.voipms_api_password }}"
+          export VOIPMS_API_DID="{{ .Data.data.voipms_api_did }}"
           {{- end }}
 
     spec:

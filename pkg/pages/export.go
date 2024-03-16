@@ -108,7 +108,7 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event, help
 					longitude, longOk := coordinates[0].(float64)
 		
 					if latOk && longOk {
-						radius := 1000
+						radius := 150
 						edges := 10
 		
 						geoJSON := convertToCirclePolygon(&latitude, &longitude, &radius, &edges)

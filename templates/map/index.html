@@ -6,7 +6,7 @@
 
     {{ template "components/head.html" . }}
 
-    <title>Montreal Map View - Évènements publics</title>
+    <title>MUNIS - Carte</title>
     
     <link rel="stylesheet" href="/static/mapStyle.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -346,7 +346,7 @@
 
     {{ template "components/navbar" . }}
 
-    <div style="position: absolute; width: 100vw;height: 95vh;max-width: none;" x-data="{mobile: navigator.userAgentData.mobile, showFiltresMobile: false}">
+    <div style="position: absolute; width: 100vw;height: 95vh;max-width: none;" x-data="{mobile: mobileCheck(), showFiltresMobile: false}">
         
         <div class="w3-container w3-center" x-cloak x-show="mobile">
             <button @click="showFiltresMobile = !showFiltresMobile" style="z-index: 6969;position:relative;width: 70vw" class="w3-btn w3-round-large w3-margin-bottom w3-margin-top w3-white">Filtres</button>
