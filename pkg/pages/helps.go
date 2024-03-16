@@ -56,8 +56,6 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 		)
 	}(db, helpRequest)
 
-	// SubmitHelpsToDC(c, db)
-
 	c.Redirect(http.StatusSeeOther, "/map")
 }
 
@@ -97,8 +95,6 @@ func UpdateHelp(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	// SubmitHelpsToDC(c, db)
-
 	log.Println("Help updated successfully")
 }
 
@@ -111,8 +107,6 @@ func DeleteHelp(c *gin.Context, db *clover.DB) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-
-	SubmitHelpsToDC(c, db)
 
 	log.Println("Help deleted successfully")
 }
@@ -259,4 +253,27 @@ func PostCreateHelpComment(c *gin.Context, db *clover.DB) {
 		"Comments":   comments,
 		"IsLoggedIn": true,
 	})
+}
+
+func ExportHelps(c *gin.Context, db *clover.DB) {
+	idsStr := c.PostForm("ids")
+	idsArray := strings.Split(idsStr, ",")
+
+	var validIds []string
+	for _, id := range idsArray {
+		trimmedID := strings.TrimSpace(id)
+		if trimmedID != "" {
+			validIds = append(validIds, trimmedID)
+		}
+	}
+
+	if len(validIds) == 0 {
+		log.Println("No valid IDs provided for export")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No valid IDs provided for export"})
+		return
+	}
+
+	SubmitHelpsToDC(c, db, validIds)
+
+	log.Println("Helps exported successfully")
 }

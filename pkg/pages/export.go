@@ -14,7 +14,7 @@ import (
 	"github.com/ostafen/clover/v2"
 )
 
-func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
+func SubmitHelpsToDC(c *gin.Context, db *clover.DB, helpIds []string) {
 
 	filePath := "tmp/soumissions-aide.json"
 	db.ExportCollection("HelpCollection", filePath)
@@ -41,7 +41,7 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 		return
 	}
 
-	updatedHelp, err := prepareHelpDataForExport(filePath, events)
+	updatedHelp, err := prepareHelpDataForExport(filePath, events, helpIds)
 	if err != nil {
 		log.Printf("Error updating external source linked to help: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update help data"})
@@ -65,7 +65,7 @@ func SubmitHelpsToDC(c *gin.Context, db *clover.DB) {
 	log.Println("Helps submitted to Données Québec")
 }
 
-func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]map[string]interface{}, error) {
+func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event, helpIds []string) ([]map[string]interface{}, error) {
     data, err := os.ReadFile(filePath)
     if err != nil {
         log.Printf("Failed to read the file: %v", err)
@@ -77,7 +77,16 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]m
         return nil, fmt.Errorf("failed to unmarshal JSON data: %w", err)
     }
 
+	filteredDocs := []map[string]interface{}{}
     for _, doc := range docs {
+        if id, ok := doc["Id"].(string); ok {
+            if contains(helpIds, id) {
+                filteredDocs = append(filteredDocs, doc)
+            }
+        }
+    }
+
+    for _, doc := range filteredDocs {
         if eventID, ok := doc["event_id"].(string); ok {
             for _, event := range linkedEvents {
                 if event.Id == eventID {
@@ -116,7 +125,7 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]m
 			}
         }
     }
-    updatedData, err := json.Marshal(docs)
+    updatedData, err := json.Marshal(filteredDocs)
     if err != nil {
         return nil, fmt.Errorf("failed to marshal the updated JSON data: %w", err)
     }
@@ -125,7 +134,7 @@ func prepareHelpDataForExport(filePath string, linkedEvents []*event.Event) ([]m
         return nil, fmt.Errorf("failed to write the updated JSON back to the file: %w", err)
     }
 
-    return docs, nil
+    return filteredDocs, nil
 }
 
 
@@ -157,4 +166,13 @@ func convertToCirclePolygon(latitude *float64, longitude *float64, radius *int, 
 	}
 
 	return geoJSON
+}
+
+func contains(slice []string, str string) bool {
+    for _, v := range slice {
+        if v == str {
+            return true
+        }
+    }
+    return false
 }

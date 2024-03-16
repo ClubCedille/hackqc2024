@@ -40,12 +40,16 @@
 {{ end }}
 
 {{ define "components/help-toolbar" }}
-<!-- Similar toolbar as event-toolbar can be defined here if needed -->
+
+    <div id="tool-bar" class="w3-bar w3-light-grey">
+        <button class="w3-button w3-purple w3-ripple w3-round w3-left" hx-post="/export-helps" hx-vals="getSelectedIds()">Exporter sélection</button>
+    </div>
 {{ end }}
 
 {{ define "components/help-table"}}
 <table class="w3-table w3-striped w3-border" id="help-list">
     <tr>
+        <th><input type="checkbox" id="select-all"></th>
         <th>ID</th>
         <th>Nom</th>
         <th>Description</th>
@@ -60,6 +64,7 @@
 
     {{ range .Helps }}
     <tr>
+        <td><input type="checkbox" class="select-item" value="{{.Id}}"></td>
         <td>{{ .Id }}</td>
         <td>{{ .MapObject.Name }}</td>
         <td>{{ .MapObject.Description }}</td>
@@ -74,4 +79,20 @@
     {{ end }}
 </table>
 
+<script>
+    function getSelectedIds() {
+      let selectedIds = [];
+      document.querySelectorAll('.select-item:checked').forEach(item => {
+        selectedIds.push(item.value);
+      });
+      return { ids: selectedIds };
+    }
+
+    document.getElementById('select-all').addEventListener('change', function(e) {
+        let checked = e.target.checked;
+        document.querySelectorAll('.select-item').forEach(function(checkbox) {
+            checkbox.checked = checked;
+        });
+    });
+</script>
 {{ end }}
