@@ -10,6 +10,7 @@ import (
 	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	"github.com/ClubCedille/hackqc2024/pkg/event"
+	"github.com/ClubCedille/hackqc2024/pkg/geometry"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ClubCedille/hackqc2024/pkg/notifications"
@@ -185,17 +186,11 @@ func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
 	}
 
 	// Processing coordinates
-	coordinatesStr := c.PostForm("map_object_geometry_coordinates")
-	coordinatesArray := strings.Split(coordinatesStr, ",")
-	var coordinatesArrayFloat []float64
-	for _, coord := range coordinatesArray {
-		floatCoord, err := strconv.ParseFloat(strings.TrimSpace(coord), 64)
-		if err != nil {
-			log.Println("Error parsing coordinates:", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid coordinates format"})
-			return help.Help{}
-		}
-		coordinatesArrayFloat = append(coordinatesArrayFloat, floatCoord)
+	coordinates, err := geometry.ParseCoordinatesString(c.PostForm("map_object_geometry_coordinates"))
+	if err != nil {
+		log.Println("Error parsing coordinates:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid coordinates format"})
+		return help.Help{}
 	}
 
 	contactInfos := c.PostForm("contact_infos")
@@ -215,7 +210,10 @@ func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
 			Description: eventDescription,
 			Category:    eventCategory,
 			Tags:        tagsArrayString,
-			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: coordinatesArrayFloat},
+			Geometry: mapobject.Geometry{
+				GeomType:    "Point",
+				Coordinates: coordinates,
+			},
 		},
 	}
 }
