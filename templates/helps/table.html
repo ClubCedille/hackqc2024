@@ -3,13 +3,9 @@
 <html lang="en">
 
 <head>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="/">
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    
+    {{ template "components/head.html" . }}
+
     <title>Liste des aides</title>
     <style>
         table {
