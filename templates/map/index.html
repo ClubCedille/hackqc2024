@@ -217,9 +217,8 @@
 
         function displayEventModal() {
             document.getElementById('eventModal').style.display = 'block'
-            document.getElementById('event_map_object_geometry_type').value = 'Adresse'
-            document.getElementById('event_map_object_geometry_coordinates').style.display = 'none'
-            document.getElementById('event_map_object_geometry_address').style.display = 'block'
+            // document.getElementById('event_map_object_geometry_coordinates').style.display = 'none'
+            // document.getElementById('event_map_object_geometry_address').style.display = 'block'
         }
 
         function closeEventModal() {
@@ -228,9 +227,8 @@
 
         function createEventOnMap(lat, lng) {
             document.getElementById('eventModal').style.display = 'block'
-            document.getElementById('event_map_object_geometry_type').value = 'Point'
-            document.getElementById('event_map_object_geometry_coordinates').style.display = 'block'
-            document.getElementById('event_map_object_geometry_address').style.display = 'none'
+            // document.getElementById('event_map_object_geometry_coordinates').style.display = 'block'
+            // document.getElementById('event_map_object_geometry_address').style.display = 'none'
             console.log(document.getElementById('event_map_object_geometry_address'))
 
             document.getElementById('event_map_object_geometry_coordinates').value = lat + ", " + lng
