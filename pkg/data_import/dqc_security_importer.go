@@ -17,6 +17,8 @@ const (
 	DQC_START_YEAR    = 2024
 )
 
+const MUN_POLYGONS_FILE = "switchedCoordinatesMunPolygons.json"
+
 type DQCSecurityEventSource struct{}
 
 func (source DQCSecurityEventSource) GetName() string {
@@ -69,8 +71,11 @@ func searchSecurityData(params map[string]string) (*SecurityFeatureCollection, e
 func parseSecurityData(securityData *SecurityFeatureCollection) []event.Event {
 	events := []event.Event{}
 
+	municipalitiesPolygons := GetMunicipalityPolygons()
+
 	for _, feature := range securityData.Features {
 		event, err := feature.ToEvent()
+		event.MunicipalityPolygon = municipalitiesPolygons[feature.Properties.Municipalite]
 		if err != nil {
 			msg := fmt.Sprintf("Error converting feature to event: %s", err.Error())
 			fmt.Fprintln(os.Stderr, msg)
@@ -116,6 +121,22 @@ type SecurityProperties struct {
 // calculate based on date?
 func (f SecurityFeature) GetSeverity() event.UrgencyType {
 	return event.Past
+}
+
+func GetMunicipalityPolygons() map[string][][][]float64 {
+	municipalitiesPolygon, err := os.Open(MUN_POLYGONS_FILE)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer municipalitiesPolygon.Close()
+
+	var municipalities map[string][][][]float64
+	jsonParser := json.NewDecoder(municipalitiesPolygon)
+	if err = jsonParser.Decode(&municipalities); err != nil {
+		fmt.Println(err)
+	}
+
+	return municipalities
 }
 
 func (f SecurityFeature) GetDanger() event.DangerLevel {
