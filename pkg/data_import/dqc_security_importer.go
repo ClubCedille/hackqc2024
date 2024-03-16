@@ -17,7 +17,7 @@ const (
 	DQC_START_YEAR    = 2024
 )
 
-const MUN_POLYGONS_FILE = "switchedCoordinatesMunPolygons.json"
+const MUN_POLYGONS_FILE = "munic_polygons/switchedCoordinatesMunPolygons.json"
 
 type DQCSecurityEventSource struct{}
 
