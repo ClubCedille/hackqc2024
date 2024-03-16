@@ -155,6 +155,41 @@ func GetEventDetailsAboutToBeDelete(c *gin.Context, db *clover.DB) {
 	})
 }
 
+func EventSubscribe(c *gin.Context, db *clover.DB) {
+	id := c.Param("id")
+
+	ev, err := event.GetEventById(db, id)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	isAlreadySubscribed := false
+	currentUser := session.ActiveSession.AccountId
+	for _, subscriber := range ev.Subscribers {
+		if subscriber == currentUser {
+			isAlreadySubscribed = true
+			break
+		}
+	}
+
+	if isAlreadySubscribed {
+		c.String(http.StatusOK, "Déjà souscrit")
+		return
+	}
+
+	ev.Subscribers = append(ev.Subscribers, currentUser)
+	err = event.UpdateEvent(db, ev)
+	if err != nil {
+		log.Println("Error updating event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.String(http.StatusOK, "Souscrit aux notifications avec succès")
+}
+
 func EventDetails(c *gin.Context, db *clover.DB) {
 	id := c.Param("id")
 	event, err := event.GetEventById(db, id)

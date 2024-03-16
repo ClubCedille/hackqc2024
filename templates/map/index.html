@@ -40,7 +40,9 @@
         function addPopupContent(feature, layer) {
             let popupContent = `
                 <div id="popup-content" class="popup-content">
-                    <h3>${feature.properties.map_object.name}</h3>`
+                    <h3>${feature.properties.map_object.name}</h3>
+                `
+                   
 
             if (feature.properties.map_object.name != feature.properties.map_object.category) {
                 popupContent += `
@@ -76,6 +78,9 @@
                         </button>
                         <button @click="openHelpModal('${feature.properties.event._id}')" class="w3-btn w3-white w3-round w3-border w3-border-lime w3-hover-green" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> 
                             Aider
+                        </button>
+                        <button @click="subscribeToEvent('${feature.properties.event._id}')" class="w3-btn w3-white w3-round w3-border w3-border-lime w3-hover-green" {{ if not .ActiveSession }} disabled title="Veuillez vous connecter" {{ end }}> 
+                            Notifications
                         </button>
                         `
             }
@@ -201,6 +206,20 @@
         function openHelpModal(eventId) {
             document.getElementById('eventIdField').value = eventId;
             document.getElementById('helpModal').style.display = 'block';
+        }
+
+        function subscribeToEvent(eventId) {
+            fetch('/events/subscribe/' + eventId, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    response.text().then(text => {
+                        alert(text);
+                    });
+                } else {
+                    console.error('Error subscribing to event:', response.status);
+                }
+            })
         }
 
         function createEventOnMap(lat, lng) {
