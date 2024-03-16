@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
@@ -216,6 +217,7 @@ func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
 			Category:    eventCategory,
 			Tags:        tagsArrayString,
 			Geometry:    mapobject.Geometry{GeomType: "Point", Coordinates: coordinatesArrayFloat},
+			Date:        time.Now(),
 		},
 	}
 }
