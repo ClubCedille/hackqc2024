@@ -148,7 +148,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.UpdateHelp(c, db)
 	})
 
-	r.POST("/export-helps", AuthRequiredMiddleware(), func(c *gin.Context) {
+	r.POST("/export-helps/:ids", AuthRequiredMiddleware(), func(c *gin.Context) {
 		pages.ExportHelps(c, db)
 	})
 
