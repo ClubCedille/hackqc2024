@@ -56,6 +56,12 @@
             <p>Date: ${feature.properties.date_readable}</p>
             `
 
+            if (feature.properties.help.modified) {
+                popupContent += `
+                <p>Dernière modification: ${feature.properties.modification_date}</p>
+                `
+            }
+
             if (feature.properties.event._id) {
                 popupContent += `
                         <button

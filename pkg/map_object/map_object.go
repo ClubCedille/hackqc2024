@@ -29,8 +29,13 @@ type Geometry struct {
 }
 
 func (m *MapObject) GetDateString() string {
+	loc, err := time.LoadLocation("America/Montreal")
+	if err != nil {
+		return m.Date.Format("2 Jan 2006 à 15:04")
+	}
+
 	var month string
-	switch m.Date.Format("Jan") {
+	switch m.Date.In(loc).Format("Jan") {
 	case "Jan":
 		month = "janvier"
 	case "Feb":

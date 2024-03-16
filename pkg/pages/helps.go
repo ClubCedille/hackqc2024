@@ -210,6 +210,7 @@ func GetHelpFromContext(c *gin.Context, db *clover.DB) help.Help {
 		HowToHelp:    howToHelp,
 		HowToUseHelp: howToUseHelp,
 		EventId:      eventId,
+		Modified:     false,
 		MapObject: mapobject.MapObject{
 			AccountId:   session.ActiveSession.AccountId,
 			Name:        eventName,

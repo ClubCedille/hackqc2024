@@ -32,10 +32,11 @@ type Style struct {
 }
 
 type GeoJSONProperties struct {
-	MapObject    mapobject.MapObject `json:"map_object"`
-	DateReadable string              `json:"date_readable"`
-	Event        event.Event         `json:"event"`
-	Help         help.Help           `json:"help"`
+	MapObject        mapobject.MapObject `json:"map_object"`
+	DateReadable     string              `json:"date_readable"`
+	ModificationDate string              `json:"modification_date"`
+	Event            event.Event         `json:"event"`
+	Help             help.Help           `json:"help"`
 }
 
 type GeoJSON struct {
@@ -475,9 +476,10 @@ func retrieveMapItems(db *clover.DB, filters map[string][]string) ([]GeoJSONPair
 				Type:     "Feature",
 				Geometry: v.MapObject.Geometry,
 				Properties: GeoJSONProperties{
-					MapObject:    v.MapObject,
-					DateReadable: v.MapObject.GetDateString(),
-					Help:         *v,
+					MapObject:        v.MapObject,
+					DateReadable:     v.MapObject.GetDateString(),
+					ModificationDate: v.GetModificationDateString(),
+					Help:             *v,
 				},
 			},
 			Style: styleHelp,

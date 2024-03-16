@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
@@ -14,14 +15,16 @@ import (
 )
 
 type Help struct {
-	Id           string              `json:"_id" clover:"_id"`
-	MapObject    mapobject.MapObject `json:"map_object" clover:"map_object"`
-	ContactInfos string              `json:"contact_infos" clover:"contact_infos"`
-	NeedHelp     bool                `json:"need_help" clover:"need_help"`
-	HowToHelp    string              `json:"how_to_help" clover:"how_to_help"`
-	HowToUseHelp string              `json:"how_to_use_help" clover:"how_to_use_help"`
-	EventId      string              `json:"event_id" clover:"event_id"`
-	Exported     bool                `json:"exported" clover:"exported"`
+	Id                   string              `json:"_id" clover:"_id"`
+	MapObject            mapobject.MapObject `json:"map_object" clover:"map_object"`
+	ContactInfos         string              `json:"contact_infos" clover:"contact_infos"`
+	NeedHelp             bool                `json:"need_help" clover:"need_help"`
+	HowToHelp            string              `json:"how_to_help" clover:"how_to_help"`
+	HowToUseHelp         string              `json:"how_to_use_help" clover:"how_to_use_help"`
+	EventId              string              `json:"event_id" clover:"event_id"`
+	Exported             bool                `json:"exported" clover:"exported"`
+	Modified             bool                `json:"modified" clover:"modified"`
+	DerniereModification time.Time           `json:"derniere_modification" clover:"derniere_modification"`
 }
 
 func GetHelpById(db *clover.DB, helpId string) (Help, error) {
@@ -162,6 +165,8 @@ func UpdateHelp(db *clover.DB, help Help) error {
 		doc.Set("how_to_help", help.HowToHelp)
 		doc.Set("how_to_use_help", help.HowToUseHelp)
 		doc.Set("exported", help.Exported)
+		doc.Set("derniere_modification", help.MapObject.Date)
+		doc.Set("modified", true)
 		return doc
 	})
 
@@ -188,4 +193,44 @@ func GetHelpFromDocuments(docs []*document.Document) ([]*Help, error) {
 	}
 
 	return helps, nil
+}
+
+func (m *Help) GetModificationDateString() string {
+	if !m.Modified {
+		return ""
+	}
+
+	loc, err := time.LoadLocation("America/Montreal")
+	if err != nil {
+		return m.DerniereModification.Format("2 Jan 2006 à 15:04")
+	}
+
+	var month string
+	switch m.DerniereModification.In(loc).Format("Jan") {
+	case "Jan":
+		month = "janvier"
+	case "Feb":
+		month = "février"
+	case "Mar":
+		month = "mars"
+	case "Apr":
+		month = "avril"
+	case "May":
+		month = "mai"
+	case "Jun":
+		month = "juin"
+	case "Jul":
+		month = "juillet"
+	case "Aug":
+		month = "août"
+	case "Sep":
+		month = "septembre"
+	case "Oct":
+		month = "octobre"
+	case "Nov":
+		month = "novembre"
+	case "Dec":
+		month = "décembre"
+	}
+	return m.DerniereModification.Format("2") + " " + month + " " + m.DerniereModification.Format("2006 à 15:04")
 }
