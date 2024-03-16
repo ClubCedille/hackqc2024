@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/ClubCedille/hackqc2024/pkg/account"
+	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/ClubCedille/hackqc2024/pkg/geometry"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ostafen/clover/v2"
@@ -99,4 +100,17 @@ func NotifyNearby(db *clover.DB, message string, geom mapobject.Geometry) error 
 	}
 
 	return nil
+}
+
+func NotifyEventSubscribers(db *clover.DB, message string, eventId string) {
+	ev, err := event.GetEventById(db, eventId)
+	if err != nil {
+		log.Println("Error getting event:", err)
+		return
+	}
+
+	SendNotification(
+		message,
+		ev.Subscribers,
+	)
 }

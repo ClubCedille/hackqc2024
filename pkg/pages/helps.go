@@ -9,7 +9,6 @@ import (
 
 	"github.com/ClubCedille/hackqc2024/pkg/comment"
 	"github.com/ClubCedille/hackqc2024/pkg/database"
-	"github.com/ClubCedille/hackqc2024/pkg/event"
 	"github.com/ClubCedille/hackqc2024/pkg/help"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
 	"github.com/ClubCedille/hackqc2024/pkg/notifications"
@@ -42,19 +41,12 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 	}
 
 	log.Println("Help created successfully")
-
-	defer func(db *clover.DB, helpRequest help.Help) {
-		ev, err := event.GetEventById(db, helpRequest.EventId)
-		if err != nil {
-			log.Println("Error getting event:", err)
-			return
-		}
-
-		notifications.SendNotification(
-			fmt.Sprintf("Une offre d'aide en %s a été soumise pour l'évènement %s.", helpRequest.MapObject.Type, ev.MapObject.Name),
-			[]string{ev.MapObject.AccountId},
-		)
-	}(db, helpRequest)
+	notifMessage := fmt.Sprintf("Une offre aide a été soumise pour évènement près de vous %s.", helpRequest.MapObject.Name)
+	notifications.NotifyEventSubscribers(
+		db,
+		notifMessage,
+		helpRequest.EventId,
+	)
 
 	c.Redirect(http.StatusSeeOther, "/map")
 }
