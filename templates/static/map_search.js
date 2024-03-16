@@ -98,3 +98,61 @@ autocomplete({
         ];
     },
 });
+
+autocomplete({
+    container: '#event_map_object_geometry_address',
+    placeholder: 'Adresse...',
+    getSources({ query }) {
+        return [
+            {
+                sourceId: 'addresse',
+                async getItems() {
+                    let addresses = await getAdresses(query);
+                    return addresses;
+                },
+                templates: {
+                    item({ item }) {
+                        return `${item.properties.nom}`;
+                    },
+                },
+                onSelect: function (event) {
+                    const selectedAddress = event.item
+                    const adresseInput = document.getElementById("event_map_object_geometry_address")
+                    const pointInput = document.getElementById("event_map_object_geometry_coordinates")
+                    const coords = selectedAddress.geometry.coordinates
+                    adresseInput.value = selectedAddress.properties.nom
+                    pointInput.value = coords[1] + ", " + coords[0]
+                },
+            },
+        ];
+    },
+});
+
+autocomplete({
+    container: '#help_map_object_geometry_address',
+    placeholder: 'Adresse...',
+    getSources({ query }) {
+        return [
+            {
+                sourceId: 'addresse',
+                async getItems() {
+                    let addresses = await getAdresses(query);
+                    return addresses;
+                },
+                templates: {
+                    item({ item }) {
+                        return `${item.properties.nom}`;
+                    },
+                },
+                onSelect: function (event) {
+                    const selectedAddress = event.item
+                    const adresseInput = document.getElementById("help_map_object_geometry_address")
+                    const pointInput = document.getElementById("map_object_geometry_coordinates")
+                    const coords = selectedAddress.geometry.coordinates
+                    adresseInput.value = selectedAddress.properties.nom
+                    pointInput.value = coords[1] + ", " + coords[0]
+                },
+            },
+        ];
+    },
+});

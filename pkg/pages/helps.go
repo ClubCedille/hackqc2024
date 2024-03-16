@@ -41,20 +41,20 @@ func CreateHelp(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	linkedEvent, err := event.GetEventById(db, helpRequest.EventId)
+	if err != nil {
+		log.Println("Error getting linked event:", err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
 	log.Println("Help created successfully")
-
-	defer func(db *clover.DB, helpRequest help.Help) {
-		ev, err := event.GetEventById(db, helpRequest.EventId)
-		if err != nil {
-			log.Println("Error getting event:", err)
-			return
-		}
-
-		notifications.SendNotification(
-			fmt.Sprintf("Une offre d'aide en %s a été soumise pour l'évènement %s.", helpRequest.MapObject.Type, ev.MapObject.Name),
-			[]string{ev.MapObject.AccountId},
-		)
-	}(db, helpRequest)
+	notifMessage := fmt.Sprintf("Une offre aide a été soumise pour évènement près de vous %s.", helpRequest.MapObject.Name)
+	notifications.NotifyEventSubscribers(
+		db,
+		notifMessage,
+		linkedEvent.Subscribers,
+	)
 
 	c.Redirect(http.StatusSeeOther, "/map")
 }

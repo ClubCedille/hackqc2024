@@ -81,13 +81,13 @@
                       set it.checked to value
                       it.click()
                       repeat in <input[name='_.type'][type='hidden']/>
-                        set bob to value
-                        if bob then
-                          set bob to false
+                        set notValue to value
+                        if notValue then
+                          set notValue to false
                         else
-                          set bob to true
+                          set notValue to true
                         end
-                        set it.checked to bob
+                        set it.disabled to notValue
                         it.click()
                       end
                     end">
@@ -105,7 +105,7 @@
                         <input type="checkbox" class="w3-check filter" name="_.type" value="help" checked>
                         Aide
                     </label>
-                    <input type="hidden" class="filter" name="_.type" value="-1">
+                    <input type="hidden" class="filter" name="_.type" value="-1" disabled>
                 </div>
             </div>
         </div>
@@ -123,13 +123,13 @@
                       set it.checked to value
                       it.click()
                       repeat in <input[name='map_object.category'][type='hidden']/>
-                        set bob to value
-                        if bob then
-                          set bob to false
+                        set notValue to value
+                        if notValue then
+                          set notValue to false
                         else
-                          set bob to true
+                          set notValue to true
                         end
-                        set it.checked to bob
+                        set it.disabled to notValue
                         it.click()
                       end
                     end">
@@ -142,7 +142,7 @@
                         {{ $key }}
                     </label>
                     {{ end }}
-                    <input type="hidden" class="filter" name="map_object.category" value="-1">
+                    <input type="hidden" class="filter" name="map_object.category" value="-1" disabled>
                 </div>
             </div>
         </div>
@@ -163,13 +163,13 @@
                       set it.checked to value
                       it.click()
                       repeat in <input[name='urgency_type'][type='hidden']/>
-                        set bob to value
-                        if bob then
-                          set bob to false
+                        set notValue to value
+                        if notValue then
+                          set notValue to false
                         else
-                          set bob to true
+                          set notValue to true
                         end
-                        set it.checked to bob
+                        set it.disabled to notValue
                         it.click()
                       end
                     end">
@@ -187,7 +187,7 @@
                         <input type="checkbox" class="w3-check filter" name="urgency_type" value="2" checked>
                         Passé
                     </label>
-                    <input type="hidden" class="filter" name="urgency_type" value="-1">
+                    <input type="hidden" class="filter" name="urgency_type" value="-1" disabled>
                 </div>
             </div>
         </div>
@@ -209,13 +209,13 @@
                       set it.checked to value
                       it.click()
                       repeat in <input[name='danger_level'][type='hidden']/>
-                        set bob to value
-                        if bob then
-                          set bob to false
+                        set notValue to value
+                        if notValue then
+                          set notValue to false
                         else
-                          set bob to true
+                          set notValue to true
                         end
-                        set it.checked to bob
+                        set it.disabled to notValue
                         it.click()
                       end
                     end">
@@ -233,7 +233,7 @@
                         <input type="checkbox" class="w3-check filter" name="danger_level" value="2" checked>
                         Faible
                     </label>
-                    <input type="hidden" class="filter" name="danger_level" value="-1">
+                    <input type="hidden" class="filter" name="danger_level" value="-1" disabled>
                 </div>
             </div>
         </div>
@@ -305,55 +305,4 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    // When the inputs are changed:
-    // Check if there are all the checkoxes are un-checked
-    // If so, check the hidden -1 checkbox (per input name)
-    // document.getElementById("filter-form").addEventListener("input", function () {
-    //     // inputs:
-    //     var inputNames = [
-    //         "map_object.category",
-    //         "urgency_type",
-    //         "danger_level",
-    //     ];
-        
-    //     for(const inputName of inputNames){
-    //         let allChecked = true;
-    //         // all checkboxes with this input name:
-    //         let checkboxes = Array.from(document.querySelectorAll(`input:not([type="hidden"])[name="${inputName}"]`));
-    //         for(const checkbox of checkboxes){
-    //             if(!checkbox.hidden)
-    //                 allChecked = allChecked && checkbox.checked;
-    //         }
-    //         if(!allChecked){
-    //             document.querySelector(`input[type="hidden"][name="${inputName}"]`).checked = true;
-    //         }else{
-    //             document.querySelector(`input[type="hidden"][name="${inputName}"]`).checked = false;
-    //         }
-    //     }
-    // });
-    // Gippity:
-//     document.getElementById("filter-form").addEventListener("input", function () {
-//     var inputNames = [
-//         "map_object.category",
-//         "urgency_type",
-//         "danger_level",
-//     ];
-
-//     for (const inputName of inputNames) {
-//         let checkboxes = Array.from(document.querySelectorAll(`input[type="checkbox"][name="${inputName}"]`)); // Changed to specifically select checkboxes
-//         let anyChecked = checkboxes.some(checkbox => checkbox.checked); // Check if any checkbox is checked
-
-//         if (!anyChecked) {
-//             // If no checkboxes are checked, set the hidden input to true
-//             let hiddenCheckbox = document.querySelector(`input[type="hidden"][name="${inputName}"]`);
-//             if (hiddenCheckbox) hiddenCheckbox.checked = true;
-//         } else {
-//             // If any checkbox is checked, ensure the hidden checkbox is not checked
-//             let hiddenCheckbox = document.querySelector(`input[type="hidden"][name="${inputName}"]`);
-//             if (hiddenCheckbox) hiddenCheckbox.checked = false;
-//         }
-//     }
-// });
-</script>
 {{ end }}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ClubCedille/hackqc2024/pkg/database"
 	mapobject "github.com/ClubCedille/hackqc2024/pkg/map_object"
+	"github.com/ClubCedille/hackqc2024/pkg/notifications"
 	"github.com/ostafen/clover/v2"
 	"github.com/ostafen/clover/v2/document"
 	"github.com/ostafen/clover/v2/query"
@@ -240,6 +241,9 @@ func CreateEvent(conn *clover.DB, event Event) error {
 	if err != nil {
 		return err
 	}
+
+	message := fmt.Sprintf("Alert: Un nouvel évènement de type %s a été signalé près de vous", event.MapObject.Category)
+	err = notifications.NotifyNearby(conn, message, event.MapObject.Geometry)
 
 	return nil
 }

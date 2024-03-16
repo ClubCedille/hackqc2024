@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/ClubCedille/hackqc2024/pkg/notifications"
 	"github.com/ClubCedille/hackqc2024/pkg/pages"
 	"github.com/ClubCedille/hackqc2024/pkg/session"
 	"github.com/gin-gonic/gin"
@@ -148,7 +149,7 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 		pages.UpdateHelp(c, db)
 	})
 
-	r.POST("/export-helps/:ids", AuthRequiredMiddleware(), func(c *gin.Context) {
+	r.POST("/export-helps", AuthRequiredMiddleware(), func(c *gin.Context) {
 		pages.ExportHelps(c, db)
 	})
 
@@ -164,5 +165,10 @@ func registerRoutes(r *gin.Engine, db *clover.DB) {
 			"ActiveSession": session.SessionIsActive(),
 			"UserName":      session.ActiveSession.UserName,
 		})
+	})
+
+	r.POST("/test-notifications", func(c *gin.Context) {
+		notifications.SendNotification("Test notification", []string{c.Query("dst")})
+		c.JSON(http.StatusOK, gin.H{"message": "Notifications sent"})
 	})
 }

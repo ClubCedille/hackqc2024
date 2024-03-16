@@ -26,24 +26,6 @@
         adresseInput.style.display = "none"
       }
     })
-
-    adresseInput.addEventListener("change", function() {
-      const adresses = getAdresses(adresseInput.value, (adresses) => {
-        const selectedAddress = adresses[0]
-        console.log(selectedAddress)
-        adresseInput.value = selectedAddress.properties.nom
-        const coords = selectedAddress.geometry.coordinates
-        pointInput.value = coords[1] + ", " + coords[0]
-      })
-    })
-
-    function getAdresses(address, cb) {
-      fetch(`https://geoegl.msp.gouv.qc.ca/apis/icherche/geocode?type=adresses&limit=5&geometry=true&q=${address}`).then(response => {
-        response.json().then(result => {
-          cb(result.features)
-        })
-      })
-    }
   })
 </script>
 <div class="row">
@@ -96,7 +78,7 @@
         <input type="hidden" value="Point" name="map_object_geometry_type"/>
         <input type="text" placeholder="Coordonnées (format: 1.0, 2.0)" id="event_map_object_geometry_coordinates" name="map_object_geometry_coordinates" required>
 
-        <input type="text" autocomplete="off" placeholder="Adresse" id="event_map_object_geometry_address">
+        <div id="event_map_object_geometry_address"></div>
 
         <label for="map_object_tags">Tags:</label>
         <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..." name="map_object_tags">

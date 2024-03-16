@@ -21,6 +21,7 @@ type Help struct {
 	HowToHelp    string              `json:"how_to_help" clover:"how_to_help"`
 	HowToUseHelp string              `json:"how_to_use_help" clover:"how_to_use_help"`
 	EventId      string              `json:"event_id" clover:"event_id"`
+	Exported     bool                `json:"exported" clover:"exported"`
 }
 
 func GetHelpById(db *clover.DB, helpId string) (Help, error) {
@@ -160,6 +161,7 @@ func UpdateHelp(db *clover.DB, help Help) error {
 		doc.Set("need_help", help.NeedHelp)
 		doc.Set("how_to_help", help.HowToHelp)
 		doc.Set("how_to_use_help", help.HowToUseHelp)
+		doc.Set("exported", help.Exported)
 		return doc
 	})
 

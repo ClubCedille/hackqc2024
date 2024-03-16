@@ -9,11 +9,12 @@ import (
 )
 
 type Account struct {
-	Id        string `json:"_id" clover:"_id"`
-	UserName  string `json:"user_name" clover:"user_name"`
-	FirstName string `json:"first_name" clover:"first_name"`
-	LastName  string `json:"last_name" clover:"last_name"`
-	Email     string `json:"email" clover:"email"`
+	Id          string    `json:"_id" clover:"_id"`
+	UserName    string    `json:"user_name" clover:"user_name"`
+	FirstName   string    `json:"first_name" clover:"first_name"`
+	LastName    string    `json:"last_name" clover:"last_name"`
+	Email       string    `json:"email" clover:"email"`
+	Coordinates []float64 `json:"coordinates" clover:"coordinates"`
 }
 
 func AccountExistsById(conn *clover.DB, id string) (bool, error) {
@@ -72,4 +73,23 @@ func UpdateAccount(conn *clover.DB, account Account) error {
 	}
 
 	return nil
+}
+
+func GetAllAccounts(conn *clover.DB) ([]Account, error) {
+	docs, err := conn.FindAll(query.NewQuery(database.AccountCollection))
+	if err != nil {
+		return []Account{}, err
+	}
+
+	accounts := []Account{}
+	for _, d := range docs {
+		var account Account
+		err = d.Unmarshal(&account)
+		if err != nil {
+			return []Account{}, err
+		}
+		accounts = append(accounts, account)
+	}
+
+	return accounts, nil
 }
