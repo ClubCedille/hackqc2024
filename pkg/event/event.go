@@ -242,8 +242,11 @@ func CreateEvent(conn *clover.DB, event Event) error {
 		return err
 	}
 
-	message := fmt.Sprintf("Alert: Un nouvel évènement de type %s a été signalé près de vous", event.MapObject.Category)
+	message := fmt.Sprintf("Alerte: Un nouvel évènement de type %s a été signalé près de vous", event.MapObject.Category)
 	err = notifications.NotifyNearby(conn, message, event.MapObject.Geometry)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
