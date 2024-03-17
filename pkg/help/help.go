@@ -237,3 +237,11 @@ func (m *Help) GetModificationDateString() string {
 	}
 	return m.DerniereModification.Format("2") + " " + month + " " + m.DerniereModification.Format("2006 à 15:04")
 }
+
+func (help *Help) FlipCoords() {
+	if help.MapObject.Geometry.GeomType == "Point" {
+		tmp := help.MapObject.Geometry.Coordinates[0]
+		help.MapObject.Geometry.Coordinates[0] = help.MapObject.Geometry.Coordinates[1]
+		help.MapObject.Geometry.Coordinates[1] = tmp
+	}
+}

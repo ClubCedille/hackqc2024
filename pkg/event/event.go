@@ -281,3 +281,11 @@ func GetEventFromDocuments(docs []*document.Document) ([]*Event, error) {
 
 	return events, nil
 }
+
+func (event *Event) FlipCoords() {
+	if event.MapObject.Geometry.GeomType == "Point" {
+		tmp := event.MapObject.Geometry.Coordinates[0]
+		event.MapObject.Geometry.Coordinates[0] = event.MapObject.Geometry.Coordinates[1]
+		event.MapObject.Geometry.Coordinates[1] = tmp
+	}
+}

@@ -71,6 +71,7 @@ func GetHelpDetailAboutToBeModified(c *gin.Context, db *clover.DB) {
 	}
 
 	// Format some data
+	help.FlipCoords()
 	var formattedCoords []string
 	for _, coord := range help.MapObject.Geometry.Coordinates {
 		formattedCoords = append(formattedCoords, strconv.FormatFloat(coord, 'f', -1, 64))
