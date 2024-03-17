@@ -26,6 +26,7 @@
             grid-gap: 10px;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
@@ -81,14 +82,18 @@
                 id="search-box">
         </div>
 
-        <div class="w3-bar-item w3-left">Afficher seulement:</div>
+        <div class="w3-bar-item w3-left">
+            <div class="w3-padding">
+                <b>Filtres:</b>
+            </div>
+        </div>
 
         <!-- Type : Event, Help, Both : Toutes , Evenements, Aides -->
 
 
         <div class="w3-bar-item w3-left">
-            <div class="w3-dropdown-hover w3-mobile">
-                <div class="w3-button">Type<i class="fa fa-caret-down"></i></div>
+            <div class="w3-dropdown-hover w3-mobile w3-round-large">
+                <div class="w3-button">Type <i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <div class="w3-bar-item w3-button" _="
                     on click
@@ -130,7 +135,7 @@
         <!-- Category -->
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <div _="" class="w3-button">Catégorie d'évènement<i class="fa fa-caret-down"></i></div>
+                <div _="" class="w3-button">Catégorie d'évènement <i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <div class="w3-bar-item w3-button" _="
                     on click
@@ -168,7 +173,7 @@
         <!-- Urgency -->
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <div class="w3-button" type="button">Urgence<i class="fa fa-caret-down"></i></div>
+                <div class="w3-button" type="button">Urgence <i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <!-- <label class="w3-bar-item w3-button">
                             <input type="checkbox" class="w3-check" name="urgency_type" value="all" checked>
@@ -214,7 +219,7 @@
 
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <div class="w3-button">Danger<i class="fa fa-caret-down"></i></div>
+                <div class="w3-button">Danger <i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <!-- <label class="w3-bar-item w3-button">
                             <input type="checkbox" class="w3-check" name="danger_level" value="all" checked>
@@ -257,13 +262,17 @@
         </div>
 
 
-        <div class="w3-bar-item w3-left">Trier par:</div>
+        <div class="w3-bar-item w3-left">
+            <div class="w3-padding">
+                <b>Trier par:</b>
+            </div>
+        </div>
 
         <!-- Sorting, radio buttons -->
 
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <div class="w3-button">Trier par<i class="fa fa-caret-down"></i></div>
+                <div class="w3-button">Trier par <i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <label class="w3-bar-item w3-button">
                         <input type="radio" class="w3-radio filter" name="_.sort" value="map_object.date" checked>
@@ -292,7 +301,7 @@
         <!-- Sort Order -->
         <div class="w3-bar-item w3-left">
             <div class="w3-dropdown-hover w3-mobile">
-                <div class="w3-button">Trier par ordre<i class="fa fa-caret-down"></i></div>
+                <div class="w3-button">Ordre <i class="fa fa-caret-down"></i></div>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <label class="w3-bar-item w3-button">
                         <input type="radio" class="w3-radio filter" name="_.sortOrder" value="1" checked>
@@ -310,7 +319,7 @@
     <!-- Sorting note -->
     <div class="w3-bar-item w3-left">
         <div class="w3-dropdown-hover w3-mobile">
-            <div class="w3-button">* Note<i class="fa fa-caret-down"></i></div>
+            <div class="w3-button">* Note</i></div>
             <div class="w3-dropdown-content w3-bar-block w3-card-4">
                 <div class="w3-bar-item w3-button">
                     <p>Les évènements seront toujours affichés avant les aides, peu importe l'ordre de tri.</p>
