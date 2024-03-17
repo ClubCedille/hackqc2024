@@ -366,7 +366,7 @@
         x-data="{mobile: mobileCheck(), showFiltresMobile: false}">
 
         <div class="w3-container w3-center" x-cloak x-show="mobile">
-            <button @click="showFiltresMobile = !showFiltresMobile" style="z-index: 6969;position:relative;width: 70vw"
+            <button @click="showFiltresMobile = !showFiltresMobile" style="z-index: 6969;position:relative;width: 70vw;"
                 class="w3-btn w3-round-large w3-margin-bottom w3-margin-top w3-white">Filtres</button>
         </div>
 
@@ -374,8 +374,8 @@
             <div style="z-index: 6969; position:relative; margin-top: 10px;max-width:70vw"
                 class="w3-auto w3-round-large">
                 <div x-data="{ active: '' }" class="w3-center">
-                    <div class="w3-white w3-round-large w3-card" style="position: relative; z-index: 6969;;">
-                        <div style="display:inline-block;padding: 16px;">
+                    <div class="w3-white w3-round-large w3-card" style="position: relative; z-index: 6969;display:flex; justify-content: center;flex-wrap:wrap;">
+                        <div style="display:inline-block;padding: 16px;min-width: 405px;">
                             <div class="w3-center w3-text-gray">Filtres</div>
                             <div class="w3-border-top w3-border-gray">
                                 <button @click="active = active == 'categories' ? '' : 'categories'"
@@ -407,7 +407,7 @@
                             </div>
                         </div>
 
-                        <div style="display:inline-block;padding: 16px;">
+                        <div style="display:inline-block;padding: 16px;min-width: 475px;">
                             <div class="w3-center w3-text-gray">Actions</div>
                             <div class="w3-border-top w3-border-gray">
                                 <button onclick="displayEventModal()"
@@ -419,7 +419,7 @@
                             </div>
                         </div>
 
-                        <div style="display:inline-block;padding: 16px;">
+                        <div style="display:inline-block;padding: 16px;min-width: 325px;">
                             <div class="w3-center w3-text-gray w3-border-gray w3-border-bottom">Centrer sur une adresse
                             </div>
                             <div class="w3-margin">
