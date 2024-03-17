@@ -287,7 +287,7 @@
                 }
             })
             {{ end }}
-            
+
             var layer = protomapsL.leafletLayer({
                 url: 'https://hackqc2024.cedille.club/my_area.pmtiles',
                 theme: 'light',
@@ -389,7 +389,7 @@
                 <div x-data="{ active: '' }" class="w3-center" x-show="!$store.showAideLieeCard">
                     <div class="w3-white w3-round-large w3-card"
                         style="position: relative; z-index: 6969;display:flex; justify-content: center;flex-wrap:wrap;">
-                        <div style="display:inline-block;padding: 16px;min-width: 405px;">
+                        <div style="" x-bind:style="mobile ? 'display:inline-block;padding: 16px;max-width: 90%' : 'display:inline-block;padding: 16px;min-width: 405px'">
                             <div class="w3-center w3-text-gray">Filtres</div>
                             <div class="w3-border-top w3-border-gray">
                                 <button @click="active = active == 'categories' ? '' : 'categories'"
@@ -421,7 +421,7 @@
                             </div>
                         </div>
 
-                        <div style="display:inline-block;padding: 16px;min-width: 475px;">
+                        <div style="display:inline-block;padding: 16px;" x-bind:style="mobile ? 'display:inline-block;padding: 16px;max-width: 90%' : 'display:inline-block;padding: 16px;min-width: 475px'">
                             <div class="w3-center w3-text-gray">Actions</div>
                             <div class="w3-border-top w3-border-gray">
                                 <button onclick="displayEventModal()"
