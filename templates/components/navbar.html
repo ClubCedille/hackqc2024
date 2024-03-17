@@ -1,5 +1,6 @@
 {{ define "components/navbar" }}
 
+
 <style>
     .munis-navbar {
         display: flex;
@@ -16,6 +17,31 @@
     .w3-bar .navbar-right {
         display: flex;
         align-items: center;
+    }
+
+    /* Algolia autocomplete */
+    .aa-Form {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: stretch !important;
+    }
+
+    .aa-SubmitButton {
+        margin: 0 !important;
+        width: auto !important;
+    }
+
+    .aa-ClearButton {
+        margin: 0 !important;
+        width: auto !important;
+    }
+
+    .aa-Label {
+        margin: 0  !important;
+    }
+    .aa-Input {
+        margin: 0 !important;
+        height:100% !important;
     }
 </style>
 
