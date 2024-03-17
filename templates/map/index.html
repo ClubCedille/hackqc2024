@@ -375,7 +375,7 @@
     {{ template "components/navbar" . }}
 
     <div class="map" style="position: absolute; width: 100vw;max-width: none;"
-        x-data="{mobile: mobileCheck(), showFiltresMobile: false}">
+        x-data="{mobile: mobileCheck(), showFiltresMobile: false}" x-bind:class="mobile ? 'mobile' : ''">
 
         <div class="w3-container w3-center" x-cloak x-show="mobile">
             <button @click="showFiltresMobile = !showFiltresMobile" style="z-index: 6969;position:relative;width: 70vw;"
@@ -386,7 +386,8 @@
             <div style="z-index: 6969; position:relative; margin-top: 10px;max-width:70vw"
                 class="w3-auto w3-round-large">
                 <div x-data="{ active: '' }" class="w3-center" x-show="!$store.showAideLieeCard">
-                    <div class="w3-white w3-round-large w3-card" style="position: relative; z-index: 6969;display:flex; justify-content: center;flex-wrap:wrap;">
+                    <div class="w3-white w3-round-large w3-card"
+                        style="position: relative; z-index: 6969;display:flex; justify-content: center;flex-wrap:wrap;">
                         <div style="display:inline-block;padding: 16px;min-width: 405px;">
                             <div class="w3-center w3-text-gray">Filtres</div>
                             <div class="w3-border-top w3-border-gray">

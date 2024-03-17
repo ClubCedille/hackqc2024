@@ -5,3 +5,7 @@
 .map {
 	height: calc(100vh - 5em);
 }
+
+.map.mobile {
+	height: calc(100vh - 56px);
+}
