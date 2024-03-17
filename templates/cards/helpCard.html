@@ -22,11 +22,16 @@
     <div class="w3-container w3-margin-bottom">
         <span class="date">Ajouté le: {{.MapObject.GetDateString}}</span>
     </div>
+    {{ if .Modified }}
+    <div class="w3-container w3-margin-bottom">
+        <span class="date">Dernière modification: {{.GetModificationDateString}}</span>
+    </div>
+    {{ end }}
     <div class="w3-container w3-margin-bottom">
         {{ if .NeedHelp }}
         <b class="status">Besoin d'aide: </b><span class="w3-round-large w3-green w3-padding-small">Oui</span>
         {{ else }}
-        <b class="status">Besoin d'aide: </b><span class="w3-round-large w3-red w3-padding-small">Non</span>
+        <b class="status">Besoin d'aide: </b><span class="w3-round-large w3-orange w3-padding-small">Non</span>
         {{ end }}
     </div>
     <div class="description w3-container">
@@ -35,13 +40,21 @@
             {{.MapObject.Description}}
         </p>
     </div>
+    {{ if .NeedHelp }}
     <div class="howToHelp w3-container">
         <b>Comment contribuer: </b>
         <p class="w3-container">{{.HowToHelp}}</p>
     </div>
+    {{ end }}
     <div class="HowToUseHelp w3-container">
-        <b>Obtenir de l'aide: </b>
+        <b>Comment profiter de cette aide: </b>
         <p class="w3-container">{{.HowToUseHelp}}</p>
     </div>
+    {{ if .ContactInfos }}
+    <div class="contactInfos w3-container">
+        <b>Informations de contact: </b>
+        <p class="w3-container">{{.ContactInfos}}</p>
+    </div>
+    {{ end }}
 </div>
 {{ end }}

@@ -242,8 +242,11 @@ func CreateEvent(conn *clover.DB, event Event) error {
 		return err
 	}
 
-	message := fmt.Sprintf("Alert: Un nouvel évènement de type %s a été signalé près de vous", event.MapObject.Category)
+	message := fmt.Sprintf("Alerte: Un nouvel évènement de type %s a été signalé près de vous", event.MapObject.Category)
 	err = notifications.NotifyNearby(conn, message, event.MapObject.Geometry)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -280,4 +283,12 @@ func GetEventFromDocuments(docs []*document.Document) ([]*Event, error) {
 	}
 
 	return events, nil
+}
+
+func (event *Event) FlipCoords() {
+	if event.MapObject.Geometry.GeomType == "Point" {
+		tmp := event.MapObject.Geometry.Coordinates[0]
+		event.MapObject.Geometry.Coordinates[0] = event.MapObject.Geometry.Coordinates[1]
+		event.MapObject.Geometry.Coordinates[1] = tmp
+	}
 }

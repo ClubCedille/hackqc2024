@@ -98,6 +98,7 @@ func GetEventDetailAboutToBeModified(c *gin.Context, db *clover.DB) {
 	}
 
 	// Format some data
+	event.FlipCoords()
 	var formattedCoords []string
 	for _, coord := range event.MapObject.Geometry.Coordinates {
 		formattedCoords = append(formattedCoords, strconv.FormatFloat(coord, 'f', -1, 64))
@@ -206,6 +207,8 @@ func EventDetails(c *gin.Context, db *clover.DB) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	event.FlipCoords()
 
 	c.HTML(http.StatusOK, "modals/event-details.html", gin.H{
 		"Event":      &event,

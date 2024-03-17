@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: hackqc2024
 images:
 - name: ghcr.io/clubcedille/hackqc2024
-  newTag: commit-5746ba2a007245b2d231fe8f9a5f12e59c278b89
+  newTag: commit-317c6642e0165ccbb9120d791d7b9fef863485c8
 
 resources:
 - namespace.yaml

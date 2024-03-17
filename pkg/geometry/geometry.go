@@ -11,6 +11,9 @@ import (
 )
 
 func IsInGeom(point []float64, geometry mapobject.Geometry) bool {
+	if point == nil || len(point) != 2 {
+		return false
+	}
 	if geometry.GeomType == "Point" {
 		const distCutoff = 0.01
 

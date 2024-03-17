@@ -28,6 +28,10 @@ func GetManagedPost(c *gin.Context, db *clover.DB) {
 		return
 	}
 
+	for _, e := range events {
+		e.FlipCoords()
+	}
+
 	c.HTML(http.StatusOK, "profile/index.html", gin.H{
 		"Events":        events,
 		"Helps":         helps,
