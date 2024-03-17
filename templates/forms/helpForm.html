@@ -1,93 +1,137 @@
 {{ define "forms/helpForm.html" }}
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer mon offre d'aide</title>
-    <link rel="icon" href="static/favicon.svg" type="image/x-icon">
-    <!-- <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0"> -->
-    <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/static/formStyle.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Créer mon offre d'aide</title>
+  <link rel="icon" href="static/favicon.svg" type="image/x-icon" />
+  <!-- <link rel="stylesheet" href="https://codepen.io/gymratpacks/pen/VKzBEp#0"> -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:400,300"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <link rel="stylesheet" href="/static/formStyle.css" />
 </head>
 <div class="row w3-round-xlarge">
-    <div class="col-md-12">
-        <form method="POST" action="/create-help" id="form-container" style="padding: 20px;">
-            <fieldset>
-                <legend><span class="number">1</span>Offre d'aide</legend>
+  <div class="col-md-12">
+    <form
+      method="POST"
+      action="/create-help"
+      id="form-container"
+      style="padding: 20px"
+    >
+      <fieldset>
+        <legend><span class="number">1</span>Offre d'aide</legend>
 
-                <div class="w3-margin-bottom">
-                    <label>Nom</label>
-                    <input class="w3-input" type="text" name="map_object_name" required>
-                </div>
+        <div class="w3-margin-bottom">
+          <label>Nom</label>
+          <input class="w3-input" type="text" name="map_object_name" required />
+        </div>
 
-                <div class="w3-margin-bottom">
-                    <label>Description</label>
-                    <textarea class="w3-input" name="map_object_description" required></textarea>
-                </div>
+        <div class="w3-margin-bottom">
+          <label>Description</label>
+          <textarea
+            class="w3-input"
+            name="map_object_description"
+            required
+          ></textarea>
+        </div>
 
-                <input type="hidden" id="eventIdField" name="event_id">
-                <div class="w3-margin-bottom">
-                    <label>Information de contact</label>
-                    <input class="w3-input" type="text" name="contact_infos" required>
-                </div>
+        <input type="hidden" id="eventIdField" name="event_id" />
+        <div class="w3-margin-bottom">
+          <label>Information de contact</label>
+          <input class="w3-input" type="text" name="contact_infos" required />
+        </div>
 
-                <div class="w3-margin-bottom">
-                    <label>Comment utiliser l'aide</label>
-                    <textarea class="w3-input" name="how_to_use_help" required></textarea>
-                </div>
+        <div class="w3-margin-bottom">
+          <label>Comment utiliser l'aide</label>
+          <textarea class="w3-input" name="how_to_use_help" required></textarea>
+        </div>
 
-                <div x-data="{helpPossible: false}" class="w3-margin-bottom">
-                    <label>D'autres personnes peuvent-elles se joindre à l'aide ?</label>
-                    <div class="w3-padding w3-cell">
-                        <input class="w3-radio" type="radio" name="need_help" value="true" x-model="helpPossible"
-                            required>
-                        <label style="display: inline;">Oui</label>
-                    </div>
-                    <div class="w3-cell">
-                        <input class="w3-radio" type="radio" name="need_help" value="false" x-model="helpPossible">
-                        <label style="display: inline;">Non</label>
-                    </div>
+        <div x-data="{helpPossible: false}" class="w3-margin-bottom">
+          <label>D'autres personnes peuvent-elles se joindre à l'aide ?</label>
+          <div class="w3-padding w3-cell">
+            <input
+              class="w3-radio"
+              type="radio"
+              name="need_help"
+              value="true"
+              x-model="helpPossible"
+              required
+            />
+            <label style="display: inline">Oui</label>
+          </div>
+          <div class="w3-cell">
+            <input
+              class="w3-radio"
+              type="radio"
+              name="need_help"
+              value="false"
+              x-model="helpPossible"
+            />
+            <label style="display: inline">Non</label>
+          </div>
 
-                    <div class="w3-margin-bottom" x-bind:class="helpPossible=='true' ? '' : 'w3-hide'">
-                        <label>Comment aider</label>
-                        <textarea class="w3-input" name="how_to_help"></textarea>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend><span class="number">2</span>Informations supplémentaires</legend>
+          <div
+            class="w3-margin-bottom"
+            x-bind:class="helpPossible=='true' ? '' : 'w3-hide'"
+          >
+            <label>Comment aider</label>
+            <textarea class="w3-input" name="how_to_help"></textarea>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <span class="number">2</span>Informations supplémentaires
+        </legend>
 
-                <div class="w3-margin-bottom">
-                    <label>Catégorie</label>
-                    <select class="w3-select" name="map_object_category" required>
-                        <option value="" disabled selected>Choisissez votre option</option>
-                        <option value="Hébergement">Hébergement</option>
-                        <option value="Nourriture">Nourriture</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Coup de main">Coup de main</option>
-                        <option value="Renforcement">Renforcement</option>
-                    </select>
-                </div>
+        <div class="w3-margin-bottom">
+          <label>Catégorie</label>
+          <select class="w3-select" name="map_object_category" required>
+            <option value="" disabled selected>Choisissez votre option</option>
+            <option value="Hébergement">Hébergement</option>
+            <option value="Nourriture">Nourriture</option>
+            <option value="Transport">Transport</option>
+            <option value="Coup de main">Coup de main</option>
+            <option value="Renforcement">Renforcement</option>
+          </select>
+        </div>
 
-                <div class="w3-margin-bottom">
-                    <label for="map_object_geometry">Coordonnées:</label>
-                    <input type="hidden" name="map_object_geometry_type" value="Point">
-                    
-                    <input type="text" placeholder="Coordonnées (latitude, longitude. Ex.: 45.49482822811503, -73.5623371708045)" id="map_object_geometry_coordinates"
-                        name="map_object_geometry_coordinates" required>
+        <div class="w3-margin-bottom">
+          <label for="map_object_geometry">Coordonnées:</label>
+          <input type="hidden" name="map_object_geometry_type" value="Point" />
 
-                    <label>Rechercher une adresse pour remplir les coordonnées (optionnel):</label>
-                    <div class="aa-Gray" id="help_map_object_geometry_address"></div>
-                </div>
+          <input
+            type="text"
+            placeholder="Coordonnées (latitude, longitude. Ex.: 45.49482822811503, -73.5623371708045)"
+            id="map_object_geometry_coordinates"
+            name="map_object_geometry_coordinates"
+            required
+          />
 
-                <div class="w3-margin-bottom">
-                    <label for="map_object_tags">Tags:</label>
-                    <input type="text" id="map_object_tags" placeholder="format: tag1, tag2, ..."
-                        name="map_object_tags">
-                </div>
-            </fieldset>
-            <button class="w3-button w3-teal w3-margin-top" type="submit">Soumettre</button>
-        </form>
-    </div>
+          <label
+            >Rechercher une adresse pour remplir les coordonnées
+            (optionnel):</label
+          >
+          <div class="aa-Gray" id="help_map_object_geometry_address"></div>
+        </div>
+
+        <div class="w3-margin-bottom">
+          <label for="map_object_tags">Tags:</label>
+          <input
+            type="text"
+            id="map_object_tags"
+            placeholder="format: tag1, tag2, ..."
+            name="map_object_tags"
+          />
+        </div>
+      </fieldset>
+      <button class="w3-button w3-teal w3-margin-top" type="submit">
+        Soumettre
+      </button>
+    </form>
+  </div>
 </div>
 {{ end }}
