@@ -8,6 +8,7 @@
 - `how_to_help` : Instructions ou informations sur comment fournir de l'aide.
 - `how_to_use_help` : Instructions ou informations sur comment utiliser l'aide proposée.
 - `need_help` : Un booléen indiquant si de l'aide est nécessaire.
+- `derniere_modification` : La date de la dernière modification de l'enregistrement, au format ISO 8601 (par exemple, "0001-01-01T00:00:00Z").
 
 ### Champ `map_object`
 
