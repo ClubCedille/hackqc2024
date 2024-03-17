@@ -75,6 +75,10 @@
     border: none;
 }
 
+#form-account .aa-DetachedSearchButton {
+    display: flex;
+}
+
 #form-account legend {
     font-size: 1.4em;
     margin-bottom: 10px;
