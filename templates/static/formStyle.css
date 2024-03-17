@@ -74,6 +74,11 @@
     display: flex;
 }
 
+div.aa-DetachedOverlay {
+    z-index: 10000;
+    position: relative;
+}
+
 #form-container fieldset {
     margin: 30px;
     border: none;
