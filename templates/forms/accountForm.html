@@ -2,11 +2,12 @@
 <html>
 
 <head>
-  
+
   {{ template "components/head.html" . }}
 
   <link rel="stylesheet" href="/static/loginAccountFormStyle.css">
   <title>Créer un compte</title>
+
 </head>
 
 <body>
@@ -32,14 +33,65 @@
           <label for="phone_number">Téléphone (optionnel):</label>
           <input type="tel" x-mask="(999) 999-9999" placeholder="(999) 999-9999" id="phone_number" name="phone_number">
 
-          <label for="coordinates">Coordonnées: (Pour vous rejoindre quand un évènement est signalé près de vous)</label>
-          <input type="text" placeholder="Coordonées (format: 1.0, 2.0)" id="coordinates" name="coordinates">
+          <label for="coordinates">Coordonnées: (Pour vous rejoindre quand un évènement est signalé près de
+            vous)</label>
+          <input type="text" placeholder="Coordonnées (latitude, longitude. Ex.: 45.49482822811503, -73.5623371708045)"
+            id="coordinates" name="coordinates">
+
+          <label for="coordinates">Rechercher une adresse pour remplir les coordonnées (optionnel):</label>
+          <div class="aa-Gray" id="account_address"></div>
 
         </fieldset>
 
         <button type="submit">Créer</button>
 
       </form>
+
+      <script type="text/javascript">
+        const { autocomplete } = window['@algolia/autocomplete-js'];
+
+        /**
+       * @param {string} address partial address
+       * @returns {Array<string>} List of addresses
+       */
+        async function getAdresses(address) {
+          const res = await fetch(`https://geoegl.msp.gouv.qc.ca/apis/icherche/geocode?type=adresses&limit=5&geometry=true&q=${address}`);
+          const json = await res.json();
+          return json.features.map(feature => {
+            return feature
+          });
+        }
+
+        autocomplete({
+          container: '#account_address',
+          placeholder: 'Adresse...',
+          getSources({ query }) {
+            return [
+              {
+                sourceId: 'addresse',
+                async getItems() {
+                  let addresses = await getAdresses(query);
+                  return addresses;
+                },
+                templates: {
+                  item({ item }) {
+                    return `${item.properties.nom}`;
+                  },
+                },
+                onSelect: function (event) {
+                  const selectedAddress = event.item
+                  const adresseInput = document.getElementById("account_address")
+                  const pointInput = document.getElementById("coordinates")
+                  const coords = selectedAddress.geometry.coordinates
+                  adresseInput.value = selectedAddress.properties.nom
+                  pointInput.value = coords[1] + ", " + coords[0]
+                },
+              },
+            ];
+          },
+        });
+      </script>
+
     </div>
   </div>
 
