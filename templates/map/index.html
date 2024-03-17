@@ -270,7 +270,7 @@
             map.on('popupopen', function (e) {
                 htmx.process(document.body)
             })
-
+            {{ if .ActiveSession }}
             map.on('click', function (e) {
                 map.openPopup(`
                     <div>
@@ -286,7 +286,8 @@
                     temporaryMarker = null;
                 }
             })
-
+            {{ end }}
+            
             var layer = protomapsL.leafletLayer({
                 url: 'https://hackqc2024.cedille.club/my_area.pmtiles',
                 theme: 'light',
