@@ -50,6 +50,9 @@ func ConvertMapDocsToGeoJSON(docs []map[string]interface{}) ([]byte, error) {
 		if sourceExterneLinked, ok := doc["source_externe_linked"].(string); ok {
 			properties["source_externe_linked"] = sourceExterneLinked
 		}
+        if DerniereModification, ok := doc["derniere_modification"].(string); ok {
+            properties["derniere_modification"] = DerniereModification
+        }
 
         if mapObject, ok := doc["map_object"].(map[string]interface{}); ok {
             if name, ok := mapObject["name"].(string); ok {
@@ -65,7 +68,7 @@ func ConvertMapDocsToGeoJSON(docs []map[string]interface{}) ([]byte, error) {
 				properties["tags"] = tags
 			}
 			if date, ok := mapObject["date"].(string); ok {
-				properties["date"] = date
+				properties["date_creation"] = date
 			}
 
             if geomMap, ok := mapObject["geometry"].(map[string]interface{}); ok {
