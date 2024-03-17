@@ -59,12 +59,12 @@
     }
 
     .aa-Gray .aa-Label {
-        margin: 0  !important;
+        margin: 0 !important;
     }
-    
+
     .aa-Gray .aa-Input {
         margin: 0 !important;
-        height:100% !important;
+        height: 100% !important;
     }
 
     .aa-Gray .aa-InputWrapperSuffix {
@@ -75,7 +75,7 @@
     }
 
     .aa-Gray .aa-ClearIcon {
-        color: rgba(var(--aa-primary-color-rgb),1) !important;
+        color: rgba(var(--aa-primary-color-rgb), 1) !important;
     }
 </style>
 
@@ -149,13 +149,16 @@
         </div>
     </nav>
     <div class="w3-sidebar w3-bar-block" style="width:70%;z-index: 99999;" x-show="mobile && sidebar">
-        <a href="/map" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile">Carte</a>
-        <a href="/grid" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile">Grille
-            évènement/aide</a>
-        <a href="/a-propos" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile">À propos</a>
-        <div class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile" x-data="{dropdown: false}">
-            <button class="w3-button munis-navbar-button w3-mobile w3-bar-item"
-                @click="dropdown = !dropdown">Modération</button>
+        <a href="/map"
+            class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-margin-top w3-mobile"><b>Carte</b></a>
+        <a href="/grid" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile"><b>Grille
+                évènement/aide</b></a>
+        <a href="/a-propos" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile"><b>À
+                propos</b></a>
+        <div class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile w3-margin-bottom"
+            x-data="{dropdown: false}">
+            <button class="w3-button munis-navbar-button w3-mobile" style="padding: 0;"
+                @click="dropdown = !dropdown"><b>Modération</b></button>
             <div x-show="dropdown">
                 <a href="/events/table"
                     class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-mobile">Tableau
@@ -168,28 +171,30 @@
             {{ if .ActiveSession }}
             <form action="/logout" method="post" style="display: inline;">
                 <button type="submit"
-                    class="w3-bar-item munis-navbar-item w3-margin-right w3-button munis-navbar-button w3-right w3-mobile">Se
-                    déconnecter</button>
+                    class="w3-bar-item munis-navbar-item w3-margin-right w3-button munis-navbar-button w3-right w3-mobile"><b>Se
+                        déconnecter</b></button>
             </form>
             <a href="/manage-post"
                 class="w3-bar-item munis-navbar-item w3-margin-right w3-button munis-navbar-button w3-right w3-mobile">Bonjour,
                 {{ .UserName }} !</a>
             {{ else if .SigningUp }}
+            <span class="w3-bar-item munis-navbar-item w3-right w3-mobile">Déjà inscrit ?</span>
             <a href="/login"
-                class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-margin-right w3-right w3-mobile">Se
-                connecter</a>
-            <span class="w3-bar-item munis-navbar-item w3-right w3-margin-right w3-mobile">Déjà inscrit ?</span>
+                class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-right w3-mobile"><b>Se
+                    connecter</b></a>
             {{ else if .LoggingIn }}
+            <span class="w3-bar-item munis-navbar-item w3-right w3-mobile" style="padding: 0;">Pas encore de compte
+                ?</span>
             <a href="/create-account"
-                class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-right w3-mobile">Créer un
-                compte</a>
-            <span class="w3-bar-item munis-navbar-item w3-right w3-margin-right w3-mobile">Pas encore de compte ?</span>
+                class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-right w3-mobile"><b>Créer un
+                    compte</b></a>
             {{ else }}
-            <a href="/login" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-right w3-mobile">Se
-                connecter</a>
+            <a href="/login" class="w3-bar-item munis-navbar-item w3-button munis-navbar-button w3-right w3-mobile"
+                style="padding: 0;"><b>Se
+                    connecter</b></a>
             <a href="/create-account"
-                class="w3-bar-item munis-navbar-item w3-margin-right w3-button munis-navbar-button w3-right w3-mobile">Créer
-                un compte</a>
+                class="w3-bar-item munis-navbar-item w3-margin-right w3-button munis-navbar-button w3-right w3-mobile"><b>Créer
+                    un compte</b></a>
             {{ end }}
         </div>
     </div>
