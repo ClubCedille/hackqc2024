@@ -14,6 +14,7 @@ FROM alpine:3.19
 COPY --from=build /go/src/app/app /go/bin/app
 COPY --from=build /go/src/app/templates /go/bin/templates
 COPY --from=build /go/src/app/docs /go/bin/docs
+COPY --from=build /go/src/app/munic_polygons /go/bin/munic_polygons
 
 WORKDIR /go/bin
 
