@@ -386,7 +386,7 @@
             <div style="z-index: 6969; position:relative; margin-top: 10px;max-width:70vw"
                 class="w3-auto w3-round-large">
                 <div x-data="{ active: '' }" class="w3-center">
-                    <div class="w3-white w3-round-large w3-card" style="position: relative; z-index: 6969;;">
+                    <div class="w3-white w3-round-large w3-card" style="position: relative; z-index: 6969;">
                         <div style="display:inline-block;padding: 16px;">
                             <div class="w3-center w3-text-gray">Filtres</div>
                             <div class="w3-border-top w3-border-gray">
@@ -479,6 +479,11 @@
                                 {{ end }}
                             </div>
                         </div>
+                        <footer class="w3-container" style="height: 0;">
+                            <span @click="active = ''"
+                                class="w3-button w3-large w3-display-bottommiddle w3-round-large">︽</span>
+                            </header>
+                        </footer>
                     </div>
 
                     <!-- Urgency -->
@@ -499,6 +504,11 @@
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
+                        <footer class="w3-container" style="height: 0;">
+                            <span @click="active = ''"
+                                class="w3-button w3-large w3-display-bottommiddle w3-round-large">︽</span>
+                            </header>
+                        </footer>
                     </div>
 
                     <!-- Danger Level -->
@@ -519,6 +529,11 @@
                                 x-text="'{{ .Name |  escapeSingleQuotes }}'"></button>
                             {{ end }}
                         </div>
+                        <footer class="w3-container" style="height: 0;">
+                            <span @click="active = ''"
+                                class="w3-button w3-large w3-display-bottommiddle w3-round-large">︽</span>
+                            </header>
+                        </footer>
                     </div>
                 </div>
                 <div x-data>
